@@ -185,7 +185,8 @@ var Store = {
         }
       }
       if(had){ toast('已同步 '+rows.length+' 条'); var c=Router._current,cfg=Router._routes[c];if(cfg&&cfg.onEnter)cfg.onEnter();if(c==='home')Render.lb(); }
-    }catch(e){}
+      else{ toast('云端暂无数据'); }
+    }catch(e){ toast('同步失败: '+e.message); }
   },
   pullUsers: async function(){
     try{
