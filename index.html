@@ -271,51 +271,42 @@
         var resp = await fetch('https://jsonblob.com/api/jsonBlob/' + Store._blobId);
         if (!resp.ok) return;
         var cloud = await resp.json();
-        // Merge cloud data into localStorage (cloud wins for user tables)
-        var prefix = 'tb_' + (App.user||'') + '_';
-        var keys = Object.keys(localStorage);
-        for (var i=0;i<keys.length;i++) {
-          if (keys[i].indexOf('tb_')===0 && keys[i].indexOf('tb_users')!==0) {
-            // Already in localStorage, skip (local is newer)
-            // Actually, let cloud data supplement missing keys
-            var short = keys[i].replace('tb_','').replace(App.user+'_','');
-          }
-        }
-        // Sync users table
+        // Cloud is authoritative for cross-device sync
         if (cloud.users && cloud.users.length > 0) {
-          var localUsers = Store.getRaw('tb_users');
-          if (!localUsers || JSON.parse(localUsers).length < cloud.users.length) {
-            Store.setRaw('tb_users', JSON.stringify(cloud.users));
-          }
+          Store.setRaw('tb_users', JSON.stringify(cloud.users));
         }
-        // Sync per-user data
         if (cloud.data && cloud.data[App.user]) {
           var ud = cloud.data[App.user];
-          if (ud.rotation) Store.set('rotation', ud.rotation);
-          if (ud.biztrip) Store.set('biztrip', ud.biztrip);
-          if (ud.memos) Store.set('memos', ud.memos);
+          if (ud.rotation !== undefined) Store._rawSet('rotation', ud.rotation);
+          if (ud.biztrip !== undefined) Store._rawSet('biztrip', ud.biztrip);
+          if (ud.memos !== undefined) Store._rawSet('memos', ud.memos);
         }
-      } catch(e) { console.log('Cloud pull failed'); }
+      } catch(e) { console.log('Pull err', e); }
     },
+    _rawSet: function(k, v) { localStorage.setItem(Store._key(k), JSON.stringify(v)); },
     cloudPush: async function() {
       await Store.cloudInit();
       if (!Store._blobId) return;
       try {
-        // Build cloud data from localStorage
-        var cloud = {};
+        // Fetch current cloud state first
+        var resp = await fetch('https://jsonblob.com/api/jsonBlob/' + Store._blobId);
+        var cloud = resp.ok ? await resp.json() : {users:[], data:{}};
+        // Merge user table
         cloud.users = JSON.parse(Store.getRaw('tb_users')||'[]');
-        cloud.data = {};
+        // Merge this user's data
+        if (!cloud.data) cloud.data = {};
         cloud.data[App.user] = {
-          rotation: Store.get('rotation', {}),
-          biztrip: Store.get('biztrip', {}),
-          memos: Store.get('memos', []),
+          rotation: JSON.parse(localStorage.getItem(Store._key('rotation'))||'null'),
+          biztrip: JSON.parse(localStorage.getItem(Store._key('biztrip'))||'null'),
+          memos: JSON.parse(localStorage.getItem(Store._key('memos'))||'null'),
         };
         await fetch('https://jsonblob.com/api/jsonBlob/' + Store._blobId, {
           method: 'PUT',
           headers: {'Content-Type': 'application/json'},
           body: JSON.stringify(cloud),
         });
-      } catch(e) { console.log('Cloud push failed'); }
+        console.log('Cloud pushed OK');
+      } catch(e) { console.log('Push err', e); }
     },
   };
 
@@ -482,7 +473,13 @@
       Router.init();
       Router.go('home');
       // Pull cloud data (async, non-blocking)
-      Store.cloudPull();
+      Store.cloudPull().then(function() {
+        // Refresh current page after cloud sync
+        var cur = Router._current;
+        var cfg = Router._routes[cur];
+        if (cfg && cfg.onEnter) cfg.onEnter();
+        if (cur === 'home') Render.leaderboard();
+      });
     },
     _buildHome: function() {
       var g = $('homeGrid'); g.innerHTML = '';
