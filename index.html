@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
   <meta http-equiv="Cache-Control" content="no-cache,no-store,must-revalidate" />
-  <title>多功能工具箱</title>
+  <title>三对百宝箱</title>
   <style>
     :root{
       --bg:#f0f2f5;--card:#fff;--p:#6366f1;--pl:#818cf8;--t:#1e293b;--ts:#64748b;
@@ -144,7 +144,7 @@
     <header class="app-header">
       <button class="btn-icon" id="sbToggle" onclick="App.toggleSidebar()" title="好友列表">&#x2630;</button>
       <button class="btn-icon hide" id="bb" onclick="Router.back()">&#x2039;</button>
-      <h1 id="ht">多功能工具箱</h1>
+      <h1 id="ht">三对百宝箱</h1>
       <button class="btn-icon" id="av" onclick="Router.go('profile')">&#x1F464;</button>
       <button class="btn-icon" onclick="Router.go('admin')" title="数据后台" id="adBtn" style="display:none">&#x2699;&#xFE0F;</button>
       <button class="btn-icon" onclick="Auth.logout()">&#x1F6AA;</button>
@@ -222,7 +222,7 @@ var Auth={
 /* App */
 var App={
   user:null,sidebarOpen:false,
-  login:function(un){App.user=un;$('ls').style.display='none';$('app').classList.add('show');var u=Auth.users().find(function(x){return x.username===un});if(u){$('av').textContent=u.avatar||'👤';$('adBtn').style.display=(u.role==='admin'?'flex':'none');}App._buildHome();Router.register('home',{title:'多功能工具箱',onEnter:function(){Render.lb();App.renderSidebar();}});Router.init();Router.go('home');Store.pull();App.renderSidebar();},
+  login:function(un){App.user=un;$('ls').style.display='none';$('app').classList.add('show');var u=Auth.users().find(function(x){return x.username===un});if(u){$('av').textContent=u.avatar||'👤';$('adBtn').style.display=(u.role==='admin'?'flex':'none');}App._buildHome();Router.register('home',{title:'三对百宝箱',onEnter:function(){Render.lb();App.renderSidebar();}});Router.init();Router.go('home');Store.pull();App.renderSidebar();},
   _buildHome:function(){var g=$('homeGrid');g.innerHTML='';Tools.list.forEach(function(t){if(t.id==='admin')return;g.innerHTML+='<div class="tool-card" onclick="Router.go(\''+t.id+'\')"><span class="icon">'+t.icon+'</span><span class="label">'+t.name+'</span><span class="desc">'+t.desc+'</span></div>';});},
   toggleSidebar:function(){App.sidebarOpen=!App.sidebarOpen;$('sidebar').classList.toggle('open',App.sidebarOpen);App.renderSidebar();},
   renderSidebar:function(){if(!App.sidebarOpen)return;var u=Auth.users().find(function(x){return x.username===App.user});if(!u)return;var fs=u.friends||[],us=Auth.users();var fl=$('friendList');if(!fs.length){fl.innerHTML='<div style="color:var(--ts);font-size:12px;text-align:center;padding:10px">暂无好友<br><a href="javascript:void(0)" onclick="Router.go(\'profile\')" style="color:var(--p)">去添加</a></div>';return;}fl.innerHTML=fs.map(function(fn){var fu=us.find(function(x){return x.username===fn});var st=fu?fu.status||'offline':'offline';return'<div class="friend-item"><div class="fav">'+(fu?fu.avatar||'👤':'👤')+'</div><div class="fn">'+fn+'</div><div class="friend-dot '+(st==='online'?'on':st==='busy'?'busy':'off')+'"></div></div>';}).join('');}
