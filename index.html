@@ -306,10 +306,34 @@
   // ---- Auth ----
   var Auth = {
     isRegister: false,
+    ADMIN_USER: 'admin',
+    ADMIN_PASS: '12345',
     init: function() {
+      Auth._ensureAdmin();
       if (sessionStorage.getItem('tb_session')) { App.login(sessionStorage.getItem('tb_session')); return; }
       $('loginScreen').style.display = 'flex';
       if (!Store.getRaw('tb_users')) Auth._setRegister();
+    },
+    _ensureAdmin: function() {
+      if (!Store.getRaw('tb_users')) {
+        // First-ever init: create admin account
+        var self = Auth;
+        crypto.subtle.digest('SHA-256', new TextEncoder().encode(self.ADMIN_PASS + 'tb_salt')).then(function(h) {
+          var hash = Array.from(new Uint8Array(h)).map(function(b){return b.toString(16).padStart(2,'0');}).join('');
+          var adminUser = {
+            id: 0,
+            username: self.ADMIN_USER,
+            passwordHash: hash,
+            createdAt: new Date().toLocaleString('zh-CN'),
+            avatar: '\uD83D\uDC51',
+            status: 'offline',
+            role: 'admin',
+            friends: [],
+            lastSeen: null
+          };
+          Store.setRaw('tb_users', JSON.stringify([adminUser]));
+        });
+      }
     },
     _setRegister: function() {
       Auth.isRegister = true;
@@ -350,7 +374,7 @@
       if (Auth.isRegister) {
         if (pwd !== pwd2) { err.textContent='\u4E24\u6B21\u5BC6\u7801\u4E0D\u4E00\u81F4'; return; }
         for (var i=0;i<us.length;i++) { if (us[i].username===uname) { err.textContent='\u8BE5\u7528\u6237\u540D\u5DF2\u5B58\u5728'; return; } }
-        us.push({id:Date.now(),username:uname,passwordHash:await Auth.hash(pwd),createdAt:new Date().toLocaleString('zh-CN'),avatar:'\uD83D\uDC64',status:'online',friends:[],lastSeen:new Date().toLocaleString('zh-CN')});
+        us.push({id:Date.now(),username:uname,passwordHash:await Auth.hash(pwd),createdAt:new Date().toLocaleString('zh-CN'),avatar:'\uD83D\uDC64',status:'online',role:'user',friends:[],lastSeen:new Date().toLocaleString('zh-CN')});
         Auth.saveUsers(us);
         sessionStorage.setItem('tb_session', uname);
         App.login(uname);
@@ -384,18 +408,20 @@
       $('loginScreen').style.display='none';
       $('appShell').classList.add('show');
       var u = Auth.users().find(function(x){return x.username===uname;});
-      if (u) $('headerAvatar').textContent = u.avatar||'\uD83D\uDC64';
+      if (u) {
+        $('headerAvatar').textContent = u.avatar||'\uD83D\uDC64';
+        // Show admin gear only for admin
+        var gear = document.querySelector('.btn-icon[title="\u6570\u636E\u540E\u53F0"]');
+        if (gear) gear.style.display = (u.role==='admin') ? 'flex' : 'none';
+      }
       App._buildHome();
       Router.init();
       Router.go('home');
     },
     _buildHome: function() {
       var g = $('homeGrid'); g.innerHTML = '';
-      // Admin always first
-      var adminCard = Tools.list.find(function(t){return t.id==='admin';});
-      if (adminCard) g.innerHTML += '<div class="tool-card" onclick="Router.go(\'admin\')" style="border-color:var(--danger)"><span class="icon">'+adminCard.icon+'</span><span class="label">'+adminCard.name+'</span><span class="desc">'+adminCard.desc+'</span></div>';
       Tools.list.forEach(function(t) {
-        if (t.id === 'admin') return; // already added
+        if (t.id === 'admin') return; // admin hidden from home grid
         g.innerHTML += '<div class="tool-card" onclick="Router.go(\''+t.id+'\')"><span class="icon">'+t.icon+'</span><span class="label">'+t.name+'</span><span class="desc">'+t.desc+'</span></div>';
       });
     },
