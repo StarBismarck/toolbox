@@ -6,7 +6,7 @@
   <meta http-equiv="Cache-Control" content="no-cache,no-store,must-revalidate" />
   <title>多功能工具箱</title>
   <style>
-    :root {
+    :root{
       --bg:#f0f2f5;--card:#fff;--p:#6366f1;--pl:#818cf8;--t:#1e293b;--ts:#64748b;
       --b:#e2e8f0;--on:#10b981;--busy:#f59e0b;--off:#94a3b8;--err:#ef4444;
       --sh:0 2px 12px rgba(0,0,0,.08);--r:16px;--rs:10px;
@@ -22,26 +22,35 @@
     .login-box .btn{width:100%;padding:12px;font-size:16px}
     .login-box .err{color:var(--err);font-size:13px;margin-top:8px;min-height:20px}
 
-    .app-shell{display:none}.app-shell.show{display:block}
+    .app-shell{display:none}.app-shell.show{display:flex}
+    /* Sidebar */
+    .sidebar{width:0;overflow:hidden;background:var(--card);transition:width .3s;flex-shrink:0;box-shadow:2px 0 12px rgba(0,0,0,.08);position:sticky;top:0;height:100vh;z-index:50}
+    .sidebar.open{width:240px}
+    .sidebar-inner{padding:12px;width:240px}
+    .sidebar h3{font-size:14px;font-weight:600;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+    .friend-item{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:var(--rs);cursor:pointer;margin-bottom:4px;transition:.2s}
+    .friend-item:hover{background:#f1f5f9}
+    .friend-item .fav{font-size:20px}.friend-item .fn{font-size:14px;font-weight:500;flex:1}
+    .friend-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}.friend-dot.on{background:var(--on)}.friend-dot.busy{background:var(--busy)}.friend-dot.off{background:var(--off)}
+    /* Main */
+    .main-area{flex:1;min-width:0}
     .app-header{background:var(--p);color:#fff;padding:10px 14px;display:flex;align-items:center;gap:8px;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(99,102,241,.3)}
     .app-header h1{font-size:17px;font-weight:600;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
     .btn-icon{background:none;border:none;color:#fff;font-size:20px;cursor:pointer;padding:6px;border-radius:8px;display:flex;align-items:center;justify-content:center}
     .btn-icon:hover{background:rgba(255,255,255,.15)}.btn-icon.hide{visibility:hidden}
-    .page{display:none;padding:14px;max-width:600px;margin:0 auto}
+    .page{display:none;padding:14px;max-width:650px;margin:0 auto}
     .page.active{display:block;animation:fadeIn .25s ease}
     @keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 
     .home-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
     .tool-card{background:var(--card);border-radius:var(--r);padding:18px 12px;box-shadow:var(--sh);cursor:pointer;text-align:center;transition:.3s;border:2px solid transparent;user-select:none;-webkit-tap-highlight-color:transparent}
-    .tool-card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.12)}
-    .tool-card:active{transform:scale(.96)}
-    .tool-card .icon{font-size:32px;display:block;margin-bottom:6px}
-    .tool-card .label{font-size:13px;font-weight:600}.tool-card .desc{font-size:11px;color:var(--ts);margin-top:2px}
+    .tool-card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.12)}.tool-card:active{transform:scale(.96)}
+    .tool-card .icon{font-size:32px;display:block;margin-bottom:6px}.tool-card .label{font-size:13px;font-weight:600}.tool-card .desc{font-size:11px;color:var(--ts);margin-top:2px}
 
     .sect{font-size:18px;font-weight:600;margin-bottom:10px}
-    .row{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+    .row{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;align-items:center}
     .row input,.row select{flex:1;min-width:100px;padding:10px 14px;border:2px solid var(--b);border-radius:var(--rs);font-size:15px;outline:none}
-    .row input:focus{border-color:var(--p)}
+    .row input:focus{border-color:var(--p)}.row input[type=number]{width:70px;flex:none}
     .btn{padding:10px 20px;border:none;border-radius:var(--rs);font-size:15px;font-weight:500;cursor:pointer;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;transition:.3s}
     .btn:active{transform:scale(.96)}.btn-p{background:var(--p);color:#fff}.btn-p:hover{background:var(--pl)}
     .btn-d{background:var(--err);color:#fff}.btn-o{background:transparent;border:2px solid var(--b);color:var(--t)}.btn-o:hover{border-color:var(--p);color:var(--p)}
@@ -90,9 +99,15 @@
 
     .diag-ok{color:var(--on)}.diag-err{color:var(--err)}.diag-info{color:var(--ts)}
 
+    .proj-row{display:flex;gap:6px;align-items:center;margin-bottom:6px}
+    .proj-row input{flex:1;min-width:80px;padding:8px 10px;border:2px solid var(--b);border-radius:var(--rs);font-size:14px;outline:none}
+    .proj-row input:focus{border-color:var(--p)}
+    .proj-row input.narrow{width:60px;flex:none}
+
     .toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(80px);background:#1e293b;color:#fff;padding:12px 24px;border-radius:var(--rs);font-size:14px;opacity:0;transition:.3s;z-index:999;pointer-events:none}
     .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-    @media(max-width:360px){.home-grid{grid-template-columns:1fr}}
+    @media(max-width:768px){.sidebar.open{width:200px}.sidebar-inner{width:200px}}
+    @media(max-width:360px){.home-grid{grid-template-columns:1fr}.sidebar.open{width:180px}.sidebar-inner{width:180px}}
   </style>
 </head>
 <body>
@@ -117,228 +132,157 @@
 </div>
 
 <div class="app-shell" id="app">
-  <header class="app-header">
-    <button class="btn-icon hide" id="bb" onclick="Router.back()">&#x2039;</button>
-    <h1 id="ht">多功能工具箱</h1>
-    <button class="btn-icon" id="av" onclick="Router.go('profile')">&#x1F464;</button>
-    <button class="btn-icon" onclick="Router.go('admin')" title="数据后台" id="adBtn" style="display:none">&#x2699;&#xFE0F;</button>
-    <button class="btn-icon" onclick="Auth.logout()">&#x1F6AA;</button>
-  </header>
-  <div class="toast" id="toast"></div>
-  <div class="page active" id="pageHome">
-    <div class="home-grid" id="homeGrid"></div>
-    <div id="lbSec" style="margin-top:20px"></div>
+  <!-- Sidebar -->
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-inner">
+      <h3>👥 好友</h3>
+      <div id="friendList"></div>
+    </div>
   </div>
-  <!-- Other pages injected by Router -->
+  <!-- Main -->
+  <div class="main-area">
+    <header class="app-header">
+      <button class="btn-icon" id="sbToggle" onclick="App.toggleSidebar()" title="好友列表">&#x2630;</button>
+      <button class="btn-icon hide" id="bb" onclick="Router.back()">&#x2039;</button>
+      <h1 id="ht">多功能工具箱</h1>
+      <button class="btn-icon" id="av" onclick="Router.go('profile')">&#x1F464;</button>
+      <button class="btn-icon" onclick="Router.go('admin')" title="数据后台" id="adBtn" style="display:none">&#x2699;&#xFE0F;</button>
+      <button class="btn-icon" onclick="Auth.logout()">&#x1F6AA;</button>
+    </header>
+    <div class="toast" id="toast"></div>
+    <div class="page active" id="pageHome">
+      <div class="home-grid" id="homeGrid"></div>
+      <div id="lbSec" style="margin-top:20px"></div>
+    </div>
+  </div>
 </div>
 
 <script>
 /* ============================================================
    CORE LIBRARY
    ============================================================ */
-var $ = function(id){return document.getElementById(id)};
-var H = function(s){var d=document.createElement('div');d.textContent=s;return d.innerHTML};
-var toast = function(m){var t=$('toast');t.textContent=m;t.classList.add('show');setTimeout(function(){t.classList.remove('show')},2000)};
+var $=function(id){return document.getElementById(id)};
+var H=function(s){var d=document.createElement('div');d.textContent=s;return d.innerHTML};
+var toast=function(m){var t=$('toast');t.textContent=m;t.classList.add('show');setTimeout(function(){t.classList.remove('show')},2000)};
 
-/* ---------- API: Supabase ---------- */
-var API = {
-  URL: 'https://pswiejbqdsvdajzzisgj.supabase.co',
-  KEY: 'sb_publishable_OcLstUOCgADmmQHZwjHEAg_TfGg_1fw',
-  _h: function(ct){ var h={'apikey':API.KEY,'Authorization':'Bearer '+API.KEY}; if(ct)h['Content-Type']='application/json'; return h; },
-  get: async function(table,query){ var q=query?'?'+query:''; var r=await fetch(API.URL+'/rest/v1/'+table+q,{headers:API._h()}); if(!r.ok)throw new Error('GET '+r.status); return r.json(); },
-  post: async function(table,body){ var r=await fetch(API.URL+'/rest/v1/'+table,{method:'POST',headers:Object.assign({'Prefer':'return=minimal'},API._h(true)),body:JSON.stringify(body)}); if(!r.ok)throw new Error('POST '+r.status); },
-  del: async function(table,query){ var r=await fetch(API.URL+'/rest/v1/'+table+'?'+query,{method:'DELETE',headers:API._h()}); if(!r.ok)throw new Error('DEL '+r.status); },
-  upsert: async function(table,query,body){ try{await API.del(table,query)}catch(e){}; await API.post(table,body); },
-  // Diagnostics
-  check: async function(){
-    var results = [];
-    try{ await API.get('toolbar_data','limit=1'); results.push({name:'数据库连接',ok:true}); }catch(e){ results.push({name:'数据库连接',ok:false,err:e.message}); }
-    try{ localStorage.setItem('_diag_test','1'); localStorage.removeItem('_diag_test'); results.push({name:'本地存储',ok:true}); }catch(e){ results.push({name:'本地存储',ok:false,err:e.message}); }
-    results.push({name:'用户数',ok:true,info:Auth.users().length});
-    return results;
+/* API */
+var API={
+  URL:'https://pswiejbqdsvdajzzisgj.supabase.co',
+  KEY:'sb_publishable_OcLstUOCgADmmQHZwjHEAg_TfGg_1fw',
+  _h:function(ct){var h={'apikey':API.KEY,'Authorization':'Bearer '+API.KEY};if(ct)h['Content-Type']='application/json';return h;},
+  get:async function(t,q){var r=await fetch(API.URL+'/rest/v1/'+t+(q?'?'+q:''),{headers:API._h()});if(!r.ok)throw new Error('GET '+r.status);return r.json();},
+  post:async function(t,b){var r=await fetch(API.URL+'/rest/v1/'+t,{method:'POST',headers:Object.assign({'Prefer':'return=minimal'},API._h(true)),body:JSON.stringify(b)});if(!r.ok)throw new Error('POST '+r.status);},
+  del:async function(t,q){var r=await fetch(API.URL+'/rest/v1/'+t+'?'+q,{method:'DELETE',headers:API._h()});if(!r.ok)throw new Error('DEL '+r.status);},
+  upsert:async function(t,q,b){try{await API.del(t,q)}catch(e){};await API.post(t,b);},
+  check:async function(){
+    var r=[];try{await API.get('toolbar_data','limit=1');r.push({name:'数据库连接',ok:true});}catch(e){r.push({name:'数据库连接',ok:false,err:e.message});}
+    try{localStorage.setItem('_dt','1');localStorage.removeItem('_dt');r.push({name:'本地存储',ok:true});}catch(e){r.push({name:'本地存储',ok:false,err:e.message});}
+    r.push({name:'用户数',ok:true,info:Auth.users().length});return r;
   }
 };
 
-/* ---------- Store ---------- */
-var Store = {
-  _k: function(k){ return 'tb_'+(App.user||'')+'_'+k; },
-  get: function(k,fb){ try{var v=localStorage.getItem(Store._k(k));return v!=null?JSON.parse(v):(fb!==undefined?fb:null);}catch(e){return fb!==undefined?fb:null;} },
-  set: function(k,v){ localStorage.setItem(Store._k(k),JSON.stringify(v)); Store._sync(k,v); },
-  getRaw: function(k){ return localStorage.getItem(k); },
-  setRaw: function(k,v){ localStorage.setItem(k,v); },
-  _sync: function(k,v){
-    if(!App.user)return;
-    var user=App.user, body={username:user,data_type:k,data_json:JSON.stringify(v),updated_at:new Date().toISOString()};
-    API.upsert('toolbar_data','username=eq.'+encodeURIComponent(user)+'&data_type=eq.'+encodeURIComponent(k),body).catch(function(){});
-  },
-  syncUsers: function(){
-    API.upsert('toolbar_data','username=eq._system&data_type=eq._users',{username:'_system',data_type:'_users',data_json:JSON.stringify(Auth.users()),updated_at:new Date().toISOString()}).catch(function(){});
-  },
-  pull: async function(){
-    if(!App.user)return;
-    try{
-      var rows=await API.get('toolbar_data','username=eq.'+encodeURIComponent(App.user));
-      var had=false;
-      for(var i=0;i<rows.length;i++){
-        if(rows[i].data_type&&rows[i].data_type!=='_users'&&rows[i].data_json){
-          localStorage.setItem(Store._k(rows[i].data_type),rows[i].data_json);had=true;
-        }
-      }
-      if(had){ toast('已同步 '+rows.length+' 条'); var c=Router._current,cfg=Router._routes[c];if(cfg&&cfg.onEnter)cfg.onEnter();if(c==='home')Render.lb(); }
-      else{ toast('云端暂无数据'); }
-    }catch(e){ toast('同步失败: '+e.message); }
-  },
-  pullUsers: async function(){
-    try{
-      var rows=await API.get('toolbar_data','username=eq._system&data_type=eq._users');
-      if(rows.length&&rows[0].data_json){
-        var cu=JSON.parse(rows[0].data_json),lu=Auth.users();
-        for(var i=0;i<cu.length;i++){if(!lu.some(function(u){return u.username===cu[i].username}))lu.push(cu[i]);}
-        Auth._saveNoSync(lu);
-      }
-    }catch(e){}
-  }
+/* Store */
+var Store={
+  _k:function(k){return'tb_'+(App.user||'')+'_'+k;},
+  get:function(k,fb){try{var v=localStorage.getItem(Store._k(k));return v!=null?JSON.parse(v):(fb!==undefined?fb:null);}catch(e){return fb!==undefined?fb:null;}},
+  set:function(k,v){localStorage.setItem(Store._k(k),JSON.stringify(v));Store._sync(k,v);},
+  getRaw:function(k){return localStorage.getItem(k);},
+  setRaw:function(k,v){localStorage.setItem(k,v);},
+  _sync:function(k,v){if(!App.user)return;var u=App.user,b={username:u,data_type:k,data_json:JSON.stringify(v),updated_at:new Date().toISOString()};API.upsert('toolbar_data','username=eq.'+encodeURIComponent(u)+'&data_type=eq.'+encodeURIComponent(k),b).catch(function(){});},
+  syncUsers:function(){API.upsert('toolbar_data','username=eq._system&data_type=eq._users',{username:'_system',data_type:'_users',data_json:JSON.stringify(Auth.users()),updated_at:new Date().toISOString()}).catch(function(){});},
+  pull:async function(){if(!App.user)return;try{var rows=await API.get('toolbar_data','username=eq.'+encodeURIComponent(App.user));var h=false;for(var i=0;i<rows.length;i++){if(rows[i].data_type&&rows[i].data_type!=='_users'&&rows[i].data_json){localStorage.setItem(Store._k(rows[i].data_type),rows[i].data_json);h=true;}}if(h){toast('已同步 '+rows.length+' 条');var c=Router._current,cfg=Router._routes[c];if(cfg&&cfg.onEnter)cfg.onEnter();if(c==='home')Render.lb();}else{toast('云端暂无数据');}}catch(e){toast('同步失败: '+e.message);}},
+  pullUsers:async function(){try{var rows=await API.get('toolbar_data','username=eq._system&data_type=eq._users');if(rows.length&&rows[0].data_json){var cu=JSON.parse(rows[0].data_json),lu=Auth.users();for(var i=0;i<cu.length;i++){if(!lu.some(function(u){return u.username===cu[i].username}))lu.push(cu[i]);}Auth._saveNoSync(lu);}}catch(e){}}
 };
 
-/* ---------- Router ---------- */
-var Router = {
-  _routes:{}, _history:[], _current:'home',
-  register: function(n,c){Router._routes[n]=c;},
-  go: function(n,skip){
-    var p=Router._current; if(p===n&&n!=='home')return; var c=Router._routes[n]; if(!c)return;
-    if(!skip)Router._history.push(p);
-    var ps=document.querySelectorAll('.page'); for(var i=0;i<ps.length;i++)ps[i].classList.remove('active');
-    var pid='page'+n.charAt(0).toUpperCase()+n.slice(1),pg=$(pid);
-    if(!pg){pg=document.createElement('div');pg.id=pid;pg.className='page';if(c.html)pg.innerHTML=c.html;document.getElementById('app').appendChild(pg);}
-    pg.classList.add('active');$('ht').textContent=c.title||n;$('bb').classList.toggle('hide',n==='home');
-    Router._current=n; if(!skip)history.pushState({page:n},'','#'+n);
-    if(c.onEnter)c.onEnter(); if(n==='home')Render.lb();
-  },
-  back: function(){ var p=Router._history.pop(); if(p===undefined)p='home'; Router.go(p,true); },
-  init: function(){
-    var self=this;
-    window.addEventListener('popstate',function(e){if(e.state&&e.state.page){self.go(e.state.page,true);}});
-    var h=location.hash.replace('#',''); if(h&&Router._routes[h]){Router.go(h,true);history.replaceState({page:h},'','#'+h);}
-  }
+/* Router */
+var Router={
+  _routes:{},_history:[],_current:'home',
+  register:function(n,c){Router._routes[n]=c;},
+  go:function(n,skip){var p=Router._current;if(p===n&&n!=='home')return;var c=Router._routes[n];if(!c)return;if(!skip)Router._history.push(p);var ps=document.querySelectorAll('.page');for(var i=0;i<ps.length;i++)ps[i].classList.remove('active');var pid='page'+n.charAt(0).toUpperCase()+n.slice(1),pg=$(pid);if(!pg){pg=document.createElement('div');pg.id=pid;pg.className='page';if(c.html)pg.innerHTML=c.html;document.querySelector('.main-area').appendChild(pg);}pg.classList.add('active');$('ht').textContent=c.title||n;$('bb').classList.toggle('hide',n==='home');Router._current=n;if(!skip)history.pushState({page:n},'','#'+n);if(c.onEnter)c.onEnter();if(n==='home'){Render.lb();App.renderSidebar();}},
+  back:function(){var p=Router._history.pop();if(p===undefined)p='home';Router.go(p,true);},
+  init:function(){var s=this;window.addEventListener('popstate',function(e){if(e.state&&e.state.page){s.go(e.state.page,true);}});var h=location.hash.replace('#','');if(h&&Router._routes[h]){Router.go(h,true);history.replaceState({page:h},'','#'+h);}}
 };
 
-/* ---------- Auth ---------- */
-var Auth = {
+/* Auth */
+var Auth={
   isReg:false,
-  init: function(){
-    Auth._ensureAdmin();
-    Store.pullUsers().then(function(){
-      if(sessionStorage.getItem('tb_s')){App.login(sessionStorage.getItem('tb_s'));return;}
-      $('ls').style.display='flex'; if(!Store.getRaw('tb_users'))Auth._setReg();
-    });
-  },
-  _ensureAdmin: function(){
-    if(!Store.getRaw('tb_users')){
-      crypto.subtle.digest('SHA-256',new TextEncoder().encode('12345'+'tb_salt')).then(function(h){
-        var hash=Array.from(new Uint8Array(h)).map(function(b){return b.toString(16).padStart(2,'0')}).join('');
-        Store.setRaw('tb_users',JSON.stringify([{id:0,username:'admin',passwordHash:hash,createdAt:new Date().toLocaleString('zh-CN'),avatar:'👑',status:'offline',role:'admin',friends:[],lastSeen:null}]));
-      });
-    }
-  },
-  _setReg: function(){Auth.isReg=true;$('lt').textContent='📝 注册';$('lst').textContent='创建新账号';$('lb').textContent='注册';$('ltg').textContent='已有账号？';$('ltl').textContent='登录';$('lp2').style.display='block';$('le').textContent='';},
-  _setLogin: function(){Auth.isReg=false;$('lt').textContent='🔐 登录';$('lst').textContent='请输入账号密码';$('lb').textContent='登录';$('ltg').textContent='没有账号？';$('ltl').textContent='注册';$('lp2').style.display='none';$('le').textContent='';},
-  toggle: function(){Auth.isReg?Auth._setLogin():Auth._setReg();},
-  users: function(){try{return JSON.parse(Store.getRaw('tb_users'))||[]}catch(e){return[]}},
-  saveUsers: function(u){Store.setRaw('tb_users',JSON.stringify(u));Store.syncUsers();},
-  _saveNoSync: function(u){Store.setRaw('tb_users',JSON.stringify(u));},
-  hash: async function(p){var d=new TextEncoder().encode(p+'tb_salt');var h=await crypto.subtle.digest('SHA-256',d);return Array.from(new Uint8Array(h)).map(function(b){return b.toString(16).padStart(2,'0')}).join('');},
-  login: async function(){
-    var un=$('lu').value.trim(),pw=$('lp').value,pw2=$('lp2').value,er=$('le');
-    if(!un){er.textContent='请输入用户名';return} if(un.length<2){er.textContent='用户名至少2字';return} if(pw.length<4){er.textContent='密码至少4位';return}
-    var us=Auth.users();
-    if(Auth.isReg){
-      if(pw!==pw2){er.textContent='两次密码不一致';return}
-      if(us.some(function(u){return u.username===un})){er.textContent='该用户名已存在';return}
-      us.push({id:Date.now(),username:un,passwordHash:await Auth.hash(pw),createdAt:new Date().toLocaleString('zh-CN'),avatar:'👤',status:'online',role:'user',friends:[],lastSeen:new Date().toLocaleString('zh-CN')});
-      Auth.saveUsers(us);sessionStorage.setItem('tb_s',un);App.login(un);toast('注册成功，欢迎 '+un+'!');
-    }else{
-      var f=us.find(function(u){return u.username===un});
-      if(!f){er.textContent='用户不存在';return}
-      if(await Auth.hash(pw)!==f.passwordHash){er.textContent='密码错误';$('lp').value='';return}
-      f.status='online';f.lastSeen=new Date().toLocaleString('zh-CN');Auth.saveUsers(us);
-      sessionStorage.setItem('tb_s',un);App.login(un);
-    }
-  },
-  logout: function(){
-    var us=Auth.users(),un=App.user;
-    var f=us.find(function(u){return u.username===un});if(f){f.status='offline';Auth.saveUsers(us);}
-    sessionStorage.removeItem('tb_s');App.user=null;$('ls').style.display='flex';$('app').classList.remove('show');
-    $('lu').value='';$('lp').value='';$('lp2').value='';Auth._setLogin();
-  }
+  init:function(){Auth._ensureAdmin();Store.pullUsers().then(function(){if(sessionStorage.getItem('tb_s')){App.login(sessionStorage.getItem('tb_s'));return;}$('ls').style.display='flex';if(!Store.getRaw('tb_users'))Auth._setReg();});},
+  _ensureAdmin:function(){if(!Store.getRaw('tb_users')){crypto.subtle.digest('SHA-256',new TextEncoder().encode('12345'+'tb_salt')).then(function(h){var hash=Array.from(new Uint8Array(h)).map(function(b){return b.toString(16).padStart(2,'0')}).join('');Store.setRaw('tb_users',JSON.stringify([{id:0,username:'admin',passwordHash:hash,createdAt:new Date().toLocaleString('zh-CN'),avatar:'👑',status:'offline',role:'admin',friends:[],lastSeen:null}]));});}},
+  _setReg:function(){Auth.isReg=true;$('lt').textContent='📝 注册';$('lst').textContent='创建新账号';$('lb').textContent='注册';$('ltg').textContent='已有账号？';$('ltl').textContent='登录';$('lp2').style.display='block';$('le').textContent='';},
+  _setLogin:function(){Auth.isReg=false;$('lt').textContent='🔐 登录';$('lst').textContent='请输入账号密码';$('lb').textContent='登录';$('ltg').textContent='没有账号？';$('ltl').textContent='注册';$('lp2').style.display='none';$('le').textContent='';},
+  toggle:function(){Auth.isReg?Auth._setLogin():Auth._setReg();},
+  users:function(){try{return JSON.parse(Store.getRaw('tb_users'))||[]}catch(e){return[]}},
+  saveUsers:function(u){Store.setRaw('tb_users',JSON.stringify(u));Store.syncUsers();App.renderSidebar();},
+  _saveNoSync:function(u){Store.setRaw('tb_users',JSON.stringify(u));},
+  hash:async function(p){var d=new TextEncoder().encode(p+'tb_salt');var h=await crypto.subtle.digest('SHA-256',d);return Array.from(new Uint8Array(h)).map(function(b){return b.toString(16).padStart(2,'0')}).join('');},
+  login:async function(){var un=$('lu').value.trim(),pw=$('lp').value,pw2=$('lp2').value,er=$('le');if(!un){er.textContent='请输入用户名';return}if(un.length<2){er.textContent='用户名至少2字';return}if(pw.length<4){er.textContent='密码至少4位';return}var us=Auth.users();if(Auth.isReg){if(pw!==pw2){er.textContent='两次密码不一致';return}if(us.some(function(u){return u.username===un})){er.textContent='该用户名已存在';return}us.push({id:Date.now(),username:un,passwordHash:await Auth.hash(pw),createdAt:new Date().toLocaleString('zh-CN'),avatar:'👤',status:'online',role:'user',friends:[],lastSeen:new Date().toLocaleString('zh-CN')});Auth.saveUsers(us);sessionStorage.setItem('tb_s',un);App.login(un);toast('注册成功，欢迎 '+un+'!');}else{var f=us.find(function(u){return u.username===un});if(!f){er.textContent='用户不存在';return}if(await Auth.hash(pw)!==f.passwordHash){er.textContent='密码错误';$('lp').value='';return}f.status='online';f.lastSeen=new Date().toLocaleString('zh-CN');Auth.saveUsers(us);sessionStorage.setItem('tb_s',un);App.login(un);}},
+  logout:function(){var us=Auth.users(),un=App.user;var f=us.find(function(u){return u.username===un});if(f){f.status='offline';Auth.saveUsers(us);}sessionStorage.removeItem('tb_s');App.user=null;$('ls').style.display='flex';$('app').classList.remove('show');$('lu').value='';$('lp').value='';$('lp2').value='';Auth._setLogin();}
 };
 
-/* ---------- App ---------- */
-var App = {
-  user:null,
-  login: function(un){
-    App.user=un;$('ls').style.display='none';$('app').classList.add('show');
-    var u=Auth.users().find(function(x){return x.username===un});
-    if(u){$('av').textContent=u.avatar||'👤';$('adBtn').style.display=(u.role==='admin'?'flex':'none');}
-    App._buildHome();Router.register('home',{title:'多功能工具箱',onEnter:function(){Render.lb();}});
-    Router.init();Router.go('home');Store.pull();
-  },
-  _buildHome: function(){
-    var g=$('homeGrid');g.innerHTML='';
-    Tools.list.forEach(function(t){if(t.id==='admin')return;
-      g.innerHTML+='<div class="tool-card" onclick="Router.go(\''+t.id+'\')"><span class="icon">'+t.icon+'</span><span class="label">'+t.name+'</span><span class="desc">'+t.desc+'</span></div>';
-    });
-  }
+/* App */
+var App={
+  user:null,sidebarOpen:false,
+  login:function(un){App.user=un;$('ls').style.display='none';$('app').classList.add('show');var u=Auth.users().find(function(x){return x.username===un});if(u){$('av').textContent=u.avatar||'👤';$('adBtn').style.display=(u.role==='admin'?'flex':'none');}App._buildHome();Router.register('home',{title:'多功能工具箱',onEnter:function(){Render.lb();App.renderSidebar();}});Router.init();Router.go('home');Store.pull();App.renderSidebar();},
+  _buildHome:function(){var g=$('homeGrid');g.innerHTML='';Tools.list.forEach(function(t){if(t.id==='admin')return;g.innerHTML+='<div class="tool-card" onclick="Router.go(\''+t.id+'\')"><span class="icon">'+t.icon+'</span><span class="label">'+t.name+'</span><span class="desc">'+t.desc+'</span></div>';});},
+  toggleSidebar:function(){App.sidebarOpen=!App.sidebarOpen;$('sidebar').classList.toggle('open',App.sidebarOpen);App.renderSidebar();},
+  renderSidebar:function(){if(!App.sidebarOpen)return;var u=Auth.users().find(function(x){return x.username===App.user});if(!u)return;var fs=u.friends||[],us=Auth.users();var fl=$('friendList');if(!fs.length){fl.innerHTML='<div style="color:var(--ts);font-size:12px;text-align:center;padding:10px">暂无好友<br><a href="javascript:void(0)" onclick="Router.go(\'profile\')" style="color:var(--p)">去添加</a></div>';return;}fl.innerHTML=fs.map(function(fn){var fu=us.find(function(x){return x.username===fn});var st=fu?fu.status||'offline':'offline';return'<div class="friend-item"><div class="fav">'+(fu?fu.avatar||'👤':'👤')+'</div><div class="fn">'+fn+'</div><div class="friend-dot '+(st==='online'?'on':st==='busy'?'busy':'off')+'"></div></div>';}).join('');}
 };
 
-/* ---------- Tools Registry ---------- */
-var Tools = { list:[], register:function(c){Tools.list.push(c);Router.register(c.id,{title:c.icon+' '+c.name,html:c.html||'',onEnter:function(){if(c.onEnter)c.onEnter();}});} };
+var Tools={list:[],register:function(c){Tools.list.push(c);Router.register(c.id,{title:c.icon+' '+c.name,html:c.html||'',onEnter:function(){if(c.onEnter)c.onEnter();}});}};
 
-/* ---------- Render helpers ---------- */
-var Render = {
-  lb: function(){
-    var us=Auth.users();var lb=$('lbSec'); if(us.length<2){lb.innerHTML='';return;}
-    var order={online:0,busy:1,away:2,offline:3};
-    us.sort(function(a,b){return(order[a.status]||3)-(order[b.status]||3)});
-    lb.innerHTML='<h3 style="font-size:15px;font-weight:600;margin-bottom:10px">🏆 在线排行榜</h3>'+
-      us.map(function(u){var s=u.status==='online'?'在线':u.status==='busy'?'忙碌':u.status==='away'?'离开':'离线';return'<div class="lb"><div class="lb-av">'+(u.avatar||'👤')+'</div><div class="lb-info"><div class="lb-name">'+H(u.username)+'</div><div class="lb-stat">'+s+' | '+(u.lastSeen||'未知')+'</div></div><div class="lb-dot '+(u.status||'off')+'"></div></div>';}).join('');
-  }
-};
+var Render={lb:function(){var us=Auth.users();var lb=$('lbSec');if(us.length<2){lb.innerHTML='';return;}var order={online:0,busy:1,away:2,offline:3};us.sort(function(a,b){return(order[a.status]||3)-(order[b.status]||3)});lb.innerHTML='<h3 style="font-size:15px;font-weight:600;margin-bottom:10px">🏆 在线排行榜</h3>'+us.map(function(u){var s=u.status==='online'?'在线':u.status==='busy'?'忙碌':u.status==='away'?'离开':'离线';return'<div class="lb"><div class="lb-av">'+(u.avatar||'👤')+'</div><div class="lb-info"><div class="lb-name">'+H(u.username)+'</div><div class="lb-stat">'+s+' | '+(u.lastSeen||'未知')+'</div></div><div class="lb-dot '+(u.status||'off')+'"></div></div>';}).join('');}};
 </script>
 
 <!-- ============================================================
-     TOOL MODULES
+     TOOL: 小值轮换 (增强版: 多重项目配置 + 排序)
      ============================================================ -->
-
-<!-- 小值轮换 -->
 <script>
 (function(){
-  var D={people:[],countPerDay:2,offset:0};
-  function ld(){D=Store.get('rotation',{people:[],countPerDay:2,offset:0})} function sv(){Store.set('rotation',D)}
+  var D={people:[],projects:[{name:'班内',count:1}],offset:0};
+  function ld(){D=Store.get('rotation',{people:[],projects:[{name:'班内',count:1}],offset:0})}function sv(){Store.set('rotation',D)}
   function ds(o){var d=new Date();d.setDate(d.getDate()+o);return d.toLocaleDateString('zh-CN',{year:'numeric',month:'long',day:'numeric',weekday:'long'})}
-  Tools.register({id:'rotation',name:'小值轮换',icon:'🔄',desc:'每日值班轮换表',
-    html:'<p class="sect">🔄 小值轮换</p><p style="font-size:13px;color:var(--ts);margin-bottom:12px">添加人员及项目，按日期自动轮换。</p><div class="row"><input type="text" id="rn" placeholder="姓名" style="flex:2"/><input type="text" id="rp" placeholder="负责项目" style="flex:3"/><button class="btn btn-p btn-sm" onclick="TR.add()">+添加</button></div><div id="rpl" style="margin-bottom:14px"></div><div class="row"><label style="font-size:14px">每日值班人数：</label><input type="number" id="rc" value="2" min="1" max="20" style="width:70px;flex:none" onchange="TR.upd()"/></div><div class="date-nav"><button class="btn btn-o btn-sm" onclick="TR.sh(-1)">◀ 前一天</button><span class="dl" id="rd"></span><button class="btn btn-o btn-sm" onclick="TR.sh(1)">后一天 ▶</button></div><div style="text-align:center;margin-bottom:12px"><button class="btn btn-o btn-sm" onclick="TR.td()">📍 回到今天</button></div><div id="rb"></div>',
+  Tools.register({id:'rotation',name:'小值轮换',icon:'🔄',desc:'多重项目值班轮换',
+    html:'<p class="sect">🔄 小值轮换</p><p style="font-size:13px;color:var(--ts);margin-bottom:12px">添加人员，配置多个项目类型及各自值班人数。</p><div class="row"><input type="text" id="rn" placeholder="姓名" style="flex:2"/><button class="btn btn-p btn-sm" onclick="TR.add()">+添加人员</button></div><div id="rpl" style="margin-bottom:14px"></div><p style="font-size:14px;font-weight:600;margin-bottom:6px">项目配置</p><div id="rpc"></div><div class="row"><button class="btn btn-o btn-sm" onclick="TR.addProj()">+添加项目</button></div><div class="date-nav"><button class="btn btn-o btn-sm" onclick="TR.sh(-1)">◀ 前一天</button><span class="dl" id="rd"></span><button class="btn btn-o btn-sm" onclick="TR.sh(1)">后一天 ▶</button></div><div style="text-align:center;margin-bottom:12px"><button class="btn btn-o btn-sm" onclick="TR.td()">📍 回到今天</button></div><div id="rb"></div>',
     onEnter:function(){ld();rdr();}});
-  window.TR={add:function(){var n=$('rn').value.trim(),p=$('rp').value.trim();if(!n||!p){toast('请填写姓名和项目');return}ld();D.people.push({id:Date.now(),name:n,project:p});sv();$('rn').value='';$('rp').value='';rdr();},
-    upd:function(){ld();D.countPerDay=Math.max(1,Math.min(20,parseInt($('rc').value)||2));sv();rdr();},sh:function(d){ld();D.offset+=d;sv();rdr();},td:function(){ld();D.offset=0;sv();rdr();},
-    del:function(id){ld();D.people=D.people.filter(function(p){return p.id!==id});sv();rdr();}};
+  window.TR={add:function(){var n=$('rn').value.trim();if(!n){toast('请输入姓名');return}ld();if(D.people.some(function(p){return p.name===n})){toast('已存在');return}D.people.push({id:Date.now(),name:n,project:''});sv();$('rn').value='';rdr();},
+    sh:function(d){ld();D.offset+=d;sv();rdr();},td:function(){ld();D.offset=0;sv();rdr();},
+    del:function(id){ld();D.people=D.people.filter(function(p){return p.id!==id});sv();rdr();},
+    up:function(id){ld();var i=D.people.findIndex(function(p){return p.id===id});if(i<=0)return;var t=D.people[i];D.people[i]=D.people[i-1];D.people[i-1]=t;sv();rdr();},
+    down:function(id){ld();var i=D.people.findIndex(function(p){return p.id===id});if(i<0||i>=D.people.length-1)return;var t=D.people[i];D.people[i]=D.people[i+1];D.people[i+1]=t;sv();rdr();},
+    addProj:function(){ld();D.projects.push({name:'项目'+(D.projects.length+1),count:1});sv();rdr();},
+    delProj:function(i){ld();D.projects.splice(i,1);if(!D.projects.length)D.projects=[{name:'默认',count:1}];sv();rdr();},
+    updProj:function(i,field,val){ld();if(field==='name')D.projects[i].name=val;else D.projects[i].count=Math.max(1,parseInt(val)||1);sv();rdr();}};
   function rdr(){
-    $('rc').value=D.countPerDay;$('rd').textContent=ds(D.offset);
     var pl=$('rpl');if(!D.people.length){pl.innerHTML='<div class="empty"><span class="icon">👥</span>还没有人员</div>';}
-    else{pl.innerHTML=D.people.map(function(p){return'<div class="li"><div class="ct"><div class="t">'+H(p.name)+'</div><div class="st">📋 '+H(p.project)+'</div></div><button class="btn btn-d btn-sm" onclick="TR.del('+p.id+')">删除</button></div>';}).join('');}
-    var bd=$('rb');if(!D.people.length){bd.innerHTML='';return}
+    else{pl.innerHTML=D.people.map(function(p,i){return'<div class="li"><div class="ct"><div class="t">'+(i+1)+'. '+H(p.name)+'</div></div><div class="act"><button class="btn btn-o btn-xs" onclick="TR.up('+p.id+')" title="上移">▲</button><button class="btn btn-o btn-xs" onclick="TR.down('+p.id+')" title="下移">▼</button><button class="btn btn-d btn-xs" onclick="TR.del('+p.id+')">删除</button></div></div>';}).join('');}
+    // Project config
+    var pc=$('rpc');pc.innerHTML='<div style="font-size:12px;color:var(--ts);margin-bottom:6px">每人按顺序分配到各项目</div>'+D.projects.map(function(p,i){return'<div class="proj-row"><input value="'+H(p.name)+'" onchange="TR.updProj('+i+',\'name\',this.value)" placeholder="项目名"/><input type="number" class="narrow" value="'+p.count+'" min="1" max="99" onchange="TR.updProj('+i+',\'count\',this.value)" title="需要人数"/>人<button class="btn btn-d btn-xs" onclick="TR.delProj('+i+')" title="删除项目">×</button></div>';}).join('');
+    var totalNeeded=D.projects.reduce(function(s,p){return s+p.count},0);
+    // Date label
     var d0=new Date();d0.setHours(0,0,0,0);var dk=Math.max(0,Math.floor((d0.getTime()-new Date(2024,0,1).getTime())/86400000)+D.offset);
-    var si=(dk*D.countPerDay)%D.people.length,dp=[];
-    for(var i=0;i<D.countPerDay;i++)dp.push(D.people[(si+i)%D.people.length]);
+    $('rd').textContent=ds(D.offset);
+    var bd=$('rb');if(!D.people.length||!totalNeeded){bd.innerHTML='<div style="color:var(--ts);text-align:center;margin-top:12px">添加人员并配置项目后显示</div>';return}
+    var si=(dk*totalNeeded)%D.people.length;
     var lb=D.offset===0?'今日':(D.offset>0?D.offset+'天后':Math.abs(D.offset)+'天前');
-    bd.innerHTML='<p style="font-size:15px;font-weight:600;margin-bottom:10px">📅 '+lb+'值班:</p>'+dp.map(function(p){return'<div class="duty-card"><div class="pr">👤 '+H(p.name)+'</div><div class="pj">'+H(p.project)+'</div></div>';}).join('')+'<p style="font-size:12px;color:var(--ts);margin-top:8px;text-align:center">共 '+D.people.length+'人，每日 '+D.countPerDay+'人值班</p>';
+    var html='<p style="font-size:15px;font-weight:600;margin-bottom:10px">📅 '+lb+'值班 (共需'+totalNeeded+'人):</p>';
+    var pi=0;
+    for(var i=0;i<D.projects.length;i++){
+      html+='<div class="duty-card"><div class="pr">📋 '+H(D.projects[i].name)+' ('+D.projects[i].count+'人)</div><div class="pj">';
+      var names=[];
+      for(var j=0;j<D.projects[i].count;j++){names.push(D.people[(si+pi+j)%D.people.length].name);}
+      html+=names.map(H).join('、')+'</div></div>';
+      pi+=D.projects[i].count;
+    }
+    html+='<p style="font-size:12px;color:var(--ts);margin-top:8px;text-align:center">共 '+D.people.length+' 人，每日 '+totalNeeded+' 人值班</p>';
+    bd.innerHTML=html;
   }
 })();
 </script>
 
-<!-- 能不能不出公差 -->
+<!-- TOOL: 能不能不出公差 -->
 <script>
 (function(){
-  var D={people:[],currentIndex:0}; function ld(){D=Store.get('biztrip',{people:[],currentIndex:0})} function sv(){Store.set('biztrip',D)}
+  var D={people:[],currentIndex:0};function ld(){D=Store.get('biztrip',{people:[],currentIndex:0})}function sv(){Store.set('biztrip',D)}
   Tools.register({id:'biztrip',name:'能不能不出公差',icon:'✈️',desc:'出差轮换+统计',
     html:'<p class="sect">✈️ 能不能不出公差？</p><p style="font-size:13px;color:var(--ts);margin-bottom:12px">按列表顺序循环，记录次数和最近时间。</p><div class="row"><input type="text" id="bi" placeholder="输入姓名"/><button class="btn btn-p" onclick="TB.add()">添加人员</button></div><div id="bpl"></div><div id="bnx"></div><div style="display:flex;justify-content:center;gap:8px;margin-top:8px"><button class="btn btn-o btn-sm" onclick="TB.undo()">↩ 撤销</button><button class="btn btn-o btn-sm" onclick="TB.rst()">🔄 重置</button></div>',
     onEnter:function(){ld();rdr();}});
@@ -349,122 +293,79 @@ var Render = {
     del:function(id){ld();D.people=D.people.filter(function(p){return p.id!==id});if(D.currentIndex>=D.people.length)D.currentIndex=0;sv();rdr();},
     up:function(id){ld();var i=D.people.findIndex(function(p){return p.id===id});if(i<=0)return;if(D.currentIndex===i)D.currentIndex--;else if(D.currentIndex===i-1)D.currentIndex++;var t=D.people[i];D.people[i]=D.people[i-1];D.people[i-1]=t;sv();rdr();},
     down:function(id){ld();var i=D.people.findIndex(function(p){return p.id===id});if(i<0||i>=D.people.length-1)return;if(D.currentIndex===i)D.currentIndex++;else if(D.currentIndex===i+1)D.currentIndex--;var t=D.people[i];D.people[i]=D.people[i+1];D.people[i+1]=t;sv();rdr();}};
-  function rdr(){
-    var ni=D.currentIndex%Math.max(D.people.length,1),pl=$('bpl');
-    if(!D.people.length){pl.innerHTML='<div class="empty"><span class="icon">👥</span>还没有人员</div>';}
-    else{pl.innerHTML=D.people.map(function(p,i){var ar=i===ni&&D.people.length>1?' <span style="font-size:12px;color:#f59e0b">⬅ 下一个</span>':'';return'<div class="bt-row"><div class="ct"><div class="t">'+H(p.name)+ar+'</div><div class="st">✈ 出差 '+(p.count||0)+'次'+(p.lastTime?' | 最近:'+p.lastTime:' | 还没出过')+'</div></div><div style="display:flex;gap:4px"><button class="btn btn-o btn-xs" onclick="TB.up('+p.id+')">▲</button><button class="btn btn-o btn-xs" onclick="TB.down('+p.id+')">▼</button><button class="btn btn-d btn-xs" onclick="TB.del('+p.id+')">删</button></div></div>';}).join('');}
-    var ne=$('bnx');if(D.people.length<2){ne.innerHTML='<div style="color:var(--ts);text-align:center">至少2人才能轮换</div>';return}
-    var np=D.people[ni];ne.innerHTML='<div class="bt-next"><div class="hint">👉 下一个出差的:</div><div class="name">'+H(np.name)+'</div><div style="font-size:13px;color:#92400e;margin-top:4px">已出过 '+(np.count||0)+'次</div></div><div style="text-align:center;margin-bottom:10px"><button class="btn btn-p" onclick="TB.doit()" style="font-size:18px;padding:14px 36px">✈️ 确认出差</button></div>';
-  }
+  function rdr(){var ni=D.currentIndex%Math.max(D.people.length,1),pl=$('bpl');if(!D.people.length){pl.innerHTML='<div class="empty"><span class="icon">👥</span>还没有人员</div>';}else{pl.innerHTML=D.people.map(function(p,i){var ar=i===ni&&D.people.length>1?' <span style="font-size:12px;color:#f59e0b">⬅ 下一个</span>':'';return'<div class="bt-row"><div class="ct"><div class="t">'+H(p.name)+ar+'</div><div class="st">✈ 出差 '+(p.count||0)+'次'+(p.lastTime?' | 最近:'+p.lastTime:' | 还没出过')+'</div></div><div style="display:flex;gap:4px"><button class="btn btn-o btn-xs" onclick="TB.up('+p.id+')">▲</button><button class="btn btn-o btn-xs" onclick="TB.down('+p.id+')">▼</button><button class="btn btn-d btn-xs" onclick="TB.del('+p.id+')">删</button></div></div>';}).join('');}var ne=$('bnx');if(D.people.length<2){ne.innerHTML='<div style="color:var(--ts);text-align:center">至少2人才能轮换</div>';return}var np=D.people[ni];ne.innerHTML='<div class="bt-next"><div class="hint">👉 下一个出差的:</div><div class="name">'+H(np.name)+'</div><div style="font-size:13px;color:#92400e;margin-top:4px">已出过 '+(np.count||0)+'次</div></div><div style="text-align:center;margin-bottom:10px"><button class="btn btn-p" onclick="TB.doit()" style="font-size:18px;padding:14px 36px">✈️ 确认出差</button></div>';}
 })();
 </script>
 
-<!-- 幸运转盘 -->
+<!-- TOOL: 幸运转盘 -->
 <script>
-(function(){
-  var I=['选项A','选项B','选项C','选项D'],A=0,AN=null,colors=['#6366f1','#f59e0b','#10b981','#ec4899','#06b6d4','#f97316','#8b5cf6','#14b8a6','#e11d48','#65a30d','#d946ef','#0ea5e9'];
-  Tools.register({id:'wheel',name:'幸运转盘',icon:'🎡',desc:'自定义选项转转盘',
-    html:'<p class="sect">🎡 幸运转盘</p><div class="row"><input type="text" id="wi" placeholder="输入选项"/><button class="btn btn-p" onclick="TW.add()">添加</button></div><div class="tags" id="wt"></div><div class="canvas-wrap"><canvas id="wc" width="300" height="300"></canvas></div><div style="text-align:center;margin-top:8px"><button class="btn btn-p" onclick="TW.spin()" id="wb">🎯 转转盘</button><button class="btn btn-o btn-sm" onclick="TW.rst()" style="margin-left:8px">清空</button></div>',
-    onEnter:function(){drw();}});
-  window.TW={add:function(){var v=$('wi').value.trim();if(!v)return;if(I.length>=12){toast('最多12个');return}I.push(v);$('wi').value='';rtg();drw();},
-    del:function(i){I.splice(i,1);if(I.length<2)I=['选项A','选项B'];rtg();drw();},rst:function(){I=['选项A','选项B','选项C','选项D'];rtg();drw();},
-    spin:function(){if(I.length<2){toast('至少2个');return}if(AN)return;var b=$('wb');b.disabled=true;b.textContent='转动中…';
-      var sp=5+Math.random()*3,sa=Math.random()*2*Math.PI,tg=A+sp*2*Math.PI+sa,dr=3000+Math.random()*1000,stA=A,stT=performance.now();
-      (function a(n){var pr=Math.min((n-stT)/dr,1),es=1-Math.pow(1-pr,3);A=stA+(tg-stA)*es;drw();if(pr<1){AN=requestAnimationFrame(a);return}
-        AN=null;b.disabled=false;b.textContent='🎯 转转盘';var arc=2*Math.PI/I.length,nm=(3*Math.PI/2-A+2*Math.PI)%(2*Math.PI),idx=Math.floor(nm/arc);if(idx>=I.length)idx=I.length-1;
-        var el=document.createElement('div');el.style.cssText='text-align:center;margin-top:12px;font-size:20px;font-weight:700;color:var(--p)';el.textContent='🎉 '+I[idx];
-        var old=document.querySelector('.wheel-result');if(old)old.remove();el.className='wheel-result';var cw=document.querySelector('.canvas-wrap');if(cw)cw.after(el);toast('抽到:'+I[idx]);
-      })(performance.now());}};
-  function rtg(){$('wt').innerHTML=I.map(function(it,i){return'<span class="tag">'+H(it)+' <span class="rm" onclick="TW.del('+i+')">×</span></span>';}).join('');}
-  function drw(){var c=$('wc');if(!c||!c.parentElement)return;var ctx=c.getContext('2d'),dpr=window.devicePixelRatio||1,sz=Math.min(c.parentElement.clientWidth||300,300);c.width=sz*dpr;c.height=sz*dpr;ctx.scale(dpr,dpr);
-    var cx=sz/2,cy=sz/2,r=sz/2-10,n=I.length,arc=2*Math.PI/n;ctx.clearRect(0,0,sz,sz);
-    for(var i=0;i<n;i++){var st=i*arc+A,en=st+arc;ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,st,en);ctx.closePath();ctx.fillStyle=colors[i%colors.length];ctx.fill();ctx.strokeStyle='#fff';ctx.lineWidth=2;ctx.stroke();
-      var mid=st+arc/2;ctx.save();ctx.translate(cx+Math.cos(mid)*r*.65,cy+Math.sin(mid)*r*.65);ctx.rotate(mid+Math.PI/2);ctx.fillStyle='#fff';ctx.font='bold 13px sans-serif';ctx.textAlign='center';ctx.fillText(I[i].length>5?I[i].slice(0,4)+'…':I[i],0,0);ctx.restore();}
-    ctx.beginPath();ctx.arc(cx,cy,16,0,2*Math.PI);ctx.fillStyle='#fff';ctx.fill();ctx.strokeStyle='#e2e8f0';ctx.lineWidth=3;ctx.stroke();
-    ctx.beginPath();ctx.moveTo(cx-12,cy-r+6);ctx.lineTo(cx+12,cy-r+6);ctx.lineTo(cx,cy-r-14);ctx.closePath();ctx.fillStyle='#ef4444';ctx.fill();ctx.strokeStyle='#fff';ctx.lineWidth=2;ctx.stroke();}
+(function(){var I=['选项A','选项B','选项C','选项D'],A=0,AN=null,colors=['#6366f1','#f59e0b','#10b981','#ec4899','#06b6d4','#f97316','#8b5cf6','#14b8a6','#e11d48','#65a30d','#d946ef','#0ea5e9'];
+Tools.register({id:'wheel',name:'幸运转盘',icon:'🎡',desc:'自定义选项转转盘',
+  html:'<p class="sect">🎡 幸运转盘</p><div class="row"><input type="text" id="wi" placeholder="输入选项"/><button class="btn btn-p" onclick="TW.add()">添加</button></div><div class="tags" id="wt"></div><div class="canvas-wrap"><canvas id="wc" width="300" height="300"></canvas></div><div style="text-align:center;margin-top:8px"><button class="btn btn-p" onclick="TW.spin()" id="wb">🎯 转转盘</button><button class="btn btn-o btn-sm" onclick="TW.rst()" style="margin-left:8px">清空</button></div>',
+  onEnter:function(){drw();}});
+window.TW={add:function(){var v=$('wi').value.trim();if(!v)return;if(I.length>=12){toast('最多12个');return}I.push(v);$('wi').value='';rtg();drw();},del:function(i){I.splice(i,1);if(I.length<2)I=['选项A','选项B'];rtg();drw();},rst:function(){I=['选项A','选项B','选项C','选项D'];rtg();drw();},
+  spin:function(){if(I.length<2){toast('至少2个');return}if(AN)return;var b=$('wb');b.disabled=true;b.textContent='转动中…';var sp=5+Math.random()*3,sa=Math.random()*2*Math.PI,tg=A+sp*2*Math.PI+sa,dr=3000+Math.random()*1000,stA=A,stT=performance.now();(function a(n){var pr=Math.min((n-stT)/dr,1),es=1-Math.pow(1-pr,3);A=stA+(tg-stA)*es;drw();if(pr<1){AN=requestAnimationFrame(a);return}AN=null;b.disabled=false;b.textContent='🎯 转转盘';var arc=2*Math.PI/I.length,nm=(3*Math.PI/2-A+2*Math.PI)%(2*Math.PI),idx=Math.floor(nm/arc);if(idx>=I.length)idx=I.length-1;var el=document.createElement('div');el.style.cssText='text-align:center;margin-top:12px;font-size:20px;font-weight:700;color:var(--p)';el.textContent='🎉 '+I[idx];var old=document.querySelector('.wheel-result');if(old)old.remove();el.className='wheel-result';var cw=document.querySelector('.canvas-wrap');if(cw)cw.after(el);toast('抽到:'+I[idx]);})(performance.now());}};
+function rtg(){$('wt').innerHTML=I.map(function(it,i){return'<span class="tag">'+H(it)+' <span class="rm" onclick="TW.del('+i+')">×</span></span>';}).join('');}
+function drw(){var c=$('wc');if(!c||!c.parentElement)return;var ctx=c.getContext('2d'),dpr=window.devicePixelRatio||1,sz=Math.min(c.parentElement.clientWidth||300,300);c.width=sz*dpr;c.height=sz*dpr;ctx.scale(dpr,dpr);var cx=sz/2,cy=sz/2,r=sz/2-10,n=I.length,arc=2*Math.PI/n;ctx.clearRect(0,0,sz,sz);for(var i=0;i<n;i++){var st=i*arc+A,en=st+arc;ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,st,en);ctx.closePath();ctx.fillStyle=colors[i%colors.length];ctx.fill();ctx.strokeStyle='#fff';ctx.lineWidth=2;ctx.stroke();var mid=st+arc/2;ctx.save();ctx.translate(cx+Math.cos(mid)*r*.65,cy+Math.sin(mid)*r*.65);ctx.rotate(mid+Math.PI/2);ctx.fillStyle='#fff';ctx.font='bold 13px sans-serif';ctx.textAlign='center';ctx.fillText(I[i].length>5?I[i].slice(0,4)+'…':I[i],0,0);ctx.restore();}ctx.beginPath();ctx.arc(cx,cy,16,0,2*Math.PI);ctx.fillStyle='#fff';ctx.fill();ctx.strokeStyle='#e2e8f0';ctx.lineWidth=3;ctx.stroke();ctx.beginPath();ctx.moveTo(cx-12,cy-r+6);ctx.lineTo(cx+12,cy-r+6);ctx.lineTo(cx,cy-r-14);ctx.closePath();ctx.fillStyle='#ef4444';ctx.fill();ctx.strokeStyle='#fff';ctx.lineWidth=2;ctx.stroke();}
 })();
 </script>
 
-<!-- 抽签 -->
+<!-- TOOL: 抽签 (增强版: 批量插入 + 命名规则) -->
 <script>
-(function(){
-  var I=['选项1','选项2','选项3','选项4','选项5'];
-  Tools.register({id:'draw',name:'抽签',icon:'🎲',desc:'随机抽取一个选项',
-    html:'<p class="sect">🎲 抽签</p><div class="row"><input type="text" id="di" placeholder="输入选项"/><button class="btn btn-p" onclick="TD.add()">添加</button></div><div class="tags" id="dt"></div><div class="res-box" id="dr"><span class="lbl">点击抽签试试</span></div><div style="text-align:center"><button class="btn btn-p" onclick="TD.go()">🎲 抽一个</button></div>',
-    onEnter:function(){rtg();}});
-  window.TD={add:function(){var v=$('di').value.trim();if(!v)return;I.push(v);$('di').value='';rtg();},del:function(i){I.splice(i,1);if(I.length<2)I=['选项1','选项2'];rtg();},
-    go:function(){if(I.length<2){toast('至少2个');return}var b=$('dr'),c=0,mc=10+Math.floor(Math.random()*6);var iv=setInterval(function(){var r=Math.floor(Math.random()*I.length);b.innerHTML='<span class="lbl">抽取中…</span><span class="big" style="font-size:32px">'+H(I[r])+'</span>';c++;if(c>=mc){clearInterval(iv);var f=I[Math.floor(Math.random()*I.length)];b.innerHTML='<span class="lbl">🎉 抽中了</span><span class="big">'+H(f)+'</span>';toast('抽中:'+f);}},60);}};
-  function rtg(){$('dt').innerHTML=I.map(function(it,i){return'<span class="tag">'+H(it)+' <span class="rm" onclick="TD.del('+i+')">×</span></span>';}).join('');}
+(function(){var I=['选项1','选项2','选项3','选项4','选项5'];
+Tools.register({id:'draw',name:'抽签',icon:'🎲',desc:'批量插入+命名规则',
+  html:'<p class="sect">🎲 抽签</p><div class="row"><input type="text" id="di" placeholder="输入选项"/><button class="btn btn-p" onclick="TD.add()">添加</button></div><div style="margin-bottom:10px"><button class="btn btn-o btn-sm" onclick="TD.batch()">📋 批量插入</button></div><div id="dbatch" style="display:none;margin-bottom:10px;padding:12px;background:var(--card);border-radius:var(--rs);box-shadow:var(--sh)"><div class="row"><label style="font-size:13px;white-space:nowrap">前缀:</label><input type="text" id="dpre" placeholder="如:选手" style="flex:2"/></div><div class="row"><label style="font-size:13px;white-space:nowrap">数量:</label><input type="number" id="dcnt" value="5" min="1" max="99" style="width:70px;flex:none"/></div><div style="font-size:12px;color:var(--ts);margin-bottom:8px">预览: <span id="dprev"></span></div><div style="display:flex;gap:6px"><button class="btn btn-p btn-sm" onclick="TD.doBatch()">✅ 批量生成</button><button class="btn btn-o btn-sm" onclick="$(\'dbatch\').style.display=\'none\'">取消</button></div></div><div class="tags" id="dt"></div><div class="res-box" id="dr"><span class="lbl">点击抽签试试</span></div><div style="text-align:center"><button class="btn btn-p" onclick="TD.go()">🎲 抽一个</button></div>',
+  onEnter:function(){rtg();}});
+window.TD={add:function(){var v=$('di').value.trim();if(!v)return;I.push(v);$('di').value='';rtg();},del:function(i){I.splice(i,1);if(I.length<2)I=['选项1','选项2'];rtg();},
+  batch:function(){$('dbatch').style.display='block';TD.prev();},prev:function(){var p=$('dpre').value.trim()||'选项',c=parseInt($('dcnt').value)||5;$('dprev').textContent=p+'1, '+p+'2... '+p+c;},
+  doBatch:function(){var p=$('dpre').value.trim()||'选项',c=parseInt($('dcnt').value)||5;for(var i=1;i<=c;i++)I.push(p+i);$('dbatch').style.display='none';$('dpre').value='';$('dcnt').value='5';rtg();toast('已批量添加 '+c+' 项');},
+  go:function(){if(I.length<2){toast('至少2个');return}var b=$('dr'),c=0,mc=10+Math.floor(Math.random()*6);var iv=setInterval(function(){var r=Math.floor(Math.random()*I.length);b.innerHTML='<span class="lbl">抽取中…</span><span class="big" style="font-size:32px">'+H(I[r])+'</span>';c++;if(c>=mc){clearInterval(iv);var f=I[Math.floor(Math.random()*I.length)];b.innerHTML='<span class="lbl">🎉 抽中了</span><span class="big">'+H(f)+'</span>';toast('抽中:'+f);}},60);}};
+document.addEventListener('DOMContentLoaded',function(){var dpre=$('dpre'),dcnt=$('dcnt');if(dpre)dpre.oninput=function(){TD.prev();};if(dcnt)dcnt.oninput=function(){TD.prev();};});
+function rtg(){$('dt').innerHTML=I.map(function(it,i){return'<span class="tag">'+H(it)+' <span class="rm" onclick="TD.del('+i+')">×</span></span>';}).join('');}
 })();
 </script>
 
-<!-- 备忘录 -->
+<!-- TOOL: 备忘录 -->
 <script>
-(function(){
-  Tools.register({id:'memo',name:'备忘录',icon:'📝',desc:'速记点滴随时查看',
-    html:'<p class="sect">📝 备忘录</p><div class="row"><input type="text" id="mi" placeholder="写点什么…"/><button class="btn btn-p" onclick="TM.add()">保存</button></div><div id="ml"></div>',
-    onEnter:function(){rdr();}});
-  window.TM={add:function(){var v=$('mi').value.trim();if(!v)return;var ms=Store.get('memos',[]);ms.unshift({id:Date.now(),text:v,time:new Date().toLocaleString('zh-CN')});Store.set('memos',ms);$('mi').value='';rdr();toast('已保存');},
-    del:function(id){var ms=Store.get('memos',[]);ms=ms.filter(function(m){return m.id!==id});Store.set('memos',ms);rdr();}};
-  function rdr(){var ms=Store.get('memos',[]),c=$('ml');if(!ms.length){c.innerHTML='<div class="empty"><span class="icon">📝</span>还没有备忘录</div>';return}c.innerHTML=ms.map(function(m){return'<div class="li"><div class="ct"><div class="t">'+H(m.text)+'</div><div class="st">'+m.time+'</div></div><button class="btn btn-d btn-sm" onclick="TM.del('+m.id+')">删除</button></div>';}).join('');}
+(function(){Tools.register({id:'memo',name:'备忘录',icon:'📝',desc:'速记点滴随时查看',
+  html:'<p class="sect">📝 备忘录</p><div class="row"><input type="text" id="mi" placeholder="写点什么…"/><button class="btn btn-p" onclick="TM.add()">保存</button></div><div id="ml"></div>',onEnter:function(){rdr();}});
+window.TM={add:function(){var v=$('mi').value.trim();if(!v)return;var ms=Store.get('memos',[]);ms.unshift({id:Date.now(),text:v,time:new Date().toLocaleString('zh-CN')});Store.set('memos',ms);$('mi').value='';rdr();toast('已保存');},del:function(id){var ms=Store.get('memos',[]);ms=ms.filter(function(m){return m.id!==id});Store.set('memos',ms);rdr();}};
+function rdr(){var ms=Store.get('memos',[]),c=$('ml');if(!ms.length){c.innerHTML='<div class="empty"><span class="icon">📝</span>还没有备忘录</div>';return}c.innerHTML=ms.map(function(m){return'<div class="li"><div class="ct"><div class="t">'+H(m.text)+'</div><div class="st">'+m.time+'</div></div><button class="btn btn-d btn-sm" onclick="TM.del('+m.id+')">删除</button></div>';}).join('');}
 })();
 </script>
 
-<!-- 集体投票 -->
+<!-- TOOL: 集体投票 -->
 <script>
-(function(){
-  var O=[],T='';
-  Tools.register({id:'poll',name:'集体投票',icon:'🗳️',desc:'创建投票统计结果',
-    html:'<p class="sect">🗳️ 集体投票</p><p style="font-size:13px;color:var(--ts);margin-bottom:10px">创建投票，点击选项投票，实时统计。</p><div class="row"><input type="text" id="pt" placeholder="投票标题"/></div><div class="row"><input type="text" id="pi" placeholder="添加选项"/><button class="btn btn-p" onclick="TP.add()">添加</button></div><div class="tags" id="ptg"></div><div style="text-align:center;margin-bottom:14px"><button class="btn btn-p" onclick="TP.cr()">📊 开始投票</button></div><div id="pr"></div>',
-    onEnter:function(){rtg();rrr();}});
-  window.TP={add:function(){var v=$('pi').value.trim();if(!v)return;O.push({name:v,votes:0});$('pi').value='';rtg();},del:function(i){O.splice(i,1);rtg();},
-    cr:function(){T=$('pt').value.trim()||'未命名投票';if(O.length<2){toast('至少2个');return}O.forEach(function(o){o.votes=0});rrr();toast('投票已创建');},
-    vote:function(i){if(i<0||i>=O.length)return;O[i].votes++;rrr();},rst:function(){O.forEach(function(o){o.votes=0});rrr();}};
-  function rtg(){$('ptg').innerHTML=O.map(function(o,i){return'<span class="tag">'+H(o.name)+' <span class="rm" onclick="TP.del('+i+')">×</span></span>';}).join('');}
-  function rrr(){var c=$('pr');if(O.length<2){c.innerHTML='<div class="empty"><span class="icon">🗳️</span>添加选项后开始</div>';return}
-    var total=O.reduce(function(s,o){return s+o.votes},0),mv=Math.max.apply(null,O.map(function(o){return o.votes}).concat([1]));
-    c.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><strong>📊 '+H(T)+'</strong><span style="font-size:13px;color:var(--ts)">共 '+total+'票</span></div>'+O.map(function(o,i){var pct=total===0?0:Math.round(o.votes/total*100),bw=total===0?0:o.votes/mv*100;return'<div class="poll-opt" onclick="TP.vote('+i+')"><div class="bar" style="width:'+bw+'%"></div><div class="txt"><span>'+H(o.name)+'</span><span class="pct">'+o.votes+'票('+pct+'%)</span></div></div>';}).join('')+'<div style="text-align:center;margin-top:8px"><button class="btn btn-o btn-sm" onclick="TP.rst()">重置</button></div>';
-  }
+(function(){var O=[],T='';Tools.register({id:'poll',name:'集体投票',icon:'🗳️',desc:'创建投票统计结果',
+  html:'<p class="sect">🗳️ 集体投票</p><p style="font-size:13px;color:var(--ts);margin-bottom:10px">创建投票，点击选项投票，实时统计。</p><div class="row"><input type="text" id="pt" placeholder="投票标题"/></div><div class="row"><input type="text" id="pi" placeholder="添加选项"/><button class="btn btn-p" onclick="TP.add()">添加</button></div><div class="tags" id="ptg"></div><div style="text-align:center;margin-bottom:14px"><button class="btn btn-p" onclick="TP.cr()">📊 开始投票</button></div><div id="pr"></div>',onEnter:function(){rtg();rrr();}});
+window.TP={add:function(){var v=$('pi').value.trim();if(!v)return;O.push({name:v,votes:0});$('pi').value='';rtg();},del:function(i){O.splice(i,1);rtg();},cr:function(){T=$('pt').value.trim()||'未命名投票';if(O.length<2){toast('至少2个');return}O.forEach(function(o){o.votes=0});rrr();toast('投票已创建');},vote:function(i){if(i<0||i>=O.length)return;O[i].votes++;rrr();},rst:function(){O.forEach(function(o){o.votes=0});rrr();}};
+function rtg(){$('ptg').innerHTML=O.map(function(o,i){return'<span class="tag">'+H(o.name)+' <span class="rm" onclick="TP.del('+i+')">×</span></span>';}).join('');}
+function rrr(){var c=$('pr');if(O.length<2){c.innerHTML='<div class="empty"><span class="icon">🗳️</span>添加选项后开始</div>';return}var total=O.reduce(function(s,o){return s+o.votes},0),mv=Math.max.apply(null,O.map(function(o){return o.votes}).concat([1]));c.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><strong>📊 '+H(T)+'</strong><span style="font-size:13px;color:var(--ts)">共 '+total+'票</span></div>'+O.map(function(o,i){var pct=total===0?0:Math.round(o.votes/total*100),bw=total===0?0:o.votes/mv*100;return'<div class="poll-opt" onclick="TP.vote('+i+')"><div class="bar" style="width:'+bw+'%"></div><div class="txt"><span>'+H(o.name)+'</span><span class="pct">'+o.votes+'票('+pct+'%)</span></div></div>';}).join('')+'<div style="text-align:center;margin-top:8px"><button class="btn btn-o btn-sm" onclick="TP.rst()">重置</button></div>';}
 })();
 </script>
 
-<!-- 个人中心 -->
+<!-- TOOL: 意见反馈 -->
 <script>
-(function(){
-  var EM=['👤','🧑','👩','👨','🧔','🧓','👻','🤖','👽','👾','🐶','🐱','🐯','🐰','🐹','🦁','🐵','🐒','🦄','🐌','🌸','🌺','🌻','🌴','🌍','🌞','⭐','❤️','💜','💙','💚','💛'];
-  var ST=[{k:'online',l:'🟢 在线',c:'sel-on'},{k:'busy',l:'🟡 忙碌',c:'sel-busy'},{k:'away',l:'🟠 离开',c:'sel-away'},{k:'offline',l:'⚪ 隐身',c:'sel-off'}];
-  Tools.register({id:'profile',name:'个人中心',icon:'👤',desc:'',
-    html:'<p class="sect">👤 个人中心</p><div style="text-align:center;margin-bottom:16px"><div style="font-size:64px;cursor:pointer" id="pav">👤</div><p style="font-weight:600;font-size:18px;margin-top:4px" id="pun"></p></div><p style="font-size:14px;font-weight:600;margin-bottom:6px">选择头像</p><div class="emoji-grid" id="pem"></div><p style="font-size:14px;font-weight:600;margin:12px 0 6px">在线状态</p><div class="row" id="pst" style="flex-wrap:nowrap"></div><p style="font-size:14px;font-weight:600;margin:16px 0 6px">👥 好友列表</p><div class="row"><input type="text" id="pfi" placeholder="输入好友用户名"/><button class="btn btn-p btn-sm" onclick="TPR.addF()">添加好友</button></div><div id="pfl"></div>',
-    onEnter:function(){rdr();}});
-  window.TPR={setA:function(e){var us=Auth.users();var f=us.find(function(u){return u.username===App.user});if(f){f.avatar=e;Auth.saveUsers(us);$('av').textContent=e;rdr();toast('头像已更新');}},
-    setS:function(s){var us=Auth.users();var f=us.find(function(u){return u.username===App.user});if(f){f.status=s;Auth.saveUsers(us);rdr();toast('状态已更新');}},
-    addF:function(){var n=$('pfi').value.trim();if(!n){toast('请输入用户名');return}if(n===App.user){toast('不能添加自己');return}var us=Auth.users();if(!us.some(function(u){return u.username===n})){toast('用户不存在');return}var f=us.find(function(u){return u.username===App.user});if(!f.friends)f.friends=[];if(f.friends.indexOf(n)>=0){toast('已是好友');return}f.friends.push(n);Auth.saveUsers(us);$('pfi').value='';rdr();toast('已添加:'+n);},
-    delF:function(n){var us=Auth.users();var f=us.find(function(u){return u.username===App.user});f.friends=(f.friends||[]).filter(function(x){return x!==n});Auth.saveUsers(us);rdr();}};
-  function rdr(){var u=Auth.users().find(function(x){return x.username===App.user});if(!u)return;
-    $('pun').textContent=u.username;$('pav').textContent=u.avatar||'👤';
-    $('pem').innerHTML=EM.map(function(e){return'<div class="emoji-opt'+(e===u.avatar?' sel':'')+'" onclick="TPR.setA(\''+e+'\')">'+e+'</div>';}).join('');
-    $('pst').innerHTML=ST.map(function(s){return'<div class="st-btn st-btn'+(u.status===s.k?' '+s.c:'')+'" onclick="TPR.setS(\''+s.k+'\')">'+s.l+'</div>';}).join('');
-    var fs=u.friends||[],us=Auth.users();
-    $('pfl').innerHTML=fs.length===0?'<div style="color:var(--ts);font-size:13px;text-align:center;padding:10px">还没有好友</div>':fs.map(function(fn){var fu=us.find(function(x){return x.username===fn});var st=fu?(fu.status==='online'?'🟢':fu.status==='busy'?'🟡':fu.status==='away'?'🟠':'⚪'):'';return'<div class="li"><div class="ct"><span style="font-size:20px;margin-right:8px">'+(fu?fu.avatar:'👤')+'</span><span class="t">'+fn+' '+st+'</span></div><button class="btn btn-d btn-xs" onclick="TPR.delF(\''+fn+'\')">删除</button></div>';}).join('');
-  }
+(function(){Tools.register({id:'feedback',name:'意见反馈',icon:'💬',desc:'直接反馈给赵星宇',
+  html:'<p class="sect">💬 意见反馈</p><p style="font-size:13px;color:var(--ts);margin-bottom:12px">您的反馈将直接发送到赵星宇的备忘录。</p><div class="row"><textarea id="fbtext" placeholder="写点什么..." style="width:100%;height:120px;padding:12px;border:2px solid var(--b);border-radius:var(--rs);font-size:15px;outline:none;resize:vertical;font-family:inherit"></textarea></div><div style="text-align:center"><button class="btn btn-p" onclick="TF.send()">📨 发送反馈</button></div><div id="fbstatus" style="margin-top:12px;text-align:center"></div>',onEnter:function(){}});
+window.TF={send:function(){var t=$('fbtext').value.trim();if(!t){toast('请输入反馈内容');return}var nm=App.user||'匿名';var msg='[反馈来自:'+nm+' | '+new Date().toLocaleString('zh-CN')+'] '+t;var fb=JSON.parse(localStorage.getItem('tb_赵星宇_memos')||'[]');fb.unshift({id:Date.now(),text:msg,time:new Date().toLocaleString('zh-CN')});localStorage.setItem('tb_赵星宇_memos',JSON.stringify(fb));API.upsert('toolbar_data','username=eq.%E8%B5%B5%E6%98%9F%E5%AE%87&data_type=eq.memos',{username:'赵星宇',data_type:'memos',data_json:JSON.stringify(fb),updated_at:new Date().toISOString()}).then(function(){$('fbtext').value='';$('fbstatus').innerHTML='<div style="color:var(--on);font-weight:600">✅ 反馈已发送！</div>';toast('反馈已发送');setTimeout(function(){$('fbstatus').innerHTML='';},3000);}).catch(function(){toast('发送失败，请重试');});}};})();
+</script>
+
+<!-- TOOL: 个人中心 -->
+<script>
+(function(){var EM=['👤','🧑','👩','👨','🧔','🧓','👻','🤖','👽','👾','🐶','🐱','🐯','🐰','🐹','🦁','🐵','🐒','🦄','🐌','🌸','🌺','🌻','🌴','🌍','🌞','⭐','❤️','💜','💙','💚','💛'];var ST=[{k:'online',l:'🟢 在线',c:'sel-on'},{k:'busy',l:'🟡 忙碌',c:'sel-busy'},{k:'away',l:'🟠 离开',c:'sel-away'},{k:'offline',l:'⚪ 隐身',c:'sel-off'}];
+Tools.register({id:'profile',name:'个人中心',icon:'👤',desc:'',html:'<p class="sect">👤 个人中心</p><div style="text-align:center;margin-bottom:16px"><div style="font-size:64px;cursor:pointer" id="pav">👤</div><p style="font-weight:600;font-size:18px;margin-top:4px" id="pun"></p></div><p style="font-size:14px;font-weight:600;margin-bottom:6px">选择头像</p><div class="emoji-grid" id="pem"></div><p style="font-size:14px;font-weight:600;margin:12px 0 6px">在线状态</p><div class="row" id="pst" style="flex-wrap:nowrap"></div><p style="font-size:14px;font-weight:600;margin:16px 0 6px">👥 好友列表</p><div class="row"><input type="text" id="pfi" placeholder="输入好友用户名"/><button class="btn btn-p btn-sm" onclick="TPR.addF()">添加好友</button></div><div id="pfl"></div>',onEnter:function(){rdr();}});
+window.TPR={setA:function(e){var us=Auth.users();var f=us.find(function(u){return u.username===App.user});if(f){f.avatar=e;Auth.saveUsers(us);$('av').textContent=e;rdr();toast('头像已更新');}},setS:function(s){var us=Auth.users();var f=us.find(function(u){return u.username===App.user});if(f){f.status=s;Auth.saveUsers(us);rdr();toast('状态已更新');}},addF:function(){var n=$('pfi').value.trim();if(!n){toast('请输入用户名');return}if(n===App.user){toast('不能添加自己');return}var us=Auth.users();if(!us.some(function(u){return u.username===n})){toast('用户不存在');return}var f=us.find(function(u){return u.username===App.user});if(!f.friends)f.friends=[];if(f.friends.indexOf(n)>=0){toast('已是好友');return}f.friends.push(n);Auth.saveUsers(us);$('pfi').value='';rdr();toast('已添加:'+n);},delF:function(n){var us=Auth.users();var f=us.find(function(u){return u.username===App.user});f.friends=(f.friends||[]).filter(function(x){return x!==n});Auth.saveUsers(us);rdr();}};
+function rdr(){var u=Auth.users().find(function(x){return x.username===App.user});if(!u)return;$('pun').textContent=u.username;$('pav').textContent=u.avatar||'👤';$('pem').innerHTML=EM.map(function(e){return'<div class="emoji-opt'+(e===u.avatar?' sel':'')+'" onclick="TPR.setA(\''+e+'\')">'+e+'</div>';}).join('');$('pst').innerHTML=ST.map(function(s){return'<div class="st-btn st-btn'+(u.status===s.k?' '+s.c:'')+'" onclick="TPR.setS(\''+s.k+'\')">'+s.l+'</div>';}).join('');var fs=u.friends||[],us=Auth.users();$('pfl').innerHTML=fs.length===0?'<div style="color:var(--ts);font-size:13px;text-align:center;padding:10px">还没有好友</div>':fs.map(function(fn){var fu=us.find(function(x){return x.username===fn});var st=fu?(fu.status==='online'?'🟢':fu.status==='busy'?'🟡':fu.status==='away'?'🟠':'⚪'):'';return'<div class="li"><div class="ct"><span style="font-size:20px;margin-right:8px">'+(fu?fu.avatar:'👤')+'</span><span class="t">'+fn+' '+st+'</span></div><button class="btn btn-d btn-xs" onclick="TPR.delF(\''+fn+'\')">删除</button></div>';}).join('');}
 })();
 </script>
 
-<!-- 数据后台 -->
+<!-- TOOL: 数据后台 -->
 <script>
-(function(){
-  Tools.register({id:'admin',name:'数据后台',icon:'🛠️',desc:'用户管理',
-    html:'<p class="sect">🛠️ 数据后台</p><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:16px" id="as"></div><p style="font-size:15px;font-weight:600;margin-bottom:8px">👥 用户管理</p><div id="al"></div><p style="font-size:15px;font-weight:600;margin:16px 0 8px">🔍 系统诊断</p><div id="diag"></div><button class="btn btn-o btn-sm" onclick="TA.diag()" style="margin-top:8px">🔄 运行诊断</button>',
-    onEnter:function(){rdr();TA.diag();}});
-  window.TA={delU:function(un){if(un===App.user){toast('不能删除自己');return}if(!confirm('确定删除 '+un+'？'))return;var us=Auth.users().filter(function(u){return u.username!==un});Auth.saveUsers(us);rdr();},
-    diag:async function(){
-      var d=$('diag');d.innerHTML='<div class="li"><div class="ct"><div class="t">⏳ 正在检测...</div></div></div>';
-      var results=await API.check();
-      d.innerHTML=results.map(function(r){var cls=r.ok?'diag-ok':'diag-err';return'<div class="li"><div class="ct"><div class="t"><span class="'+cls+'">'+(r.ok?'✅':'❌')+'</span> '+r.name+'</div>'+(r.info?'<div class="st">'+r.info+'</div>':'')+(r.err?'<div class="st diag-err">'+r.err+'</div>':'')+'</div></div>';}).join('');
-    }};
-  function rdr(){var us=Auth.users();var on=us.filter(function(u){return u.status==='online'||u.status==='busy'}).length;
-    $('as').innerHTML='<div class="stat-card"><div><div class="lbl">总用户</div><div class="val">'+us.length+'</div></div></div><div class="stat-card"><div><div class="lbl">在线</div><div class="val" style="color:var(--on)">'+on+'</div></div></div><div class="stat-card"><div><div class="lbl">离线</div><div class="val" style="color:var(--off)">'+(us.length-on)+'</div></div></div>';
-    $('al').innerHTML=us.length===0?'<div class="empty"><span class="icon">👥</span>没有用户</div>':us.map(function(u){var sc=u.status==='online'?'var(--on)':u.status==='busy'?'var(--busy)':'var(--off)';return'<div class="li"><div class="ct"><span style="font-size:22px;margin-right:8px">'+(u.avatar||'👤')+'</span><div><span class="t">'+H(u.username)+'</span><span style="margin-left:6px;color:'+sc+';font-size:12px">● '+(u.status||'offline')+'</span><div class="st">注册:'+u.createdAt+' | 最后:'+(u.lastSeen||'-')+'</div></div></div><button class="btn btn-d btn-xs" onclick="TA.delU(\''+u.username+'\')">删除</button></div>';}).join('');}
+(function(){Tools.register({id:'admin',name:'数据后台',icon:'🛠️',desc:'用户管理+诊断',
+  html:'<p class="sect">🛠️ 数据后台</p><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:16px" id="as"></div><p style="font-size:15px;font-weight:600;margin-bottom:8px">👥 用户管理</p><div id="al"></div><p style="font-size:15px;font-weight:600;margin:16px 0 8px">🔍 系统诊断</p><div id="diag"></div><button class="btn btn-o btn-sm" onclick="TA.diag()" style="margin-top:8px">🔄 运行诊断</button>',onEnter:function(){rdr();TA.diag();}});
+window.TA={delU:function(un){if(un===App.user){toast('不能删除自己');return}if(!confirm('确定删除 '+un+'？'))return;var us=Auth.users().filter(function(u){return u.username!==un});Auth.saveUsers(us);rdr();},diag:async function(){var d=$('diag');d.innerHTML='<div class="li"><div class="ct"><div class="t">⏳ 正在检测...</div></div></div>';var results=await API.check();d.innerHTML=results.map(function(r){var cls=r.ok?'diag-ok':'diag-err';return'<div class="li"><div class="ct"><div class="t"><span class="'+cls+'">'+(r.ok?'✅':'❌')+'</span> '+r.name+'</div>'+(r.info?'<div class="st">'+r.info+'</div>':'')+(r.err?'<div class="st diag-err">'+r.err+'</div>':'')+'</div></div>';}).join('');}};
+function rdr(){var us=Auth.users();var on=us.filter(function(u){return u.status==='online'||u.status==='busy'}).length;$('as').innerHTML='<div class="stat-card"><div><div class="lbl">总用户</div><div class="val">'+us.length+'</div></div></div><div class="stat-card"><div><div class="lbl">在线</div><div class="val" style="color:var(--on)">'+on+'</div></div></div><div class="stat-card"><div><div class="lbl">离线</div><div class="val" style="color:var(--off)">'+(us.length-on)+'</div></div></div>';$('al').innerHTML=us.length===0?'<div class="empty"><span class="icon">👥</span>没有用户</div>':us.map(function(u){var sc=u.status==='online'?'var(--on)':u.status==='busy'?'var(--busy)':'var(--off)';return'<div class="li"><div class="ct"><span style="font-size:22px;margin-right:8px">'+(u.avatar||'👤')+'</span><div><span class="t">'+H(u.username)+'</span><span style="margin-left:6px;color:'+sc+';font-size:12px">● '+(u.status||'offline')+'</span><div class="st">注册:'+u.createdAt+' | 最后:'+(u.lastSeen||'-')+'</div></div></div><button class="btn btn-d btn-xs" onclick="TA.delU(\''+u.username+'\')">删除</button></div>';}).join('');}
 })();
 </script>
 
