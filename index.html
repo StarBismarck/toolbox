@@ -118,7 +118,7 @@
     .toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(80px);background:#1e293b;color:#fff;padding:12px 24px;border-radius:var(--rs);font-size:14px;opacity:0;transition:.3s;z-index:999;pointer-events:none}
     .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
     @media(max-width:900px){.sidebar{width:180px}:root{--sbw:180px;--cw:260px}}
-    @media(max-width:700px){.sidebar{display:none}.sidebar.mobile-show{display:flex;position:fixed;left:0;top:0;bottom:0;z-index:200;width:240px}.chat-panel.open{position:fixed;right:0;top:0;bottom:0;z-index:201;width:280px}:root{--cw:280px}}
+    @media(max-width:650px){.sidebar{width:50px}:root{--sbw:50px;--cw:240px}.sidebar .ss-title,.sidebar .fn,.sidebar .sidebar-empty span{display:none}.sidebar .f-item{justify-content:center;padding:8px}.chat-panel.open{position:fixed;right:0;top:0;bottom:0;z-index:201;width:280px}:root{--cw:280px}}
   </style>
 </head>
 <body>
@@ -147,7 +147,7 @@
     <div class="sidebar-head">👥 好友</div>
     <div id="sidebarOnline" class="sidebar-section"></div>
     <div id="sidebarOffline" class="sidebar-section"></div>
-    <div class="sidebar-empty" id="sidebarEmpty" style="display:none">暂无好友，去个人中心添加</div>
+    <div class="sidebar-empty" id="sidebarEmpty">👥 暂无好友<br><span style="font-size:11px;color:var(--ts)">去个人中心添加</span></div>
   </div>
   <!-- Main -->
   <div class="main-area">
