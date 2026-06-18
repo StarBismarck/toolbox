@@ -209,10 +209,16 @@
   <div class="login-screen" id="loginScreen">
     <div class="login-box">
       <h2 id="loginTitle">&#x1F510; 登录</h2>
-      <p class="subtitle" id="loginSubtitle">请输入密码</p>
-      <input type="password" id="loginPwd" placeholder="密码" onkeydown="if(event.key==='Enter')doLogin()" />
-      <button class="btn btn-primary" onclick="doLogin()">进入</button>
+      <p class="subtitle" id="loginSubtitle">请输入账号密码</p>
+      <input type="text" id="loginUser" placeholder="用户名" />
+      <input type="password" id="loginPwd" placeholder="密码" />
+      <input type="password" id="loginPwd2" placeholder="确认密码（仅注册时需要）" style="display:none" />
+      <button class="btn btn-primary" onclick="doLogin()" id="loginBtn">登录</button>
       <p class="error" id="loginError"></p>
+      <p style="margin-top:12px;font-size:13px;color:var(--text-secondary)">
+        <span id="toggleText">没有账号？</span>
+        <a href="javascript:void(0)" onclick="toggleRegister()" id="toggleLink" style="color:var(--primary);text-decoration:none;font-weight:500">注册</a>
+      </p>
     </div>
   </div>
 
@@ -365,18 +371,67 @@
     /* =============================================
        AUTH
     ============================================= */
-    var STORAGE_KEY = 'toolbox_pwhash';
-    var SESSION_KEY = 'toolbox_auth';
+    var USERS_KEY = 'toolbox_users';
+    var SESSION_KEY = 'toolbox_session';
+    var isRegisterMode = false;
 
-    if (sessionStorage.getItem(SESSION_KEY) === '1') {
+    // Check if logged in
+    if (sessionStorage.getItem(SESSION_KEY)) {
       showApp();
     } else {
       document.getElementById('loginScreen').style.display = 'flex';
-      var hash = localStorage.getItem(STORAGE_KEY);
-      if (!hash) {
-        document.getElementById('loginTitle').textContent = '\uD83D\uDD10 \u9996\u6B21\u8BBE\u7F6E';
-        document.getElementById('loginSubtitle').textContent = '\u8BF7\u521B\u5EFA\u4E00\u4E2A\u5BC6\u7801\uFF08\u81F3\u5C114\u4F4D\uFF09';
+      ensureAdmin();
+    }
+
+    // Ensure at least one user exists (first-time: auto-create admin)
+    function ensureAdmin() {
+      var users = getUsers();
+      if (users.length === 0) {
+        document.getElementById('loginTitle').textContent = '\uD83D\uDD10 \u6B22\u8FCE';
+        document.getElementById('loginSubtitle').textContent = '\u8FD9\u662F\u4F60\u7684\u7B2C\u4E00\u6B21\u4F7F\u7528\uFF0C\u8BF7\u5148\u6CE8\u518C\u4E00\u4E2A\u8D26\u53F7';
+        isRegisterMode = true;
+        switchToRegister();
       }
+    }
+
+    function getUsers() {
+      try { return JSON.parse(localStorage.getItem(USERS_KEY)) || []; }
+      catch(e) { return []; }
+    }
+
+    function saveUsers(users) {
+      localStorage.setItem(USERS_KEY, JSON.stringify(users));
+    }
+
+    function toggleRegister() {
+      isRegisterMode = !isRegisterMode;
+      if (isRegisterMode) {
+        switchToRegister();
+      } else {
+        switchToLogin();
+      }
+    }
+
+    function switchToRegister() {
+      isRegisterMode = true;
+      document.getElementById('loginTitle').textContent = '\uD83D\uDCDD \u6CE8\u518C';
+      document.getElementById('loginSubtitle').textContent = '\u521B\u5EFA\u4E00\u4E2A\u65B0\u8D26\u53F7';
+      document.getElementById('loginBtn').textContent = '\u6CE8\u518C';
+      document.getElementById('toggleText').textContent = '\u5DF2\u6709\u8D26\u53F7\uFF1F';
+      document.getElementById('toggleLink').textContent = '\u767B\u5F55';
+      document.getElementById('loginPwd2').style.display = 'block';
+      document.getElementById('loginError').textContent = '';
+    }
+
+    function switchToLogin() {
+      isRegisterMode = false;
+      document.getElementById('loginTitle').textContent = '\uD83D\uDD10 \u767B\u5F55';
+      document.getElementById('loginSubtitle').textContent = '\u8BF7\u8F93\u5165\u8D26\u53F7\u5BC6\u7801';
+      document.getElementById('loginBtn').textContent = '\u767B\u5F55';
+      document.getElementById('toggleText').textContent = '\u6CA1\u6709\u8D26\u53F7\uFF1F';
+      document.getElementById('toggleLink').textContent = '\u6CE8\u518C';
+      document.getElementById('loginPwd2').style.display = 'none';
+      document.getElementById('loginError').textContent = '';
     }
 
     async function hashPassword(pwd) {
@@ -388,28 +443,58 @@
     }
 
     async function doLogin() {
+      var username = document.getElementById('loginUser').value.trim();
       var pwd = document.getElementById('loginPwd').value;
+      var pwd2 = document.getElementById('loginPwd2').value;
       var errorEl = document.getElementById('loginError');
-      var hash = localStorage.getItem(STORAGE_KEY);
 
+      if (!username) { errorEl.textContent = '\u8BF7\u8F93\u5165\u7528\u6237\u540D'; return; }
+      if (username.length < 2) { errorEl.textContent = '\u7528\u6237\u540D\u81F3\u5C112\u4E2A\u5B57\u7B26'; return; }
       if (pwd.length < 4) { errorEl.textContent = '\u5BC6\u7801\u81F3\u5C114\u4F4D'; return; }
 
-      if (!hash) {
-        var newHash = await hashPassword(pwd);
-        localStorage.setItem(STORAGE_KEY, newHash);
-        sessionStorage.setItem(SESSION_KEY, '1');
-        showApp();
-        toast('\u5BC6\u7801\u5DF2\u8BBE\u7F6E\uFF0C\u4E0B\u6B21\u7528\u8FD9\u4E2A\u5BC6\u7801\u767B\u5F55');
-        return;
-      }
+      var users = getUsers();
 
-      var inputHash = await hashPassword(pwd);
-      if (inputHash === hash) {
-        sessionStorage.setItem(SESSION_KEY, '1');
+      if (isRegisterMode) {
+        // Register
+        if (pwd !== pwd2) { errorEl.textContent = '\u4E24\u6B21\u5BC6\u7801\u4E0D\u4E00\u81F4'; return; }
+
+        for (var i = 0; i < users.length; i++) {
+          if (users[i].username === username) { errorEl.textContent = '\u8BE5\u7528\u6237\u540D\u5DF2\u88AB\u6CE8\u518C'; return; }
+        }
+
+        var pwdHash = await hashPassword(pwd);
+        users.push({
+          id: Date.now(),
+          username: username,
+          passwordHash: pwdHash,
+          createdAt: new Date().toLocaleString('zh-CN')
+        });
+        saveUsers(users);
+
+        sessionStorage.setItem(SESSION_KEY, username);
         showApp();
+        toast('\u6CE8\u518C\u6210\u529F\uFF0C\u6B22\u8FCE ' + username + '\uFF01');
+
       } else {
-        errorEl.textContent = '\u5BC6\u7801\u9519\u8BEF\uFF0C\u8BF7\u91CD\u8BD5';
-        document.getElementById('loginPwd').value = '';
+        // Login
+        var found = null;
+        for (var i = 0; i < users.length; i++) {
+          if (users[i].username === username) { found = users[i]; break; }
+        }
+
+        if (!found) {
+          errorEl.textContent = '\u7528\u6237\u4E0D\u5B58\u5728\uFF0C\u8BF7\u5148\u6CE8\u518C';
+          return;
+        }
+
+        var inputHash = await hashPassword(pwd);
+        if (inputHash === found.passwordHash) {
+          sessionStorage.setItem(SESSION_KEY, username);
+          showApp();
+        } else {
+          errorEl.textContent = '\u5BC6\u7801\u9519\u8BEF';
+          document.getElementById('loginPwd').value = '';
+        }
       }
     }
 
@@ -423,8 +508,11 @@
       sessionStorage.removeItem(SESSION_KEY);
       document.getElementById('loginScreen').style.display = 'flex';
       document.getElementById('appShell').classList.remove('show');
+      document.getElementById('loginUser').value = '';
       document.getElementById('loginPwd').value = '';
+      document.getElementById('loginPwd2').value = '';
       document.getElementById('loginError').textContent = '';
+      switchToLogin();
     }
 
     /* =============================================
