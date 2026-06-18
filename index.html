@@ -466,9 +466,12 @@
     ADMIN_PASS: '12345',
     init: function() {
       Auth._ensureAdmin();
-      if (sessionStorage.getItem('tb_session')) { App.login(sessionStorage.getItem('tb_session')); return; }
-      $('loginScreen').style.display = 'flex';
-      if (!Store.getRaw('tb_users')) Auth._setRegister();
+      // Pull users from cloud before showing login
+      Auth._pullUsersFromCloud().then(function() {
+        if (sessionStorage.getItem('tb_session')) { App.login(sessionStorage.getItem('tb_session')); return; }
+        $('loginScreen').style.display = 'flex';
+        if (!Store.getRaw('tb_users')) Auth._setRegister();
+      });
     },
     _ensureAdmin: function() {
       if (!Store.getRaw('tb_users')) {
@@ -514,6 +517,26 @@
     toggle: function() { Auth.isRegister ? Auth._setLogin() : Auth._setRegister(); },
     users: function() { try { return JSON.parse(Store.getRaw('tb_users'))||[]; } catch(e) { return []; } },
     saveUsers: function(u) { Store.setRaw('tb_users', JSON.stringify(u)); Store._syncUsers(); },
+    _pullUsersFromCloud: async function() {
+      try {
+        var resp = await fetch(SUPABASE_URL + '/rest/v1/toolbar_data?username=eq._system&data_type=eq._users', {headers: SB});
+        if (!resp.ok) return;
+        var rows = await resp.json();
+        if (rows.length > 0 && rows[0].data_json) {
+          var cloudUsers = JSON.parse(rows[0].data_json);
+          var localUsers = Auth.users();
+          for (var i = 0; i < cloudUsers.length; i++) {
+            var exists = false;
+            for (var j = 0; j < localUsers.length; j++) {
+              if (localUsers[j].username === cloudUsers[i].username) { exists = true; break; }
+            }
+            if (!exists) localUsers.push(cloudUsers[i]);
+          }
+          Auth.saveUsersWithoutSync(localUsers);
+        }
+      } catch(e) {}
+    },
+    saveUsersWithoutSync: function(u) { Store.setRaw('tb_users', JSON.stringify(u)); },
     hash: async function(pwd) {
       var d = new TextEncoder().encode(pwd + 'tb_salt');
       var h = await crypto.subtle.digest('SHA-256', d);
