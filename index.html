@@ -239,10 +239,84 @@
   // ---- Store ----
   var Store = {
     _key: function(k) { return 'tb_' + (App.user||'') + '_' + k; },
+    _blobId: null,
+    _blobUrl: null,
     get: function(k, fallback) { try { var v=localStorage.getItem(Store._key(k)); return v!==null?JSON.parse(v):(fallback!==undefined?fallback:null); } catch(e) { return fallback!==undefined?fallback:null; } },
-    set: function(k, v) { localStorage.setItem(Store._key(k), JSON.stringify(v)); },
+    set: function(k, v) { localStorage.setItem(Store._key(k), JSON.stringify(v)); if (App.user) Store._schedulePush(); },
     getRaw: function(k) { return localStorage.getItem(k); },
-    setRaw: function(k, v) { localStorage.setItem(k, v); },
+    setRaw: function(k, v) { localStorage.setItem(k, v); if (App.user) Store._schedulePush(); },
+
+    // Cloud sync
+    _pushTimer: null,
+    _schedulePush: function() {
+      if (Store._pushTimer) clearTimeout(Store._pushTimer);
+      Store._pushTimer = setTimeout(function() { Store.cloudPush(); }, 2000);
+    },
+    cloudInit: async function() {
+      if (Store._blobId) return;
+      // Try localStorage first
+      var cached = Store.getRaw('tb_blob_id');
+      if (cached) { Store._blobId = cached; return; }
+      // Fetch from GitHub
+      try {
+        var resp = await fetch('https://raw.githubusercontent.com/StarBismarck/toolbox/main/data.json');
+        var d = await resp.json();
+        if (d.blobId) { Store._blobId = d.blobId; Store.setRaw('tb_blob_id', d.blobId); }
+      } catch(e) { console.log('Cloud init failed, using local only'); }
+    },
+    cloudPull: async function() {
+      await Store.cloudInit();
+      if (!Store._blobId) return;
+      try {
+        var resp = await fetch('https://jsonblob.com/api/jsonBlob/' + Store._blobId);
+        if (!resp.ok) return;
+        var cloud = await resp.json();
+        // Merge cloud data into localStorage (cloud wins for user tables)
+        var prefix = 'tb_' + (App.user||'') + '_';
+        var keys = Object.keys(localStorage);
+        for (var i=0;i<keys.length;i++) {
+          if (keys[i].indexOf('tb_')===0 && keys[i].indexOf('tb_users')!==0) {
+            // Already in localStorage, skip (local is newer)
+            // Actually, let cloud data supplement missing keys
+            var short = keys[i].replace('tb_','').replace(App.user+'_','');
+          }
+        }
+        // Sync users table
+        if (cloud.users && cloud.users.length > 0) {
+          var localUsers = Store.getRaw('tb_users');
+          if (!localUsers || JSON.parse(localUsers).length < cloud.users.length) {
+            Store.setRaw('tb_users', JSON.stringify(cloud.users));
+          }
+        }
+        // Sync per-user data
+        if (cloud.data && cloud.data[App.user]) {
+          var ud = cloud.data[App.user];
+          if (ud.rotation) Store.set('rotation', ud.rotation);
+          if (ud.biztrip) Store.set('biztrip', ud.biztrip);
+          if (ud.memos) Store.set('memos', ud.memos);
+        }
+      } catch(e) { console.log('Cloud pull failed'); }
+    },
+    cloudPush: async function() {
+      await Store.cloudInit();
+      if (!Store._blobId) return;
+      try {
+        // Build cloud data from localStorage
+        var cloud = {};
+        cloud.users = JSON.parse(Store.getRaw('tb_users')||'[]');
+        cloud.data = {};
+        cloud.data[App.user] = {
+          rotation: Store.get('rotation', {}),
+          biztrip: Store.get('biztrip', {}),
+          memos: Store.get('memos', []),
+        };
+        await fetch('https://jsonblob.com/api/jsonBlob/' + Store._blobId, {
+          method: 'PUT',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify(cloud),
+        });
+      } catch(e) { console.log('Cloud push failed'); }
+    },
   };
 
   // ---- Router ----
@@ -407,6 +481,8 @@
       Router.register('home', {title:'\u591A\u529F\u80FD\u5DE5\u5177\u7BB1', onEnter:function(){Render.leaderboard();}});
       Router.init();
       Router.go('home');
+      // Pull cloud data (async, non-blocking)
+      Store.cloudPull();
     },
     _buildHome: function() {
       var g = $('homeGrid'); g.innerHTML = '';
