@@ -5,80 +5,89 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>多功能工具箱</title>
   <style>
-    /* ===== CSS Variables ===== */
     :root {
-      --bg: #f0f2f5;
-      --card-bg: #ffffff;
-      --primary: #6366f1;
-      --primary-light: #818cf8;
-      --text: #1e293b;
-      --text-secondary: #64748b;
+      --bg: #f0f2f5; --card-bg: #ffffff;
+      --primary: #6366f1; --primary-light: #818cf8;
+      --text: #1e293b; --text-secondary: #64748b;
       --border: #e2e8f0;
       --shadow: 0 2px 12px rgba(0,0,0,0.08);
-      --radius: 16px;
-      --radius-sm: 10px;
+      --radius: 16px; --radius-sm: 10px;
       --transition: 0.3s cubic-bezier(.4,0,.2,1);
     }
-
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      overflow-x: hidden;
+      background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden;
     }
+
+    /* ===== Login Screen ===== */
+    .login-screen {
+      display: flex; align-items: center; justify-content: center;
+      min-height: 100vh; padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    .login-box {
+      background: #fff; border-radius: var(--radius); padding: 36px 28px;
+      max-width: 360px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+      text-align: center;
+    }
+    .login-box h2 { margin-bottom: 8px; font-size: 22px; }
+    .login-box .subtitle { font-size: 14px; color: var(--text-secondary); margin-bottom: 24px; }
+    .login-box input {
+      width: 100%; padding: 12px 16px; border: 2px solid var(--border);
+      border-radius: var(--radius-sm); font-size: 15px; outline: none;
+      margin-bottom: 12px; transition: var(--transition);
+    }
+    .login-box input:focus { border-color: var(--primary); }
+    .login-box .btn { width: 100%; padding: 12px; font-size: 16px; }
+    .login-box .error { color: #ef4444; font-size: 13px; margin-top: 8px; min-height: 20px; }
 
     /* ===== App Shell ===== */
+    .app-shell { display: none; }
+    .app-shell.show { display: block; }
     .app-header {
-      background: var(--primary);
-      color: #fff;
-      padding: 16px 20px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      position: sticky;
-      top: 0;
-      z-index: 100;
+      background: var(--primary); color: #fff; padding: 12px 16px;
+      display: flex; align-items: center; gap: 8px;
+      position: sticky; top: 0; z-index: 100;
       box-shadow: 0 2px 8px rgba(99,102,241,0.3);
     }
-    .app-header h1 { font-size: 20px; font-weight: 600; flex: 1; }
-    .btn-back {
-      background: none; border: none; color: #fff; font-size: 24px;
-      cursor: pointer; padding: 4px 8px; border-radius: 8px;
-      display: none; align-items: center; justify-content: center;
-      transition: var(--transition);
+    .app-header h1 { font-size: 18px; font-weight: 600; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .btn-icon {
+      background: none; border: none; color: #fff; font-size: 22px;
+      cursor: pointer; padding: 6px 8px; border-radius: 8px; transition: var(--transition);
+      display: flex; align-items: center; justify-content: center; line-height: 1;
+      -webkit-tap-highlight-color: transparent;
     }
-    .btn-back:hover { background: rgba(255,255,255,0.15); }
-    .btn-back.show { display: flex; }
+    .btn-icon:hover { background: rgba(255,255,255,0.15); }
+    .btn-icon.hide { visibility: hidden; }
 
-    /* ===== Page Container ===== */
-    .page { display: none; padding: 20px; max-width: 600px; margin: 0 auto; }
+    /* ===== Page ===== */
+    .page { display: none; padding: 16px; max-width: 600px; margin: 0 auto; }
     .page.active { display: block; animation: fadeIn 0.25s ease; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
 
     /* ===== Home ===== */
-    .home-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 8px; }
+    .home-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
     .tool-card {
-      background: var(--card-bg); border-radius: var(--radius); padding: 24px 16px;
+      background: var(--card-bg); border-radius: var(--radius); padding: 20px 14px;
       box-shadow: var(--shadow); cursor: pointer; text-align: center;
       transition: var(--transition); border: 2px solid transparent;
       user-select: none; -webkit-tap-highlight-color: transparent;
     }
-    .tool-card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,0.12); }
+    .tool-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.12); }
     .tool-card:active { transform: scale(0.96); }
-    .tool-card .icon { font-size: 40px; display: block; margin-bottom: 10px; }
-    .tool-card .label { font-size: 16px; font-weight: 600; }
-    .tool-card .desc { font-size: 12px; color: var(--text-secondary); margin-top: 4px; }
+    .tool-card .icon { font-size: 36px; display: block; margin-bottom: 8px; }
+    .tool-card .label { font-size: 14px; font-weight: 600; }
+    .tool-card .desc { font-size: 11px; color: var(--text-secondary); margin-top: 3px; }
 
     /* ===== Shared UI ===== */
     .section-title { font-size: 18px; font-weight: 600; margin-bottom: 12px; }
-    .input-group { display: flex; gap: 8px; margin-bottom: 12px; }
+    .input-group { display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
     .input-group input, .input-group select {
-      flex: 1; padding: 10px 14px; border: 2px solid var(--border); border-radius: var(--radius-sm);
+      flex: 1; min-width: 120px; padding: 10px 14px;
+      border: 2px solid var(--border); border-radius: var(--radius-sm);
       font-size: 15px; outline: none; transition: var(--transition);
     }
-    .input-group input:focus { border-color: var(--primary); }
+    .input-group input:focus, .input-group select:focus { border-color: var(--primary); }
     .btn {
       padding: 10px 20px; border: none; border-radius: var(--radius-sm); font-size: 15px;
       font-weight: 500; cursor: pointer; transition: var(--transition);
@@ -93,35 +102,30 @@
     .btn-outline:hover { border-color: var(--primary); color: var(--primary); }
     .btn-sm { padding: 6px 14px; font-size: 13px; }
 
-    .tag-list { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+    .tag-list { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
     .tag {
       background: #eef2ff; color: var(--primary); padding: 6px 14px; border-radius: 20px;
       font-size: 14px; display: flex; align-items: center; gap: 6px;
     }
-    .tag .remove {
-      cursor: pointer; font-weight: bold; opacity: 0.6; font-size: 16px;
-    }
+    .tag .remove { cursor: pointer; font-weight: bold; opacity: 0.6; font-size: 16px; }
     .tag .remove:hover { opacity: 1; }
 
     .result-box {
       background: linear-gradient(135deg, #eef2ff, #f5f3ff);
-      border-radius: var(--radius); padding: 32px 20px; text-align: center;
-      margin: 16px 0; min-height: 80px; display: flex; align-items: center;
+      border-radius: var(--radius); padding: 28px 16px; text-align: center;
+      margin: 12px 0; min-height: 60px; display: flex; align-items: center;
       justify-content: center; flex-direction: column; gap: 4px;
     }
-    .result-box .result-text { font-size: 28px; font-weight: 700; color: var(--primary); }
+    .result-box .result-text { font-size: 26px; font-weight: 700; color: var(--primary); }
     .result-box .result-label { font-size: 13px; color: var(--text-secondary); }
 
-    .empty-state { text-align: center; padding: 40px 20px; color: var(--text-secondary); }
-    .empty-state .icon { font-size: 48px; margin-bottom: 12px; display: block; }
+    .empty-state { text-align: center; padding: 36px 20px; color: var(--text-secondary); }
+    .empty-state .icon { font-size: 44px; margin-bottom: 10px; display: block; }
 
     /* ===== Canvas ===== */
-    .canvas-wrap {
-      display: flex; justify-content: center; margin: 12px 0;
-      position: relative;
-    }
+    .canvas-wrap { display: flex; justify-content: center; margin: 12px 0; position: relative; }
     .canvas-wrap canvas {
-      width: 100%; height: auto; max-width: 320px;
+      width: 100%; height: auto; max-width: 300px;
       border-radius: var(--radius); box-shadow: var(--shadow);
     }
 
@@ -150,6 +154,41 @@
     .poll-option .poll-text { position: relative; z-index: 1; display: flex; justify-content: space-between; }
     .poll-option .poll-pct { font-weight: 600; color: var(--primary); }
 
+    /* ===== Rotation ===== */
+    .rotation-date-nav {
+      display: flex; align-items: center; justify-content: center; gap: 16px; margin-bottom: 16px;
+    }
+    .rotation-date-nav .date-label { font-size: 17px; font-weight: 600; min-width: 140px; text-align: center; }
+    .rotation-duty-card {
+      background: var(--card-bg); border-radius: var(--radius); padding: 16px;
+      margin-bottom: 10px; box-shadow: var(--shadow);
+      border-left: 4px solid var(--primary);
+    }
+    .rotation-duty-card .person { font-size: 17px; font-weight: 600; }
+    .rotation-duty-card .project { font-size: 14px; color: var(--text-secondary); margin-top: 4px; }
+    .rotation-duty-card .project::before { content: "\01F4CB "; }
+
+    /* ===== Business Trip ===== */
+    .biztrip-next-card {
+      background: linear-gradient(135deg, #fef3c7, #fde68a);
+      border-radius: var(--radius); padding: 20px; margin-bottom: 16px;
+      box-shadow: var(--shadow); text-align: center; border: 2px solid #f59e0b;
+    }
+    .biztrip-next-card .hint { font-size: 13px; color: #92400e; margin-bottom: 6px; }
+    .biztrip-next-card .name { font-size: 24px; font-weight: 700; color: #b45309; }
+    .biztrip-record-card {
+      background: var(--card-bg); border-radius: var(--radius-sm); padding: 12px 16px;
+      margin-bottom: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+      display: flex; align-items: center; justify-content: space-between; gap: 8px;
+    }
+    .biztrip-record-card .info { flex: 1; }
+    .biztrip-record-card .name-col { font-weight: 600; font-size: 15px; }
+    .biztrip-record-card .stats { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+    .biztrip-record-card .badge {
+      background: var(--primary); color: #fff; padding: 4px 12px; border-radius: 20px;
+      font-size: 13px; font-weight: 600; white-space: nowrap;
+    }
+
     /* ===== Toast ===== */
     .toast {
       position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(80px);
@@ -158,498 +197,815 @@
       pointer-events: none; box-shadow: 0 4px 16px rgba(0,0,0,0.2);
     }
     .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    @media (max-width: 360px) {
+      .home-grid { grid-template-columns: 1fr; gap: 10px; }
+    }
   </style>
 </head>
 <body>
 
-  <!-- ===== Header ===== -->
-  <header class="app-header">
-    <button class="btn-back" id="btnBack" onclick="goHome()">‹</button>
-    <h1 id="headerTitle">多功能工具箱</h1>
-  </header>
-
-  <!-- ===== Toast ===== -->
-  <div class="toast" id="toast"></div>
-
-  <!-- ===== Page: Home ===== -->
-  <div class="page active" id="pageHome">
-    <div class="home-grid">
-      <div class="tool-card" onclick="navigate('wheel')">
-        <span class="icon">🎡</span>
-        <span class="label">幸运转盘</span>
-        <span class="desc">自定义选项，转转盘决定</span>
-      </div>
-      <div class="tool-card" onclick="navigate('draw')">
-        <span class="icon">🎲</span>
-        <span class="label">抽签</span>
-        <span class="desc">随机抽取一个选项</span>
-      </div>
-      <div class="tool-card" onclick="navigate('memo')">
-        <span class="icon">📝</span>
-        <span class="label">备忘录</span>
-        <span class="desc">速记点滴，随时查看</span>
-      </div>
-      <div class="tool-card" onclick="navigate('poll')">
-        <span class="icon">🗳️</span>
-        <span class="label">集体投票</span>
-        <span class="desc">创建投票，统计结果</span>
-      </div>
+  <!-- ===== Login Screen ===== -->
+  <div class="login-screen" id="loginScreen">
+    <div class="login-box">
+      <h2 id="loginTitle">&#x1F510; 登录</h2>
+      <p class="subtitle" id="loginSubtitle">请输入密码</p>
+      <input type="password" id="loginPwd" placeholder="密码" onkeydown="if(event.key==='Enter')doLogin()" />
+      <button class="btn btn-primary" onclick="doLogin()">进入</button>
+      <p class="error" id="loginError"></p>
     </div>
   </div>
 
-  <!-- ===== Page: Wheel ===== -->
-  <div class="page" id="pageWheel">
-    <p class="section-title">🎡 幸运转盘</p>
-    <div class="input-group">
-      <input type="text" id="wheelInput" placeholder="输入选项，回车添加" onkeydown="if(event.key==='Enter') addWheelItem()" />
-      <button class="btn btn-primary" onclick="addWheelItem()">添加</button>
-    </div>
-    <div class="tag-list" id="wheelTags"></div>
-    <div class="canvas-wrap">
-      <canvas id="wheelCanvas" width="320" height="320"></canvas>
-    </div>
-    <div style="text-align:center;margin-top:8px">
-      <button class="btn btn-primary" onclick="spinWheel()" id="spinBtn">🎯 转转盘</button>
-      <button class="btn btn-outline btn-sm" onclick="clearWheel()" style="margin-left:8px">清空</button>
-    </div>
-  </div>
+  <!-- ===== App Shell ===== -->
+  <div class="app-shell" id="appShell">
+    <header class="app-header">
+      <button class="btn-icon hide" id="btnBack" onclick="goHome()">&#x2039;</button>
+      <h1 id="headerTitle">多功能工具箱</h1>
+      <button class="btn-icon" onclick="doLogout()" title="退出登录" style="font-size:18px">&#x1F6AA;</button>
+    </header>
 
-  <!-- ===== Page: Draw ===== -->
-  <div class="page" id="pageDraw">
-    <p class="section-title">🎲 抽签</p>
-    <div class="input-group">
-      <input type="text" id="drawInput" placeholder="输入选项，回车添加" onkeydown="if(event.key==='Enter') addDrawItem()" />
-      <button class="btn btn-primary" onclick="addDrawItem()">添加</button>
-    </div>
-    <div class="tag-list" id="drawTags"></div>
-    <div class="result-box" id="drawResult">
-      <span class="result-label">点击抽签试试</span>
-    </div>
-    <div style="text-align:center">
-      <button class="btn btn-primary" onclick="doDraw()">🎲 抽一个</button>
-    </div>
-  </div>
+    <div class="toast" id="toast"></div>
 
-  <!-- ===== Page: Memo ===== -->
-  <div class="page" id="pageMemo">
-    <p class="section-title">📝 备忘录</p>
-    <div class="input-group">
-      <input type="text" id="memoInput" placeholder="写点什么…" onkeydown="if(event.key==='Enter') addMemo()" />
-      <button class="btn btn-primary" onclick="addMemo()">保存</button>
+    <!--  Home  -->
+    <div class="page active" id="pageHome">
+      <div class="home-grid">
+        <div class="tool-card" onclick="navigate('rotation')">
+          <span class="icon">&#x1F504;</span><span class="label">小值轮换</span>
+          <span class="desc">每日值班轮换表</span>
+        </div>
+        <div class="tool-card" onclick="navigate('biztrip')">
+          <span class="icon">&#x2708;&#xFE0F;</span><span class="label">能不能不出公差</span>
+          <span class="desc">出差轮换 + 次数统计</span>
+        </div>
+        <div class="tool-card" onclick="navigate('wheel')">
+          <span class="icon">&#x1F3A1;</span><span class="label">幸运转盘</span>
+          <span class="desc">自定义选项转转盘</span>
+        </div>
+        <div class="tool-card" onclick="navigate('draw')">
+          <span class="icon">&#x1F3B2;</span><span class="label">抽签</span>
+          <span class="desc">随机抽取一个选项</span>
+        </div>
+        <div class="tool-card" onclick="navigate('memo')">
+          <span class="icon">&#x1F4DD;</span><span class="label">备忘录</span>
+          <span class="desc">速记点滴随时查看</span>
+        </div>
+        <div class="tool-card" onclick="navigate('poll')">
+          <span class="icon">&#x1F5F3;&#xFE0F;</span><span class="label">集体投票</span>
+          <span class="desc">创建投票统计结果</span>
+        </div>
+      </div>
     </div>
-    <div id="memoList"></div>
-  </div>
 
-  <!-- ===== Page: Poll ===== -->
-  <div class="page" id="pagePoll">
-    <p class="section-title">🗳️ 集体投票</p>
-    <p style="font-size:14px;color:var(--text-secondary);margin-bottom:12px">创建投票，点击选项投票，实时统计结果。</p>
-    <div class="input-group">
-      <input type="text" id="pollTitle" placeholder="投票标题，如：今晚吃什么" />
+    <!--  Rotation  -->
+    <div class="page" id="pageRotation">
+      <p class="section-title">&#x1F504; 小值轮换</p>
+      <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px">
+        添加人员及负责项目，设置每日值班人数，按日期自动轮换。
+      </p>
+
+      <div class="input-group">
+        <input type="text" id="rotName" placeholder="姓名" style="flex:2" />
+        <input type="text" id="rotProject" placeholder="负责项目" style="flex:3" />
+        <button class="btn btn-primary btn-sm" onclick="addRotationPerson()">+添加</button>
+      </div>
+
+      <div id="rotationPeopleList" style="margin-bottom:14px"></div>
+
+      <div class="input-group" style="align-items:center">
+        <label style="font-size:14px;white-space:nowrap">每日值班人数：</label>
+        <input type="number" id="rotCount" value="2" min="1" max="20" style="width:70px;flex:none" onchange="saveRotationData()" />
+      </div>
+
+      <div class="rotation-date-nav">
+        <button class="btn btn-outline btn-sm" onclick="shiftRotDate(-1)">&#x25C0; 前一天</button>
+        <span class="date-label" id="rotDateLabel"></span>
+        <button class="btn btn-outline btn-sm" onclick="shiftRotDate(1)">后一天 &#x25B6;</button>
+      </div>
+      <div style="text-align:center;margin-bottom:12px">
+        <button class="btn btn-outline btn-sm" onclick="rotDateOffset=0;renderRotation()">&#x1F4CD; 回到今天</button>
+      </div>
+
+      <div id="rotationDutyBoard"></div>
     </div>
-    <div class="input-group">
-      <input type="text" id="pollOptionInput" placeholder="添加选项，回车" onkeydown="if(event.key==='Enter') addPollOption()" />
-      <button class="btn btn-primary" onclick="addPollOption()">添加</button>
+
+    <!--  BizTrip  -->
+    <div class="page" id="pageBiztrip">
+      <p class="section-title">&#x2708;&#xFE0F; 能不能不出公差？</p>
+      <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px">
+        按列表顺序循环轮换，每人轮流出差。记录次数和最近时间。
+      </p>
+
+      <div class="input-group">
+        <input type="text" id="biztripInput" placeholder="输入姓名" onkeydown="if(event.key==='Enter') addBizTripPerson()" />
+        <button class="btn btn-primary" onclick="addBizTripPerson()">添加人员</button>
+      </div>
+
+      <div id="biztripPeopleList" style="margin-bottom:10px"></div>
+      <div id="biztripNext"></div>
+
+      <div style="display:flex;justify-content:center;gap:8px;margin-top:8px">
+        <button class="btn btn-outline btn-sm" onclick="undoBizTrip()">&#x21A9; 撤销上一次</button>
+        <button class="btn btn-outline btn-sm" onclick="resetBizTrip()">&#x1F504; 全部重置</button>
+      </div>
     </div>
-    <div class="tag-list" id="pollTags"></div>
-    <div style="text-align:center;margin-bottom:16px">
-      <button class="btn btn-primary" onclick="createPoll()">📊 开始投票</button>
+
+    <!--  Wheel  -->
+    <div class="page" id="pageWheel">
+      <p class="section-title">&#x1F3A1; 幸运转盘</p>
+      <div class="input-group">
+        <input type="text" id="wheelInput" placeholder="输入选项，回车添加" onkeydown="if(event.key==='Enter') addWheelItem()" />
+        <button class="btn btn-primary" onclick="addWheelItem()">添加</button>
+      </div>
+      <div class="tag-list" id="wheelTags"></div>
+      <div class="canvas-wrap"><canvas id="wheelCanvas" width="300" height="300"></canvas></div>
+      <div style="text-align:center;margin-top:8px">
+        <button class="btn btn-primary" onclick="spinWheel()" id="spinBtn">&#x1F3AF; 转转盘</button>
+        <button class="btn btn-outline btn-sm" onclick="clearWheel()" style="margin-left:8px">清空</button>
+      </div>
     </div>
-    <div id="pollResult"></div>
+
+    <!--  Draw  -->
+    <div class="page" id="pageDraw">
+      <p class="section-title">&#x1F3B2; 抽签</p>
+      <div class="input-group">
+        <input type="text" id="drawInput" placeholder="输入选项，回车添加" onkeydown="if(event.key==='Enter') addDrawItem()" />
+        <button class="btn btn-primary" onclick="addDrawItem()">添加</button>
+      </div>
+      <div class="tag-list" id="drawTags"></div>
+      <div class="result-box" id="drawResult"><span class="result-label">点击抽签试试</span></div>
+      <div style="text-align:center"><button class="btn btn-primary" onclick="doDraw()">&#x1F3B2; 抽一个</button></div>
+    </div>
+
+    <!--  Memo  -->
+    <div class="page" id="pageMemo">
+      <p class="section-title">&#x1F4DD; 备忘录</p>
+      <div class="input-group">
+        <input type="text" id="memoInput" placeholder="写点什么…" onkeydown="if(event.key==='Enter') addMemo()" />
+        <button class="btn btn-primary" onclick="addMemo()">保存</button>
+      </div>
+      <div id="memoList"></div>
+    </div>
+
+    <!--  Poll  -->
+    <div class="page" id="pagePoll">
+      <p class="section-title">&#x1F5F3;&#xFE0F; 集体投票</p>
+      <p style="font-size:13px;color:var(--text-secondary);margin-bottom:10px">创建投票，点击选项投票，实时统计。</p>
+      <div class="input-group"><input type="text" id="pollTitle" placeholder="投票标题，如：今晚吃什么" /></div>
+      <div class="input-group">
+        <input type="text" id="pollOptionInput" placeholder="添加选项，回车" onkeydown="if(event.key==='Enter') addPollOption()" />
+        <button class="btn btn-primary" onclick="addPollOption()">添加</button>
+      </div>
+      <div class="tag-list" id="pollTags"></div>
+      <div style="text-align:center;margin-bottom:14px"><button class="btn btn-primary" onclick="createPoll()">&#x1F4CA; 开始投票</button></div>
+      <div id="pollResult"></div>
+    </div>
   </div>
 
   <script>
     /* =============================================
-       Navigation
+       AUTH
     ============================================= */
-    const pageTitles = {
-      home: '多功能工具箱',
-      wheel: '🎡 幸运转盘',
-      draw: '🎲 抽签',
-      memo: '📝 备忘录',
-      poll: '🗳️ 集体投票',
+    var STORAGE_KEY = 'toolbox_pwhash';
+    var SESSION_KEY = 'toolbox_auth';
+
+    if (sessionStorage.getItem(SESSION_KEY) === '1') {
+      showApp();
+    } else {
+      document.getElementById('loginScreen').style.display = 'flex';
+      var hash = localStorage.getItem(STORAGE_KEY);
+      if (!hash) {
+        document.getElementById('loginTitle').textContent = '\uD83D\uDD10 \u9996\u6B21\u8BBE\u7F6E';
+        document.getElementById('loginSubtitle').textContent = '\u8BF7\u521B\u5EFA\u4E00\u4E2A\u5BC6\u7801\uFF08\u81F3\u5C114\u4F4D\uFF09';
+      }
+    }
+
+    async function hashPassword(pwd) {
+      var encoder = new TextEncoder();
+      var data = encoder.encode(pwd + 'toolbox_salt_2024');
+      var hashBuffer = await crypto.subtle.digest('SHA-256', data);
+      var hashArray = Array.from(new Uint8Array(hashBuffer));
+      return hashArray.map(function(b) { return b.toString(16).padStart(2, '0'); }).join('');
+    }
+
+    async function doLogin() {
+      var pwd = document.getElementById('loginPwd').value;
+      var errorEl = document.getElementById('loginError');
+      var hash = localStorage.getItem(STORAGE_KEY);
+
+      if (pwd.length < 4) { errorEl.textContent = '\u5BC6\u7801\u81F3\u5C114\u4F4D'; return; }
+
+      if (!hash) {
+        var newHash = await hashPassword(pwd);
+        localStorage.setItem(STORAGE_KEY, newHash);
+        sessionStorage.setItem(SESSION_KEY, '1');
+        showApp();
+        toast('\u5BC6\u7801\u5DF2\u8BBE\u7F6E\uFF0C\u4E0B\u6B21\u7528\u8FD9\u4E2A\u5BC6\u7801\u767B\u5F55');
+        return;
+      }
+
+      var inputHash = await hashPassword(pwd);
+      if (inputHash === hash) {
+        sessionStorage.setItem(SESSION_KEY, '1');
+        showApp();
+      } else {
+        errorEl.textContent = '\u5BC6\u7801\u9519\u8BEF\uFF0C\u8BF7\u91CD\u8BD5';
+        document.getElementById('loginPwd').value = '';
+      }
+    }
+
+    function showApp() {
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('appShell').classList.add('show');
+      initApp();
+    }
+
+    function doLogout() {
+      sessionStorage.removeItem(SESSION_KEY);
+      document.getElementById('loginScreen').style.display = 'flex';
+      document.getElementById('appShell').classList.remove('show');
+      document.getElementById('loginPwd').value = '';
+      document.getElementById('loginError').textContent = '';
+    }
+
+    /* =============================================
+       NAVIGATION
+    ============================================= */
+    var pageTitles = {
+      home: '\u591A\u529F\u80FD\u5DE5\u5177\u7BB1',
+      rotation: '\uD83D\uDD04 \u5C0F\u503C\u8F6E\u6362',
+      biztrip: '\u2708\uFE0F \u80FD\u4E0D\u80FD\u4E0D\u51FA\u516C\u5DEE',
+      wheel: '\uD83C\uDFA1 \u5E78\u8FD0\u8F6C\u76D8',
+      draw: '\uD83C\uDFB2 \u62BD\u7B7E',
+      memo: '\uD83D\uDCDD \u5907\u5FD8\u5F55',
+      poll: '\uD83D\uDDF3\uFE0F \u96C6\u4F53\u6295\u7968',
     };
 
     function navigate(page) {
-      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-      document.getElementById('page' + page.charAt(0).toUpperCase() + page.slice(1)).classList.add('active');
+      var pages = document.querySelectorAll('.page');
+      for (var i = 0; i < pages.length; i++) pages[i].classList.remove('active');
+      var cap = page.charAt(0).toUpperCase() + page.slice(1);
+      document.getElementById('page' + cap).classList.add('active');
       document.getElementById('headerTitle').textContent = pageTitles[page] || pageTitles.home;
-      document.getElementById('btnBack').classList.toggle('show', page !== 'home');
+      document.getElementById('btnBack').classList.toggle('hide', page === 'home');
       if (page === 'wheel') drawWheel();
+      if (page === 'rotation') renderRotation();
+      if (page === 'biztrip') renderBizTrip();
+      if (page === 'memo') renderMemos();
+      if (page === 'draw') renderDrawTags();
+      if (page === 'poll') { renderPollTags(); renderPollResult(); }
     }
 
     function goHome() { navigate('home'); }
 
     function toast(msg) {
-      const t = document.getElementById('toast');
+      var t = document.getElementById('toast');
       t.textContent = msg; t.classList.add('show');
-      setTimeout(() => t.classList.remove('show'), 2000);
+      setTimeout(function() { t.classList.remove('show'); }, 2000);
     }
 
     /* =============================================
-       Wheel - 幸运转盘
+       ROTATION
     ============================================= */
-    let wheelItems = ['选项A', '选项B', '选项C', '选项D'];
-    let wheelAngle = 0;
-    let spinAnimation = null;
+    var rotDateOffset = 0;
+
+    function getRotationData() {
+      try {
+        var d = JSON.parse(localStorage.getItem('toolbox_rotation'));
+        return d || { people: [], countPerDay: 2 };
+      } catch(e) { return { people: [], countPerDay: 2 }; }
+    }
+
+    function saveRotationData() {
+      var countEl = document.getElementById('rotCount');
+      var count = countEl ? parseInt(countEl.value) : 2;
+      var data = getRotationData();
+      data.countPerDay = Math.max(1, Math.min(20, count || 2));
+      localStorage.setItem('toolbox_rotation', JSON.stringify(data));
+      renderRotation();
+    }
+
+    function addRotationPerson() {
+      var nameEl = document.getElementById('rotName');
+      var projEl = document.getElementById('rotProject');
+      var name = nameEl.value.trim();
+      var project = projEl.value.trim();
+      if (!name) { toast('\u8BF7\u8F93\u5165\u59D3\u540D'); return; }
+      if (!project) { toast('\u8BF7\u8F93\u5165\u8D1F\u8D23\u9879\u76EE'); return; }
+
+      var data = getRotationData();
+      data.people.push({ id: Date.now(), name: name, project: project });
+      localStorage.setItem('toolbox_rotation', JSON.stringify(data));
+      nameEl.value = ''; projEl.value = '';
+      renderRotation();
+      toast('\u5DF2\u6DFB\u52A0\uFF1A' + name);
+    }
+
+    function removeRotationPerson(id) {
+      var data = getRotationData();
+      data.people = data.people.filter(function(p) { return p.id !== id; });
+      localStorage.setItem('toolbox_rotation', JSON.stringify(data));
+      renderRotation();
+    }
+
+    function shiftRotDate(delta) {
+      rotDateOffset += delta;
+      renderRotation();
+    }
+
+    function getDateStr(offset) {
+      var d = new Date();
+      d.setDate(d.getDate() + offset);
+      return d.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
+    }
+
+    function getTodayKey(offset) {
+      var d = new Date();
+      d.setHours(0, 0, 0, 0);
+      var epoch = new Date(2024, 0, 1);
+      var days = Math.floor((d.getTime() - epoch.getTime()) / 86400000) + offset;
+      return Math.max(0, days);
+    }
+
+    function renderRotation() {
+      var data = getRotationData();
+      var people = data.people;
+      var countPerDay = data.countPerDay;
+
+      var peopleList = document.getElementById('rotationPeopleList');
+      if (people.length === 0) {
+        peopleList.innerHTML = '<div class="empty-state"><span class="icon">\uD83D\uDC65</span>\u8FD8\u6CA1\u6709\u6DFB\u52A0\u4EBA\u5458</div>';
+      } else {
+        peopleList.innerHTML = people.map(function(p) {
+          return '<div class="list-item"><div class="content"><div class="title">' + escapeHtml(p.name) + '</div><div class="sub">\uD83D\uDCCB ' + escapeHtml(p.project) + '</div></div><div class="actions"><button class="btn btn-danger btn-sm" onclick="removeRotationPerson(' + p.id + ')">\u5220\u9664</button></div></div>';
+        }).join('');
+      }
+
+      var countEl = document.getElementById('rotCount');
+      if (countEl) countEl.value = countPerDay;
+
+      document.getElementById('rotDateLabel').textContent = getDateStr(rotDateOffset);
+
+      var board = document.getElementById('rotationDutyBoard');
+      if (people.length === 0) {
+        board.innerHTML = '<div class="empty-state"><span class="icon">\uD83D\uDCCB</span>\u6DFB\u52A0\u4EBA\u5458\u540E\u663E\u793A\u503C\u73ED\u8868</div>';
+        return;
+      }
+
+      var total = people.length;
+      var dayKey = getTodayKey(rotDateOffset);
+      var startIdx = (dayKey * countPerDay) % total;
+
+      var dutyPeople = [];
+      for (var i = 0; i < countPerDay; i++) {
+        dutyPeople.push(people[(startIdx + i) % total]);
+      }
+
+      var label = rotDateOffset === 0 ? '\u4ECA\u65E5' : (rotDateOffset > 0 ? rotDateOffset + '\u5929\u540E' : Math.abs(rotDateOffset) + '\u5929\u524D');
+
+      board.innerHTML = '<p style="font-size:15px;font-weight:600;margin-bottom:10px">\uD83D\uDCC5 ' + label + '\u503C\u73ED\uFF1A</p>' +
+        dutyPeople.map(function(p) {
+          return '<div class="rotation-duty-card"><div class="person">\uD83D\uDC64 ' + escapeHtml(p.name) + '</div><div class="project">' + escapeHtml(p.project) + '</div></div>';
+        }).join('') +
+        '<p style="font-size:12px;color:var(--text-secondary);margin-top:8px;text-align:center">\u5171 ' + total + ' \u4EBA\uFF0C\u6BCF\u65E5 ' + countPerDay + ' \u4EBA\u503C\u73ED</p>';
+    }
+
+    /* =============================================
+       BIZTRIP - 能不能不出公差
+    ============================================= */
+    function getBizTripData() {
+      try {
+        var d = JSON.parse(localStorage.getItem('toolbox_biztrip'));
+        return d || { people: [], currentIndex: 0 };
+      } catch(e) { return { people: [], currentIndex: 0 }; }
+    }
+
+    function saveBizTripData(data) {
+      localStorage.setItem('toolbox_biztrip', JSON.stringify(data));
+    }
+
+    function addBizTripPerson() {
+      var input = document.getElementById('biztripInput');
+      var name = input.value.trim();
+      if (!name) { toast('\u8BF7\u8F93\u5165\u59D3\u540D'); return; }
+      var data = getBizTripData();
+      // check duplicate
+      for (var i = 0; i < data.people.length; i++) {
+        if (data.people[i].name === name) { toast('\u8BE5\u4EBA\u5DF2\u5B58\u5728'); return; }
+      }
+      data.people.push({ id: Date.now(), name: name, count: 0, lastTime: null });
+      saveBizTripData(data);
+      input.value = '';
+      renderBizTrip();
+      toast('\u5DF2\u6DFB\u52A0\uFF1A' + name);
+    }
+
+    function removeBizTripPerson(id) {
+      var data = getBizTripData();
+      data.people = data.people.filter(function(p) { return p.id !== id; });
+      if (data.currentIndex >= data.people.length) data.currentIndex = 0;
+      saveBizTripData(data);
+      renderBizTrip();
+    }
+
+    function doBizTrip() {
+      var data = getBizTripData();
+      if (data.people.length === 0) { toast('\u8BF7\u5148\u6DFB\u52A0\u4EBA\u5458'); return; }
+      if (data.people.length === 1) { toast('\u53EA\u6709\u4E00\u4E2A\u4EBA\uFF0C\u6CA1\u6CD5\u8F6E\u6362'); return; }
+
+      var idx = data.currentIndex % data.people.length;
+      var person = data.people[idx];
+      person.count = (person.count || 0) + 1;
+      person.lastTime = new Date().toLocaleString('zh-CN');
+
+      data.currentIndex = (idx + 1) % data.people.length;
+      saveBizTripData(data);
+      renderBizTrip();
+      toast(person.name + ' \u51FA\u516C\u5DEE\uFF08\u7B2C' + person.count + '\u6B21\uFF09');
+    }
+
+    function resetBizTrip() {
+      var data = getBizTripData();
+      for (var i = 0; i < data.people.length; i++) {
+        data.people[i].count = 0;
+        data.people[i].lastTime = null;
+      }
+      data.currentIndex = 0;
+      saveBizTripData(data);
+      renderBizTrip();
+      toast('\u5DF2\u5168\u90E8\u91CD\u7F6E');
+    }
+
+    function undoBizTrip() {
+      var data = getBizTripData();
+      if (data.people.length === 0) { toast('\u65E0\u8BB0\u5F55\u53EF\u64A4\u9500'); return; }
+      // Go back one step
+      var prevIdx = (data.currentIndex - 1 + data.people.length) % data.people.length;
+      var person = data.people[prevIdx];
+      if (!person.count || person.count <= 0) {
+        toast('\u8BE5\u4EBA\u6CA1\u6709\u516C\u5DEE\u8BB0\u5F55');
+        return;
+      }
+      person.count--;
+      if (person.count === 0) person.lastTime = null;
+      data.currentIndex = prevIdx;
+      saveBizTripData(data);
+      renderBizTrip();
+      toast('\u5DF2\u64A4\u9500 ' + person.name + ' \u7684\u8BB0\u5F55');
+    }
+
+    function moveBizTripUp(id) {
+      var data = getBizTripData();
+      var idx = -1;
+      for (var i = 0; i < data.people.length; i++) {
+        if (data.people[i].id === id) { idx = i; break; }
+      }
+      if (idx <= 0) return;
+      // Adjust currentIndex if needed
+      if (data.currentIndex === idx) data.currentIndex = idx - 1;
+      else if (data.currentIndex === idx - 1) data.currentIndex = idx;
+      var tmp = data.people[idx];
+      data.people[idx] = data.people[idx - 1];
+      data.people[idx - 1] = tmp;
+      saveBizTripData(data);
+      renderBizTrip();
+    }
+
+    function moveBizTripDown(id) {
+      var data = getBizTripData();
+      var idx = -1;
+      for (var i = 0; i < data.people.length; i++) {
+        if (data.people[i].id === id) { idx = i; break; }
+      }
+      if (idx < 0 || idx >= data.people.length - 1) return;
+      if (data.currentIndex === idx) data.currentIndex = idx + 1;
+      else if (data.currentIndex === idx + 1) data.currentIndex = idx;
+      var tmp = data.people[idx];
+      data.people[idx] = data.people[idx + 1];
+      data.people[idx + 1] = tmp;
+      saveBizTripData(data);
+      renderBizTrip();
+    }
+
+    function renderBizTrip() {
+      var data = getBizTripData();
+      var nextIdx = data.currentIndex % Math.max(data.people.length, 1);
+
+      // People list
+      var listEl = document.getElementById('biztripPeopleList');
+      if (!listEl) return;
+      if (data.people.length === 0) {
+        listEl.innerHTML = '<div class="empty-state"><span class="icon">\uD83D\uDC65</span>\u8FD8\u6CA1\u6709\u6DFB\u52A0\u4EBA\u5458</div>';
+      } else {
+        listEl.innerHTML = data.people.map(function(p, i) {
+          var arrow = '';
+          if (i === nextIdx && data.people.length > 1) arrow = ' <span style="font-size:12px;color:#f59e0b">\u2B05 \u4E0B\u4E00\u4E2A</span>';
+          return '<div class="biztrip-record-card">' +
+            '<div class="info">' +
+              '<div class="name-col">' + escapeHtml(p.name) + arrow + '</div>' +
+              '<div class="stats">\u2708 \u516C\u5DEE ' + (p.count || 0) + ' \u6B21' +
+                (p.lastTime ? ' | \u6700\u8FD1\uFF1A' + p.lastTime : ' | \u8FD8\u6CA1\u51FA\u8FC7') +
+              '</div>' +
+            '</div>' +
+            '<div style="display:flex;gap:4px;flex-shrink:0">' +
+              '<button class="btn btn-outline btn-sm" onclick="moveBizTripUp(' + p.id + ')" title="\u4E0A\u79FB">\u25B2</button>' +
+              '<button class="btn btn-outline btn-sm" onclick="moveBizTripDown(' + p.id + ')" title="\u4E0B\u79FB">\u25BC</button>' +
+              '<button class="btn btn-danger btn-sm" onclick="removeBizTripPerson(' + p.id + ')">\u5220\u9664</button>' +
+            '</div>' +
+          '</div>';
+        }).join('');
+      }
+
+      // Next-up card
+      var nextEl = document.getElementById('biztripNext');
+      if (!nextEl) return;
+      if (data.people.length < 2) {
+        nextEl.innerHTML = '<div style="color:var(--text-secondary);text-align:center">\u81F3\u5C11\u9700\u89812\u4EBA\u624D\u80FD\u8F6E\u6362</div>';
+      } else {
+        var nextPerson = data.people[nextIdx];
+        nextEl.innerHTML =
+          '<div class="biztrip-next-card">' +
+            '<div class="hint">\uD83D\uDC49 \u4E0B\u4E00\u4E2A\u51FA\u516C\u5DEE\u7684\u662F</div>' +
+            '<div class="name">' + escapeHtml(nextPerson.name) + '</div>' +
+            '<div style="font-size:13px;color:#92400e;margin-top:4px">' +
+              '\u5DF2\u51FA\u8FC7 ' + (nextPerson.count || 0) + ' \u6B21\u516C\u5DEE' +
+            '</div>' +
+          '</div>' +
+          '<div style="text-align:center;margin-bottom:10px">' +
+            '<button class="btn btn-primary" onclick="doBizTrip()" style="font-size:18px;padding:14px 36px">' +
+              '\u2708\uFE0F \u786E\u8BA4\u51FA\u516C\u5DEE' +
+            '</button>' +
+          '</div>';
+      }
+    }
+
+    /* =============================================
+       WHEEL
+    ============================================= */
+    var wheelItems = ['\u9009\u9879A', '\u9009\u9879B', '\u9009\u9879C', '\u9009\u9879D'];
+    var wheelAngle = 0;
+    var spinAnimation = null;
 
     function addWheelItem() {
-      const input = document.getElementById('wheelInput');
-      const val = input.value.trim();
+      var input = document.getElementById('wheelInput'); var val = input.value.trim();
       if (!val) return;
-      if (wheelItems.length >= 12) { toast('最多12个选项'); return; }
-      wheelItems.push(val);
-      input.value = '';
-      renderWheelTags();
-      drawWheel();
+      if (wheelItems.length >= 12) { toast('\u6700\u591A12\u4E2A\u9009\u9879'); return; }
+      wheelItems.push(val); input.value = ''; renderWheelTags(); drawWheel();
     }
 
     function renderWheelTags() {
-      const container = document.getElementById('wheelTags');
-      container.innerHTML = wheelItems.map((item, i) =>
-        `<span class="tag">${item} <span class="remove" onclick="removeWheelItem(${i})">×</span></span>`
-      ).join('');
+      document.getElementById('wheelTags').innerHTML = wheelItems.map(function(item, i) {
+        return '<span class="tag">' + escapeHtml(item) + ' <span class="remove" onclick="removeWheelItem(' + i + ')">\u00D7</span></span>';
+      }).join('');
     }
 
     function removeWheelItem(i) {
       wheelItems.splice(i, 1);
-      if (wheelItems.length < 2) wheelItems = ['选项A', '选项B'];
-      renderWheelTags();
-      drawWheel();
+      if (wheelItems.length < 2) wheelItems = ['\u9009\u9879A', '\u9009\u9879B'];
+      renderWheelTags(); drawWheel();
     }
 
     function clearWheel() {
-      wheelItems = ['选项A', '选项B', '选项C', '选项D'];
-      renderWheelTags();
-      drawWheel();
-      toast('已重置');
+      wheelItems = ['\u9009\u9879A', '\u9009\u9879B', '\u9009\u9879C', '\u9009\u9879D'];
+      renderWheelTags(); drawWheel(); toast('\u5DF2\u91CD\u7F6E');
     }
 
     function drawWheel() {
-      const canvas = document.getElementById('wheelCanvas');
-      const ctx = canvas.getContext('2d');
-      const dpr = window.devicePixelRatio || 1;
-      const container = canvas.parentElement;
-      const size = Math.min(container.clientWidth || 320, 320);
-      canvas.width = size * dpr;
-      canvas.height = size * dpr;
+      var canvas = document.getElementById('wheelCanvas');
+      if (!canvas || !canvas.parentElement) return;
+      var ctx = canvas.getContext('2d');
+      var dpr = window.devicePixelRatio || 1;
+      var container = canvas.parentElement;
+      var size = Math.min(container.clientWidth || 300, 300);
+      canvas.width = size * dpr; canvas.height = size * dpr;
       ctx.scale(dpr, dpr);
 
-      const cx = size / 2, cy = size / 2, r = size / 2 - 10;
-      const n = wheelItems.length;
-      const arc = (2 * Math.PI) / n;
-      const colors = ['#6366f1','#f59e0b','#10b981','#ec4899','#06b6d4','#f97316','#8b5cf6','#14b8a6','#e11d48','#65a30d','#d946ef','#0ea5e9'];
+      var cx = size / 2, cy = size / 2, r = size / 2 - 10;
+      var n = wheelItems.length;
+      var arc = (2 * Math.PI) / n;
+      var colors = ['#6366f1','#f59e0b','#10b981','#ec4899','#06b6d4','#f97316','#8b5cf6','#14b8a6','#e11d48','#65a30d','#d946ef','#0ea5e9'];
 
       ctx.clearRect(0, 0, size, size);
+      for (var i = 0; i < n; i++) {
+        var start = i * arc + wheelAngle, end = start + arc;
+        ctx.beginPath(); ctx.moveTo(cx, cy); ctx.arc(cx, cy, r, start, end); ctx.closePath();
+        ctx.fillStyle = colors[i % colors.length]; ctx.fill();
+        ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.stroke();
 
-      // Draw slices
-      for (let i = 0; i < n; i++) {
-        const start = i * arc + wheelAngle;
-        const end = start + arc;
-        ctx.beginPath();
-        ctx.moveTo(cx, cy);
-        ctx.arc(cx, cy, r, start, end);
-        ctx.closePath();
-        ctx.fillStyle = colors[i % colors.length];
-        ctx.fill();
-        ctx.strokeStyle = '#fff';
-        ctx.lineWidth = 2;
-        ctx.stroke();
-
-        // Text
-        const mid = start + arc / 2;
+        var mid = start + arc / 2;
         ctx.save();
         ctx.translate(cx + Math.cos(mid) * r * 0.65, cy + Math.sin(mid) * r * 0.65);
         ctx.rotate(mid + Math.PI / 2);
-        ctx.fillStyle = '#fff';
-        ctx.font = 'bold 14px -apple-system, sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText(wheelItems[i].length > 6 ? wheelItems[i].slice(0,5)+'…' : wheelItems[i], 0, 0);
+        ctx.fillStyle = '#fff'; ctx.font = 'bold 13px -apple-system, sans-serif'; ctx.textAlign = 'center';
+        ctx.fillText(wheelItems[i].length > 5 ? wheelItems[i].slice(0, 4) + '\u2026' : wheelItems[i], 0, 0);
         ctx.restore();
       }
+      ctx.beginPath(); ctx.arc(cx, cy, 16, 0, 2 * Math.PI);
+      ctx.fillStyle = '#fff'; ctx.fill(); ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 3; ctx.stroke();
 
-      // Center circle
       ctx.beginPath();
-      ctx.arc(cx, cy, 18, 0, 2 * Math.PI);
-      ctx.fillStyle = '#fff';
-      ctx.fill();
-      ctx.strokeStyle = '#e2e8f0';
-      ctx.lineWidth = 3;
-      ctx.stroke();
-
-      // Pointer triangle (top)
-      ctx.beginPath();
-      ctx.moveTo(cx - 12, cy - r + 6);
-      ctx.lineTo(cx + 12, cy - r + 6);
-      ctx.lineTo(cx, cy - r - 14);
-      ctx.closePath();
-      ctx.fillStyle = '#ef4444';
-      ctx.fill();
-      ctx.strokeStyle = '#fff';
-      ctx.lineWidth = 2;
-      ctx.stroke();
+      ctx.moveTo(cx - 12, cy - r + 6); ctx.lineTo(cx + 12, cy - r + 6);
+      ctx.lineTo(cx, cy - r - 14); ctx.closePath();
+      ctx.fillStyle = '#ef4444'; ctx.fill(); ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.stroke();
     }
 
     function spinWheel() {
-      if (wheelItems.length < 2) { toast('至少需要2个选项'); return; }
-      const btn = document.getElementById('spinBtn');
-      if (spinAnimation) return; // already spinning
+      if (wheelItems.length < 2) { toast('\u81F3\u5C11\u9700\u89812\u4E2A\u9009\u9879'); return; }
+      var btn = document.getElementById('spinBtn');
+      if (spinAnimation) return;
+      btn.disabled = true; btn.textContent = '\u8F6C\u52A8\u4E2D\u2026';
 
-      btn.disabled = true;
-      btn.textContent = '⏳ 转动中…';
-
-      const spins = 5 + Math.random() * 3; // 5-8 full rotations
-      const stopAngle = (Math.random() * 2 * Math.PI);
-      const targetAngle = wheelAngle + spins * 2 * Math.PI + stopAngle;
-      const duration = 3000 + Math.random() * 1000;
-      const startAngle = wheelAngle;
-      const startTime = performance.now();
+      var spins = 5 + Math.random() * 3;
+      var stopAngle = Math.random() * 2 * Math.PI;
+      var targetAngle = wheelAngle + spins * 2 * Math.PI + stopAngle;
+      var duration = 3000 + Math.random() * 1000;
+      var startAngle = wheelAngle, startTime = performance.now();
 
       function animate(now) {
-        const elapsed = now - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-        // Ease-out cubic
-        const eased = 1 - Math.pow(1 - progress, 3);
+        var elapsed = now - startTime;
+        var progress = Math.min(elapsed / duration, 1);
+        var eased = 1 - Math.pow(1 - progress, 3);
         wheelAngle = startAngle + (targetAngle - startAngle) * eased;
         drawWheel();
+        if (progress < 1) { spinAnimation = requestAnimationFrame(animate); return; }
+        spinAnimation = null; btn.disabled = false; btn.textContent = '\uD83C\uDFAF \u8F6C\u8F6C\u76D8';
 
-        if (progress < 1) {
-          spinAnimation = requestAnimationFrame(animate);
-        } else {
-          spinAnimation = null;
-          btn.disabled = false;
-          btn.textContent = '🎯 转转盘';
+        var n = wheelItems.length, arc = (2 * Math.PI) / n;
+        var topAngle = 3 * Math.PI / 2;
+        var normalized = (topAngle - wheelAngle + 2 * Math.PI) % (2 * Math.PI);
+        var idx = Math.floor(normalized / arc);
+        if (idx >= n) idx = n - 1;
+        var result = wheelItems[idx];
 
-          // Determine result
-          const n = wheelItems.length;
-          const arc = (2 * Math.PI) / n;
-          // Normalize angle so pointer (top = -PI/2) maps to a slice
-          let pointerAngle = (2 * Math.PI - (wheelAngle % (2 * Math.PI)) + Math.PI / 2 + Math.PI / 2) % (2 * Math.PI);
-          // Actually, let me think about this more carefully.
-          // The pointer is at the top (angle = -PI/2 or 3*PI/2 from center).
-          // Each slice i spans from i*arc + wheelAngle to (i+1)*arc + wheelAngle
-          // We want to find which slice contains the angle at the top (3*PI/2).
-          const topAngle = 3 * Math.PI / 2;
-          let normalized = (topAngle - wheelAngle + 2 * Math.PI) % (2 * Math.PI);
-          let idx = Math.floor(normalized / arc);
-          if (idx >= n) idx = n - 1;
-
-          const result = wheelItems[idx];
-          const resultDiv = document.createElement('div');
-          resultDiv.style.cssText = 'text-align:center;margin-top:12px;font-size:20px;font-weight:700;color:var(--primary);animation:fadeIn 0.3s ease';
-          resultDiv.textContent = '🎉 ' + result;
-          const existing = document.querySelector('.wheel-result');
-          if (existing) existing.remove();
-          resultDiv.className = 'wheel-result';
-          document.querySelector('.canvas-wrap').after(resultDiv);
-          toast('抽到：' + result);
-        }
+        var old = document.querySelector('.wheel-result');
+        if (old) old.remove();
+        var el = document.createElement('div');
+        el.className = 'wheel-result';
+        el.style.cssText = 'text-align:center;margin-top:12px;font-size:20px;font-weight:700;color:var(--primary);animation:fadeIn 0.3s ease';
+        el.textContent = '\uD83C\uDF89 ' + result;
+        var canvasWrap = document.querySelector('.canvas-wrap');
+        if (canvasWrap) canvasWrap.after(el);
+        toast('\u62BD\u5230\uFF1A' + result);
       }
       spinAnimation = requestAnimationFrame(animate);
     }
 
     /* =============================================
-       Draw - 抽签
+       DRAW
     ============================================= */
-    let drawItems = ['选项1', '选项2', '选项3', '选项4', '选项5'];
+    var drawItems = ['\u9009\u98791', '\u9009\u98792', '\u9009\u98793', '\u9009\u98794', '\u9009\u98795'];
 
     function addDrawItem() {
-      const input = document.getElementById('drawInput');
-      const val = input.value.trim();
+      var input = document.getElementById('drawInput'); var val = input.value.trim();
       if (!val) return;
-      drawItems.push(val);
-      input.value = '';
-      renderDrawTags();
+      drawItems.push(val); input.value = ''; renderDrawTags();
     }
 
     function renderDrawTags() {
-      const container = document.getElementById('drawTags');
-      container.innerHTML = drawItems.map((item, i) =>
-        `<span class="tag">${item} <span class="remove" onclick="removeDrawItem(${i})">×</span></span>`
-      ).join('');
+      var container = document.getElementById('drawTags');
+      if (!container) return;
+      container.innerHTML = drawItems.map(function(item, i) {
+        return '<span class="tag">' + escapeHtml(item) + ' <span class="remove" onclick="removeDrawItem(' + i + ')">\u00D7</span></span>';
+      }).join('');
     }
 
     function removeDrawItem(i) {
       drawItems.splice(i, 1);
-      if (drawItems.length < 2) drawItems = ['选项1', '选项2'];
+      if (drawItems.length < 2) drawItems = ['\u9009\u98791', '\u9009\u98792'];
       renderDrawTags();
     }
 
     function doDraw() {
-      if (drawItems.length < 2) { toast('至少需要2个选项'); return; }
-      const box = document.getElementById('drawResult');
-
-      // Rolling animation
-      let count = 0;
-      const maxCount = 10 + Math.floor(Math.random() * 6);
-      const interval = setInterval(() => {
-        const rand = Math.floor(Math.random() * drawItems.length);
-        box.innerHTML = `<span class="result-label">抽取中…</span><span class="result-text" style="font-size:36px">${drawItems[rand]}</span>`;
+      if (drawItems.length < 2) { toast('\u81F3\u5C11\u9700\u89812\u4E2A\u9009\u9879'); return; }
+      var box = document.getElementById('drawResult');
+      var count = 0;
+      var maxCount = 10 + Math.floor(Math.random() * 6);
+      var interval = setInterval(function() {
+        var rand = Math.floor(Math.random() * drawItems.length);
+        box.innerHTML = '<span class="result-label">\u62BD\u53D6\u4E2D\u2026</span><span class="result-text" style="font-size:32px">' + escapeHtml(drawItems[rand]) + '</span>';
         count++;
         if (count >= maxCount) {
           clearInterval(interval);
-          const final = drawItems[Math.floor(Math.random() * drawItems.length)];
-          box.innerHTML = `<span class="result-label">🎉 抽中了</span><span class="result-text">${final}</span>`;
-          toast('抽中：' + final);
+          var final = drawItems[Math.floor(Math.random() * drawItems.length)];
+          box.innerHTML = '<span class="result-label">\uD83C\uDF89 \u62BD\u4E2D\u4E86</span><span class="result-text">' + escapeHtml(final) + '</span>';
+          toast('\u62BD\u4E2D\uFF1A' + final);
         }
       }, 60);
     }
 
     /* =============================================
-       Memo - 备忘录
+       MEMO
     ============================================= */
     function getMemos() {
       try { return JSON.parse(localStorage.getItem('toolbox_memos')) || []; }
-      catch { return []; }
+      catch(e) { return []; }
     }
 
-    function saveMemos(memos) {
-      localStorage.setItem('toolbox_memos', JSON.stringify(memos));
-    }
+    function saveMemos(memos) { localStorage.setItem('toolbox_memos', JSON.stringify(memos)); }
 
     function addMemo() {
-      const input = document.getElementById('memoInput');
-      const val = input.value.trim();
+      var input = document.getElementById('memoInput'); var val = input.value.trim();
       if (!val) return;
-      const memos = getMemos();
+      var memos = getMemos();
       memos.unshift({ id: Date.now(), text: val, time: new Date().toLocaleString('zh-CN') });
-      saveMemos(memos);
-      input.value = '';
-      renderMemos();
-      toast('已保存');
+      saveMemos(memos); input.value = ''; renderMemos(); toast('\u5DF2\u4FDD\u5B58');
     }
 
     function deleteMemo(id) {
-      let memos = getMemos();
-      memos = memos.filter(m => m.id !== id);
-      saveMemos(memos);
-      renderMemos();
+      var memos = getMemos();
+      memos = memos.filter(function(m) { return m.id !== id; });
+      saveMemos(memos); renderMemos();
     }
 
     function renderMemos() {
-      const container = document.getElementById('memoList');
-      const memos = getMemos();
+      var container = document.getElementById('memoList');
+      if (!container) return;
+      var memos = getMemos();
       if (memos.length === 0) {
-        container.innerHTML = '<div class="empty-state"><span class="icon">📝</span>还没有备忘录，写一条吧</div>';
+        container.innerHTML = '<div class="empty-state"><span class="icon">\uD83D\uDCDD</span>\u8FD8\u6CA1\u6709\u5907\u5FD8\u5F55</div>';
         return;
       }
-      container.innerHTML = memos.map(m =>
-        `<div class="list-item">
-          <div class="content">
-            <div class="title">${escapeHtml(m.text)}</div>
-            <div class="sub">${m.time}</div>
-          </div>
-          <div class="actions">
-            <button class="btn btn-danger btn-sm" onclick="deleteMemo(${m.id})">删除</button>
-          </div>
-        </div>`
-      ).join('');
+      container.innerHTML = memos.map(function(m) {
+        return '<div class="list-item"><div class="content"><div class="title">' + escapeHtml(m.text) + '</div><div class="sub">' + m.time + '</div></div><div class="actions"><button class="btn btn-danger btn-sm" onclick="deleteMemo(' + m.id + ')">\u5220\u9664</button></div></div>';
+      }).join('');
     }
 
     /* =============================================
-       Poll - 集体投票
+       POLL
     ============================================= */
-    let pollOptions = [];
-    let pollTitle = '';
+    var pollOptions = [];
+    var pollTitle = '';
 
     function addPollOption() {
-      const input = document.getElementById('pollOptionInput');
-      const val = input.value.trim();
+      var input = document.getElementById('pollOptionInput'); var val = input.value.trim();
       if (!val) return;
-      pollOptions.push({ name: val, votes: 0 });
-      input.value = '';
-      renderPollTags();
+      pollOptions.push({ name: val, votes: 0 }); input.value = ''; renderPollTags();
     }
 
     function renderPollTags() {
-      const container = document.getElementById('pollTags');
-      container.innerHTML = pollOptions.map((item, i) =>
-        `<span class="tag">${item.name} <span class="remove" onclick="removePollOption(${i})">×</span></span>`
-      ).join('');
+      var container = document.getElementById('pollTags');
+      if (!container) return;
+      container.innerHTML = pollOptions.map(function(item, i) {
+        return '<span class="tag">' + escapeHtml(item.name) + ' <span class="remove" onclick="removePollOption(' + i + ')">\u00D7</span></span>';
+      }).join('');
     }
 
-    function removePollOption(i) {
-      pollOptions.splice(i, 1);
-      renderPollTags();
-    }
+    function removePollOption(i) { pollOptions.splice(i, 1); renderPollTags(); }
 
     function createPoll() {
-      const titleInput = document.getElementById('pollTitle');
-      pollTitle = titleInput.value.trim() || '未命名投票';
-
-      if (pollOptions.length < 2) { toast('至少需要2个选项'); return; }
-
-      // Reset votes
-      pollOptions.forEach(o => o.votes = 0);
+      var titleInput = document.getElementById('pollTitle');
+      pollTitle = titleInput.value.trim() || '\u672A\u547D\u540D\u6295\u7968';
+      if (pollOptions.length < 2) { toast('\u81F3\u5C11\u9700\u89812\u4E2A\u9009\u9879'); return; }
+      pollOptions.forEach(function(o) { o.votes = 0; });
       renderPollResult();
-      toast('投票已创建，点击选项投票');
+      toast('\u6295\u7968\u5DF2\u521B\u5EFA\uFF0C\u70B9\u51FB\u9009\u9879\u6295\u7968');
     }
 
     function vote(index) {
       if (index < 0 || index >= pollOptions.length) return;
-      pollOptions[index].votes++;
-      renderPollResult();
+      pollOptions[index].votes++; renderPollResult();
     }
 
-    function resetPoll() {
-      pollOptions.forEach(o => o.votes = 0);
-      renderPollResult();
-      toast('已重置');
-    }
+    function resetPoll() { pollOptions.forEach(function(o) { o.votes = 0; }); renderPollResult(); toast('\u5DF2\u91CD\u7F6E'); }
 
     function renderPollResult() {
-      const container = document.getElementById('pollResult');
+      var container = document.getElementById('pollResult');
+      if (!container) return;
       if (pollOptions.length < 2) {
-        container.innerHTML = '<div class="empty-state"><span class="icon">🗳️</span>添加选项后开始投票</div>';
+        container.innerHTML = '<div class="empty-state"><span class="icon">\uD83D\uDDF3\uFE0F</span>\u6DFB\u52A0\u9009\u9879\u540E\u5F00\u59CB\u6295\u7968</div>';
         return;
       }
-      const total = pollOptions.reduce((sum, o) => sum + o.votes, 0);
-      const maxVotes = Math.max(...pollOptions.map(o => o.votes), 1);
+      var total = pollOptions.reduce(function(sum, o) { return sum + o.votes; }, 0);
+      var maxVotes = Math.max.apply(null, pollOptions.map(function(o) { return o.votes; }).concat([1]));
 
-      container.innerHTML = `
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-          <strong>📊 ${escapeHtml(pollTitle)}</strong>
-          <span style="font-size:13px;color:var(--text-secondary)">共 ${total} 票</span>
-        </div>
-        ${pollOptions.map((opt, i) => {
-          const pct = total === 0 ? 0 : Math.round((opt.votes / total) * 100);
-          const barWidth = total === 0 ? 0 : (opt.votes / maxVotes) * 100;
-          return `<div class="poll-option" onclick="vote(${i})">
-            <div class="poll-bar" style="width:${barWidth}%"></div>
-            <div class="poll-text">
-              <span>${escapeHtml(opt.name)}</span>
-              <span class="poll-pct">${opt.votes} 票 (${pct}%)</span>
-            </div>
-          </div>`;
-        }).join('')}
-        <div style="text-align:center;margin-top:8px">
-          <button class="btn btn-outline btn-sm" onclick="resetPoll()">重置投票</button>
-        </div>
-      `;
+      container.innerHTML = '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><strong>\uD83D\uDCCA ' + escapeHtml(pollTitle) + '</strong><span style="font-size:13px;color:var(--text-secondary)">\u5171 ' + total + ' \u7968</span></div>' +
+        pollOptions.map(function(opt, i) {
+          var pct = total === 0 ? 0 : Math.round((opt.votes / total) * 100);
+          var barWidth = total === 0 ? 0 : (opt.votes / maxVotes) * 100;
+          return '<div class="poll-option" onclick="vote(' + i + ')"><div class="poll-bar" style="width:' + barWidth + '%"></div><div class="poll-text"><span>' + escapeHtml(opt.name) + '</span><span class="poll-pct">' + opt.votes + ' \u7968 (' + pct + '%)</span></div></div>';
+        }).join('') +
+        '<div style="text-align:center;margin-top:8px"><button class="btn btn-outline btn-sm" onclick="resetPoll()">\u91CD\u7F6E\u6295\u7968</button></div>';
     }
 
     /* =============================================
-       Utilities
+       UTILITIES
     ============================================= */
     function escapeHtml(str) {
-      const div = document.createElement('div');
-      div.textContent = str;
-      return div.innerHTML;
+      var div = document.createElement('div'); div.textContent = str; return div.innerHTML;
     }
 
     /* =============================================
-       Init
+       INIT
     ============================================= */
-    renderWheelTags();
-    drawWheel();
-    renderDrawTags();
-    renderMemos();
-    renderPollResult();
-
-    // Handle resize for canvas
-    window.addEventListener('resize', () => {
-      if (document.getElementById('pageWheel').classList.contains('active')) drawWheel();
-    });
+    function initApp() {
+      renderWheelTags();
+      drawWheel();
+      renderDrawTags();
+      renderMemos();
+      renderPollResult();
+      window.addEventListener('resize', function() {
+        if (document.getElementById('pageWheel').classList.contains('active')) drawWheel();
+      });
+    }
   </script>
 </body>
 </html>
