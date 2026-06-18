@@ -10,7 +10,8 @@
       --bg: #f0f2f5; --card-bg: #ffffff;
       --primary: #6366f1; --primary-light: #818cf8;
       --text: #1e293b; --text-secondary: #64748b;
-      --border: #e2e8f0; --online: #10b981; --busy: #f59e0b; --offline: #94a3b8;
+      --border: #e2e8f0; --danger: #ef4444;
+      --online: #10b981; --busy: #f59e0b; --offline: #94a3b8;
       --shadow: 0 2px 12px rgba(0,0,0,0.08);
       --radius: 16px; --radius-sm: 10px;
       --transition: 0.3s cubic-bezier(.4,0,.2,1);
@@ -20,11 +21,9 @@
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
       background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden;
     }
-
-    /* ===== Login ===== */
     .login-screen {
-      display: flex; align-items: center; justify-content: center;
-      min-height: 100vh; padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex; align-items: center; justify-content: center; min-height: 100vh;
+      padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     }
     .login-box {
       background: #fff; border-radius: var(--radius); padding: 36px 28px;
@@ -34,45 +33,35 @@
     .login-box .subtitle { font-size: 14px; color: var(--text-secondary); margin-bottom: 24px; }
     .login-box input {
       width: 100%; padding: 12px 16px; border: 2px solid var(--border);
-      border-radius: var(--radius-sm); font-size: 15px; outline: none;
-      margin-bottom: 12px; transition: var(--transition);
+      border-radius: var(--radius-sm); font-size: 15px; outline: none; margin-bottom: 12px;
     }
     .login-box input:focus { border-color: var(--primary); }
     .login-box .btn { width: 100%; padding: 12px; font-size: 16px; }
-    .login-box .error { color: #ef4444; font-size: 13px; margin-top: 8px; min-height: 20px; }
+    .login-box .error { color: var(--danger); font-size: 13px; margin-top: 8px; min-height: 20px; }
 
-    /* ===== App Shell ===== */
     .app-shell { display: none; }
     .app-shell.show { display: block; }
     .app-header {
       background: var(--primary); color: #fff; padding: 10px 14px;
       display: flex; align-items: center; gap: 8px;
-      position: sticky; top: 0; z-index: 100;
-      box-shadow: 0 2px 8px rgba(99,102,241,0.3);
+      position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(99,102,241,0.3);
     }
     .app-header h1 { font-size: 17px; font-weight: 600; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .btn-icon {
-      background: none; border: none; color: #fff; font-size: 20px;
-      cursor: pointer; padding: 6px; border-radius: 8px; transition: var(--transition);
-      display: flex; align-items: center; justify-content: center; line-height: 1;
-      -webkit-tap-highlight-color: transparent;
+      background: none; border: none; color: #fff; font-size: 20px; cursor: pointer;
+      padding: 6px; border-radius: 8px; display: flex; align-items: center; justify-content: center;
     }
     .btn-icon:hover { background: rgba(255,255,255,0.15); }
     .btn-icon.hide { visibility: hidden; }
-    .header-avatar { font-size: 22px; cursor: pointer; }
-
-    /* ===== Page ===== */
     .page { display: none; padding: 14px; max-width: 600px; margin: 0 auto; }
     .page.active { display: block; animation: fadeIn 0.25s ease; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
 
-    /* ===== Home ===== */
     .home-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
     .tool-card {
       background: var(--card-bg); border-radius: var(--radius); padding: 18px 12px;
-      box-shadow: var(--shadow); cursor: pointer; text-align: center;
-      transition: var(--transition); border: 2px solid transparent;
-      user-select: none; -webkit-tap-highlight-color: transparent;
+      box-shadow: var(--shadow); cursor: pointer; text-align: center; transition: var(--transition);
+      border: 2px solid transparent; user-select: none; -webkit-tap-highlight-color: transparent;
     }
     .tool-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.12); }
     .tool-card:active { transform: scale(0.96); }
@@ -80,44 +69,23 @@
     .tool-card .label { font-size: 13px; font-weight: 600; }
     .tool-card .desc { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
 
-    /* ===== Leaderboard Sidebar ===== */
-    .lb-section { margin-top: 20px; }
-    .lb-section h3 { font-size: 15px; font-weight: 600; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
-    .lb-item {
-      background: var(--card-bg); border-radius: var(--radius-sm); padding: 10px 14px;
-      margin-bottom: 6px; display: flex; align-items: center; gap: 10px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-    }
-    .lb-avatar { font-size: 24px; flex-shrink: 0; }
-    .lb-info { flex: 1; min-width: 0; }
-    .lb-name { font-size: 14px; font-weight: 500; }
-    .lb-stat { font-size: 11px; color: var(--text-secondary); }
-    .lb-status {
-      width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
-    }
-    .lb-status.online { background: var(--online); }
-    .lb-status.busy { background: var(--busy); }
-    .lb-status.away { background: var(--busy); opacity: 0.5; }
-    .lb-status.offline { background: var(--offline); }
-
-    /* ===== Shared UI ===== */
     .section-title { font-size: 18px; font-weight: 600; margin-bottom: 10px; }
     .input-group { display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
     .input-group input, .input-group select {
       flex: 1; min-width: 100px; padding: 10px 14px;
       border: 2px solid var(--border); border-radius: var(--radius-sm);
-      font-size: 15px; outline: none; transition: var(--transition);
+      font-size: 15px; outline: none;
     }
-    .input-group input:focus, .input-group select:focus { border-color: var(--primary); }
+    .input-group input:focus { border-color: var(--primary); }
     .btn {
       padding: 10px 20px; border: none; border-radius: var(--radius-sm); font-size: 15px;
-      font-weight: 500; cursor: pointer; transition: var(--transition);
-      display: inline-flex; align-items: center; gap: 6px; white-space: nowrap;
+      font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
+      white-space: nowrap; transition: var(--transition);
     }
     .btn:active { transform: scale(0.96); }
     .btn-primary { background: var(--primary); color: #fff; }
     .btn-primary:hover { background: var(--primary-light); }
-    .btn-danger { background: #ef4444; color: #fff; }
+    .btn-danger { background: var(--danger); color: #fff; }
     .btn-danger:hover { background: #f87171; }
     .btn-outline { background: transparent; border: 2px solid var(--border); color: var(--text); }
     .btn-outline:hover { border-color: var(--primary); color: var(--primary); }
@@ -125,10 +93,7 @@
     .btn-xs { padding: 4px 10px; font-size: 12px; }
 
     .tag-list { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
-    .tag {
-      background: #eef2ff; color: var(--primary); padding: 6px 14px; border-radius: 20px;
-      font-size: 14px; display: flex; align-items: center; gap: 6px;
-    }
+    .tag { background: #eef2ff; color: var(--primary); padding: 6px 14px; border-radius: 20px; font-size: 14px; display: flex; align-items: center; gap: 6px; }
     .tag .remove { cursor: pointer; font-weight: bold; opacity: 0.6; font-size: 16px; }
     .tag .remove:hover { opacity: 1; }
 
@@ -144,11 +109,9 @@
     .empty-state { text-align: center; padding: 36px 20px; color: var(--text-secondary); }
     .empty-state .icon { font-size: 44px; margin-bottom: 10px; display: block; }
 
-    /* ===== Canvas ===== */
     .canvas-wrap { display: flex; justify-content: center; margin: 12px 0; position: relative; }
     .canvas-wrap canvas { width: 100%; height: auto; max-width: 300px; border-radius: var(--radius); box-shadow: var(--shadow); }
 
-    /* ===== List Items ===== */
     .list-item {
       background: var(--card-bg); border-radius: var(--radius-sm); padding: 14px 16px;
       margin-bottom: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.06);
@@ -159,11 +122,9 @@
     .list-item .sub { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
     .list-item .actions { display: flex; gap: 6px; flex-shrink: 0; }
 
-    /* ===== Poll ===== */
     .poll-option {
       background: var(--card-bg); border-radius: var(--radius-sm); padding: 12px 16px;
-      margin-bottom: 8px; border: 2px solid var(--border); cursor: pointer;
-      transition: var(--transition); position: relative; overflow: hidden;
+      margin-bottom: 8px; border: 2px solid var(--border); cursor: pointer; position: relative; overflow: hidden;
     }
     .poll-option:hover { border-color: var(--primary-light); }
     .poll-option .poll-bar {
@@ -173,20 +134,13 @@
     .poll-option .poll-text { position: relative; z-index: 1; display: flex; justify-content: space-between; }
     .poll-option .poll-pct { font-weight: 600; color: var(--primary); }
 
-    /* ===== Rotation ===== */
-    .rotation-date-nav {
-      display: flex; align-items: center; justify-content: center; gap: 16px; margin-bottom: 16px;
-    }
+    .rotation-date-nav { display: flex; align-items: center; justify-content: center; gap: 16px; margin-bottom: 16px; }
     .rotation-date-nav .date-label { font-size: 17px; font-weight: 600; min-width: 140px; text-align: center; }
-    .rotation-duty-card {
-      background: var(--card-bg); border-radius: var(--radius); padding: 16px;
-      margin-bottom: 10px; box-shadow: var(--shadow); border-left: 4px solid var(--primary);
-    }
+    .rotation-duty-card { background: var(--card-bg); border-radius: var(--radius); padding: 16px; margin-bottom: 10px; box-shadow: var(--shadow); border-left: 4px solid var(--primary); }
     .rotation-duty-card .person { font-size: 17px; font-weight: 600; }
     .rotation-duty-card .project { font-size: 14px; color: var(--text-secondary); margin-top: 4px; }
     .rotation-duty-card .project::before { content: "\01F4CB "; }
 
-    /* ===== BizTrip ===== */
     .biztrip-next-card {
       background: linear-gradient(135deg, #fef3c7, #fde68a);
       border-radius: var(--radius); padding: 20px; margin-bottom: 16px;
@@ -194,50 +148,38 @@
     }
     .biztrip-next-card .hint { font-size: 13px; color: #92400e; margin-bottom: 6px; }
     .biztrip-next-card .name { font-size: 24px; font-weight: 700; color: #b45309; }
-    .biztrip-record-card {
-      background: var(--card-bg); border-radius: var(--radius-sm); padding: 12px 16px;
-      margin-bottom: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-      display: flex; align-items: center; justify-content: space-between; gap: 8px;
-    }
+    .biztrip-record-card { background: var(--card-bg); border-radius: var(--radius-sm); padding: 12px 16px; margin-bottom: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); display: flex; align-items: center; justify-content: space-between; gap: 8px; }
     .biztrip-record-card .info { flex: 1; }
     .biztrip-record-card .name-col { font-weight: 600; font-size: 15px; }
     .biztrip-record-card .stats { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
 
-    /* ===== Profile ===== */
     .emoji-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 6px; margin: 12px 0; }
-    .emoji-opt {
-      font-size: 28px; padding: 8px; text-align: center; cursor: pointer;
-      border-radius: var(--radius-sm); transition: var(--transition); border: 2px solid transparent;
-    }
+    .emoji-opt { font-size: 26px; padding: 8px; text-align: center; cursor: pointer; border-radius: var(--radius-sm); border: 2px solid transparent; transition: var(--transition); }
     .emoji-opt:hover { background: #eef2ff; }
     .emoji-opt.sel { border-color: var(--primary); background: #eef2ff; }
-
-    .status-select { display: flex; gap: 8px; margin: 12px 0; flex-wrap: wrap; }
-    .status-btn {
-      flex: 1; min-width: 80px; text-align: center; padding: 10px; border-radius: var(--radius-sm);
-      border: 2px solid var(--border); cursor: pointer; font-size: 14px; background: #fff; transition: var(--transition);
-    }
-    .status-btn:hover { border-color: var(--primary); }
+    .status-btn { flex: 1; min-width: 80px; text-align: center; padding: 10px; border-radius: var(--radius-sm); border: 2px solid var(--border); cursor: pointer; font-size: 14px; background: #fff; transition: var(--transition); }
     .status-btn.sel-online { border-color: var(--online); background: #d1fae5; }
     .status-btn.sel-busy { border-color: var(--busy); background: #fef3c7; }
     .status-btn.sel-away { border-color: #f97316; background: #ffedd5; }
     .status-btn.sel-offline { border-color: var(--offline); background: #f1f5f9; }
-
-    /* ===== Admin ===== */
-    .stat-card {
-      background: var(--card-bg); border-radius: var(--radius); padding: 16px;
-      box-shadow: var(--shadow); margin-bottom: 10px;
-      display: flex; align-items: center; justify-content: space-between;
-    }
+    .stat-card { background: var(--card-bg); border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow); margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; }
     .stat-card .label { font-size: 13px; color: var(--text-secondary); }
     .stat-card .value { font-size: 28px; font-weight: 700; color: var(--primary); }
 
-    /* ===== Toast ===== */
+    .lb-item { background: var(--card-bg); border-radius: var(--radius-sm); padding: 10px 14px; margin-bottom: 6px; display: flex; align-items: center; gap: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+    .lb-avatar { font-size: 24px; flex-shrink: 0; }
+    .lb-info { flex: 1; min-width: 0; }
+    .lb-name { font-size: 14px; font-weight: 500; }
+    .lb-stat { font-size: 11px; color: var(--text-secondary); }
+    .lb-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .lb-dot.online { background: var(--online); }
+    .lb-dot.busy { background: var(--busy); }
+    .lb-dot.offline { background: var(--offline); }
+
     .toast {
       position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(80px);
       background: #1e293b; color: #fff; padding: 12px 24px; border-radius: var(--radius-sm);
-      font-size: 14px; opacity: 0; transition: var(--transition); z-index: 999;
-      pointer-events: none; box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+      font-size: 14px; opacity: 0; transition: var(--transition); z-index: 999; pointer-events: none;
     }
     .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
@@ -246,7 +188,7 @@
 </head>
 <body>
 
-  <!-- Login Screen -->
+  <!-- Login -->
   <div class="login-screen" id="loginScreen">
     <div class="login-box">
       <h2 id="loginTitle">&#x1F510; 登录</h2>
@@ -254,11 +196,11 @@
       <input type="text" id="loginUser" placeholder="用户名" />
       <input type="password" id="loginPwd" placeholder="密码" />
       <input type="password" id="loginPwd2" placeholder="确认密码（仅注册时需要）" style="display:none" />
-      <button class="btn btn-primary" onclick="doLogin()" id="loginBtn">登录</button>
+      <button class="btn btn-primary" onclick="Auth.login()" id="loginBtn">登录</button>
       <p class="error" id="loginError"></p>
       <p style="margin-top:12px;font-size:13px;color:var(--text-secondary)">
         <span id="toggleText">没有账号？</span>
-        <a href="javascript:void(0)" onclick="toggleRegister()" id="toggleLink" style="color:var(--primary);text-decoration:none;font-weight:500">注册</a>
+        <a href="javascript:void(0)" onclick="Auth.toggle()" id="toggleLink" style="color:var(--primary);text-decoration:none;font-weight:500">注册</a>
       </p>
     </div>
   </div>
@@ -266,614 +208,512 @@
   <!-- App Shell -->
   <div class="app-shell" id="appShell">
     <header class="app-header">
-      <button class="btn-icon hide" id="btnBack" onclick="goHome()">&#x2039;</button>
+      <button class="btn-icon hide" id="btnBack" onclick="Router.back()">&#x2039;</button>
       <h1 id="headerTitle">多功能工具箱</h1>
-      <button class="btn-icon header-avatar" onclick="navigate('profile')" title="个人中心" id="headerAvatar">&#x1F464;</button>
-      <button class="btn-icon" onclick="doLogout()" title="退出">&#x1F6AA;</button>
+      <button class="btn-icon" id="headerAvatar" onclick="Router.go('profile')">&#x1F464;</button>
+      <button class="btn-icon" onclick="Auth.logout()">&#x1F6AA;</button>
     </header>
     <div class="toast" id="toast"></div>
 
-    <!-- Home -->
+    <!-- Home Page: tool grid auto-generated + leaderboard -->
     <div class="page active" id="pageHome">
-      <div class="home-grid">
-        <div class="tool-card" onclick="navigate('rotation')"><span class="icon">&#x1F504;</span><span class="label">小值轮换</span><span class="desc">每日值班轮换表</span></div>
-        <div class="tool-card" onclick="navigate('biztrip')"><span class="icon">&#x2708;&#xFE0F;</span><span class="label">能不能不出公差</span><span class="desc">出差轮换+统计</span></div>
-        <div class="tool-card" onclick="navigate('wheel')"><span class="icon">&#x1F3A1;</span><span class="label">幸运转盘</span><span class="desc">自定义选项转转盘</span></div>
-        <div class="tool-card" onclick="navigate('draw')"><span class="icon">&#x1F3B2;</span><span class="label">抽签</span><span class="desc">随机抽取一个选项</span></div>
-        <div class="tool-card" onclick="navigate('memo')"><span class="icon">&#x1F4DD;</span><span class="label">备忘录</span><span class="desc">速记点滴随时查看</span></div>
-        <div class="tool-card" onclick="navigate('poll')"><span class="icon">&#x1F5F3;&#xFE0F;</span><span class="label">集体投票</span><span class="desc">创建投票统计结果</span></div>
-      </div>
-      <div class="lb-section" id="leaderboardSection"></div>
+      <div class="home-grid" id="homeGrid"></div>
+      <div id="leaderboardSection" style="margin-top:20px"></div>
     </div>
 
-    <!-- Profile Page -->
-    <div class="page" id="pageProfile">
-      <p class="section-title">&#x1F464; 个人中心</p>
-      <div style="text-align:center;margin-bottom:16px">
-        <div style="font-size:64px;cursor:pointer" id="profileAvatarBig" onclick="scrollEmojiPicker()">&#x1F464;</div>
-        <p style="font-weight:600;font-size:18px;margin-top:4px" id="profileUsername"></p>
-      </div>
-      <p style="font-size:14px;font-weight:600;margin-bottom:6px">选择头像</p>
-      <div class="emoji-grid" id="emojiGrid"></div>
-      <p style="font-size:14px;font-weight:600;margin:12px 0 6px">在线状态</p>
-      <div class="status-select" id="statusSelect"></div>
-      <p style="font-size:14px;font-weight:600;margin:16px 0 6px">&#x1F91D; 好友列表</p>
-      <div class="input-group">
-        <input type="text" id="friendInput" placeholder="输入好友用户名" />
-        <button class="btn btn-primary btn-sm" onclick="addFriend()">添加好友</button>
-      </div>
-      <div id="friendList"></div>
-    </div>
-
-    <!-- Admin Dashboard -->
-    <div class="page" id="pageAdmin">
-      <p class="section-title">&#x1F6E0;&#xFE0F; 数据后台</p>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:16px" id="adminStats"></div>
-      <p style="font-size:15px;font-weight:600;margin-bottom:8px">&#x1F465; 用户管理</p>
-      <div id="adminUserList"></div>
-    </div>
-
-    <!-- Rotation Page -->
-    <div class="page" id="pageRotation">
-      <p class="section-title">&#x1F504; 小值轮换</p>
-      <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px">添加人员及负责项目，设置每日值班人数，按日期自动轮换。</p>
-      <div class="input-group">
-        <input type="text" id="rotName" placeholder="姓名" style="flex:2" />
-        <input type="text" id="rotProject" placeholder="负责项目" style="flex:3" />
-        <button class="btn btn-primary btn-sm" onclick="addRotationPerson()">+添加</button>
-      </div>
-      <div id="rotationPeopleList" style="margin-bottom:14px"></div>
-      <div class="input-group" style="align-items:center">
-        <label style="font-size:14px;white-space:nowrap">每日值班人数：</label>
-        <input type="number" id="rotCount" value="2" min="1" max="20" style="width:70px;flex:none" onchange="saveRotationData()" />
-      </div>
-      <div class="rotation-date-nav">
-        <button class="btn btn-outline btn-sm" onclick="shiftRotDate(-1)">&#x25C0; 前一天</button>
-        <span class="date-label" id="rotDateLabel"></span>
-        <button class="btn btn-outline btn-sm" onclick="shiftRotDate(1)">后一天 &#x25B6;</button>
-      </div>
-      <div style="text-align:center;margin-bottom:12px"><button class="btn btn-outline btn-sm" onclick="rotDateOffset=0;renderRotation()">&#x1F4CD; 回到今天</button></div>
-      <div id="rotationDutyBoard"></div>
-    </div>
-
-    <!-- BizTrip Page -->
-    <div class="page" id="pageBiztrip">
-      <p class="section-title">&#x2708;&#xFE0F; 能不能不出公差？</p>
-      <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px">按列表顺序循环轮换，记录次数和最近时间。</p>
-      <div class="input-group">
-        <input type="text" id="biztripInput" placeholder="输入姓名" onkeydown="if(event.key==='Enter') addBizTripPerson()" />
-        <button class="btn btn-primary" onclick="addBizTripPerson()">添加人员</button>
-      </div>
-      <div id="biztripPeopleList" style="margin-bottom:10px"></div>
-      <div id="biztripNext"></div>
-      <div style="display:flex;justify-content:center;gap:8px;margin-top:8px">
-        <button class="btn btn-outline btn-sm" onclick="undoBizTrip()">&#x21A9; 撤销</button>
-        <button class="btn btn-outline btn-sm" onclick="resetBizTrip()">&#x1F504; 重置</button>
-      </div>
-    </div>
-
-    <!-- Wheel Page -->
-    <div class="page" id="pageWheel">
-      <p class="section-title">&#x1F3A1; 幸运转盘</p>
-      <div class="input-group">
-        <input type="text" id="wheelInput" placeholder="输入选项，回车添加" onkeydown="if(event.key==='Enter') addWheelItem()" />
-        <button class="btn btn-primary" onclick="addWheelItem()">添加</button>
-      </div>
-      <div class="tag-list" id="wheelTags"></div>
-      <div class="canvas-wrap"><canvas id="wheelCanvas" width="300" height="300"></canvas></div>
-      <div style="text-align:center;margin-top:8px">
-        <button class="btn btn-primary" onclick="spinWheel()" id="spinBtn">&#x1F3AF; 转转盘</button>
-        <button class="btn btn-outline btn-sm" onclick="clearWheel()" style="margin-left:8px">清空</button>
-      </div>
-    </div>
-
-    <!-- Draw Page -->
-    <div class="page" id="pageDraw">
-      <p class="section-title">&#x1F3B2; 抽签</p>
-      <div class="input-group">
-        <input type="text" id="drawInput" placeholder="输入选项，回车添加" onkeydown="if(event.key==='Enter') addDrawItem()" />
-        <button class="btn btn-primary" onclick="addDrawItem()">添加</button>
-      </div>
-      <div class="tag-list" id="drawTags"></div>
-      <div class="result-box" id="drawResult"><span class="result-label">点击抽签试试</span></div>
-      <div style="text-align:center"><button class="btn btn-primary" onclick="doDraw()">&#x1F3B2; 抽一个</button></div>
-    </div>
-
-    <!-- Memo Page -->
-    <div class="page" id="pageMemo">
-      <p class="section-title">&#x1F4DD; 备忘录</p>
-      <div class="input-group">
-        <input type="text" id="memoInput" placeholder="写点什么…" onkeydown="if(event.key==='Enter') addMemo()" />
-        <button class="btn btn-primary" onclick="addMemo()">保存</button>
-      </div>
-      <div id="memoList"></div>
-    </div>
-
-    <!-- Poll Page -->
-    <div class="page" id="pagePoll">
-      <p class="section-title">&#x1F5F3;&#xFE0F; 集体投票</p>
-      <p style="font-size:13px;color:var(--text-secondary);margin-bottom:10px">创建投票，点击选项投票，实时统计。</p>
-      <div class="input-group"><input type="text" id="pollTitle" placeholder="投票标题" /></div>
-      <div class="input-group">
-        <input type="text" id="pollOptionInput" placeholder="添加选项，回车" onkeydown="if(event.key==='Enter') addPollOption()" />
-        <button class="btn btn-primary" onclick="addPollOption()">添加</button>
-      </div>
-      <div class="tag-list" id="pollTags"></div>
-      <div style="text-align:center;margin-bottom:14px"><button class="btn btn-primary" onclick="createPoll()">&#x1F4CA; 开始投票</button></div>
-      <div id="pollResult"></div>
-    </div>
+    <!-- Other pages injected by tool modules -->
   </div>
 
   <script>
-    /* ===== AUTH ===== */
-    var USERS_KEY = 'toolbox_users', SESSION_KEY = 'toolbox_session', isRegisterMode = false;
-    var HEARTBEAT_KEY = 'toolbox_heartbeat';
+  /* ============================================================
+     CORE: Store, Router, Auth
+     ============================================================ */
+  var $ = function(id) { return document.getElementById(id); };
+  var H = function(s) { var d=document.createElement('div'); d.textContent=s; return d.innerHTML; };
+  var toast = function(m) { var t=$('toast'); t.textContent=m; t.classList.add('show'); setTimeout(function(){t.classList.remove('show')},2000); };
 
-    if (sessionStorage.getItem(SESSION_KEY)) { showApp(); }
-    else { document.getElementById('loginScreen').style.display = 'flex'; ensureAdmin(); }
+  // ---- Store ----
+  var Store = {
+    _key: function(k) { return 'tb_' + (App.user||'') + '_' + k; },
+    get: function(k, fallback) { try { var v=localStorage.getItem(Store._key(k)); return v!==null?JSON.parse(v):(fallback!==undefined?fallback:null); } catch(e) { return fallback!==undefined?fallback:null; } },
+    set: function(k, v) { localStorage.setItem(Store._key(k), JSON.stringify(v)); },
+    getRaw: function(k) { return localStorage.getItem(k); },
+    setRaw: function(k, v) { localStorage.setItem(k, v); },
+  };
 
-    function ensureAdmin() {
-      if (getUsers().length === 0) {
-        document.getElementById('loginTitle').textContent = '\uD83D\uDD10 \u6B22\u8FCE';
-        document.getElementById('loginSubtitle').textContent = '\u7B2C\u4E00\u6B21\u4F7F\u7528\uFF0C\u8BF7\u5148\u6CE8\u518C\u8D26\u53F7';
-        isRegisterMode = true; switchToRegister();
-      }
-    }
+  // ---- Router ----
+  var Router = {
+    _routes: {},
+    _history: [],
+    _current: 'home',
+    register: function(name, cfg) { Router._routes[name] = cfg; },
+    go: function(name) {
+      var prev = Router._current;
+      if (prev === name && name !== 'home') return;
+      var cfg = Router._routes[name];
+      if (!cfg) return;
 
-    function getUsers() { try { return JSON.parse(localStorage.getItem(USERS_KEY)) || []; } catch(e) { return []; } }
-    function saveUsers(u) { localStorage.setItem(USERS_KEY, JSON.stringify(u)); }
-
-    function toggleRegister() { isRegisterMode = !isRegisterMode; isRegisterMode ? switchToRegister() : switchToLogin(); }
-    function switchToRegister() {
-      isRegisterMode = true;
-      document.getElementById('loginTitle').textContent = '\uD83D\uDCDD \u6CE8\u518C';
-      document.getElementById('loginSubtitle').textContent = '\u521B\u5EFA\u65B0\u8D26\u53F7';
-      document.getElementById('loginBtn').textContent = '\u6CE8\u518C';
-      document.getElementById('toggleText').textContent = '\u5DF2\u6709\u8D26\u53F7\uFF1F';
-      document.getElementById('toggleLink').textContent = '\u767B\u5F55';
-      document.getElementById('loginPwd2').style.display = 'block';
-      document.getElementById('loginError').textContent = '';
-    }
-    function switchToLogin() {
-      isRegisterMode = false;
-      document.getElementById('loginTitle').textContent = '\uD83D\uDD10 \u767B\u5F55';
-      document.getElementById('loginSubtitle').textContent = '\u8BF7\u8F93\u5165\u8D26\u53F7\u5BC6\u7801';
-      document.getElementById('loginBtn').textContent = '\u767B\u5F55';
-      document.getElementById('toggleText').textContent = '\u6CA1\u6709\u8D26\u53F7\uFF1F';
-      document.getElementById('toggleLink').textContent = '\u6CE8\u518C';
-      document.getElementById('loginPwd2').style.display = 'none';
-      document.getElementById('loginError').textContent = '';
-    }
-
-    async function hashPassword(pwd) {
-      var d = new TextEncoder().encode(pwd + 'toolbox_salt');
-      var h = await crypto.subtle.digest('SHA-256', d);
-      return Array.from(new Uint8Array(h)).map(function(b){return b.toString(16).padStart(2,'0')}).join('');
-    }
-
-    async function doLogin() {
-      var username = document.getElementById('loginUser').value.trim();
-      var pwd = document.getElementById('loginPwd').value;
-      var pwd2 = document.getElementById('loginPwd2').value;
-      var err = document.getElementById('loginError');
-
-      if (!username) { err.textContent = '\u8BF7\u8F93\u5165\u7528\u6237\u540D'; return; }
-      if (username.length < 2) { err.textContent = '\u7528\u6237\u540D\u81F3\u5C112\u5B57'; return; }
-      if (pwd.length < 4) { err.textContent = '\u5BC6\u7801\u81F3\u5C114\u4F4D'; return; }
-
-      var users = getUsers();
-
-      if (isRegisterMode) {
-        if (pwd !== pwd2) { err.textContent = '\u4E24\u6B21\u5BC6\u7801\u4E0D\u4E00\u81F4'; return; }
-        for (var i=0;i<users.length;i++) { if (users[i].username===username) { err.textContent='\u8BE5\u7528\u6237\u540D\u5DF2\u5B58\u5728'; return; } }
-        var ph = await hashPassword(pwd);
-        users.push({id:Date.now(),username:username,passwordHash:ph,createdAt:new Date().toLocaleString('zh-CN'),avatar:'\uD83D\uDC64',status:'online',friends:[],lastSeen:new Date().toLocaleString('zh-CN')});
-        saveUsers(users);
-        sessionStorage.setItem(SESSION_KEY, username);
-        startHeartbeat(username);
-        showApp();
-        toast('\u6CE8\u518C\u6210\u529F\uFF0C\u6B22\u8FCE '+username+'\uFF01');
-      } else {
-        var found = null;
-        for (var i=0;i<users.length;i++) { if (users[i].username===username) { found=users[i]; break; } }
-        if (!found) { err.textContent='\u7528\u6237\u4E0D\u5B58\u5728\uFF0C\u8BF7\u5148\u6CE8\u518C'; return; }
-        var ih = await hashPassword(pwd);
-        if (ih !== found.passwordHash) { err.textContent='\u5BC6\u7801\u9519\u8BEF'; document.getElementById('loginPwd').value=''; return; }
-        found.status = 'online';
-        found.lastSeen = new Date().toLocaleString('zh-CN');
-        saveUsers(users);
-        sessionStorage.setItem(SESSION_KEY, username);
-        startHeartbeat(username);
-        showApp();
-      }
-    }
-
-    function showApp() {
-      document.getElementById('loginScreen').style.display = 'none';
-      document.getElementById('appShell').classList.add('show');
-      initApp();
-    }
-
-    function getCurrentUser() { return sessionStorage.getItem(SESSION_KEY)||''; }
-    function userKey(k) { var u=getCurrentUser(); return u?'toolbox_'+u+'_'+k:'toolbox_'+k; }
-    function getCurrentUserObj() { var u=getCurrentUser(); var users=getUsers(); for(var i=0;i<users.length;i++){if(users[i].username===u)return users[i];} return null; }
-
-    function doLogout() {
-      stopHeartbeat();
-      var username = getCurrentUser();
-      var users = getUsers();
-      for (var i=0;i<users.length;i++) { if (users[i].username===username) { users[i].status='offline'; saveUsers(users); break; } }
-      sessionStorage.removeItem(SESSION_KEY);
-      document.getElementById('loginScreen').style.display='flex';
-      document.getElementById('appShell').classList.remove('show');
-      document.getElementById('loginUser').value='';
-      document.getElementById('loginPwd').value='';
-      document.getElementById('loginPwd2').value='';
-      document.getElementById('loginError').textContent='';
-      switchToLogin();
-    }
-
-    // Heartbeat for online status
-    var hbInterval = null;
-    function startHeartbeat(username) {
-      stopHeartbeat();
-      function beat() {
-        var hb = {}; try { hb = JSON.parse(localStorage.getItem(HEARTBEAT_KEY)) || {}; } catch(e) {}
-        hb[username] = Date.now();
-        localStorage.setItem(HEARTBEAT_KEY, JSON.stringify(hb));
-      }
-      beat();
-      hbInterval = setInterval(beat, 15000);
-    }
-    function stopHeartbeat() { if (hbInterval) { clearInterval(hbInterval); hbInterval = null; } }
-
-    /* ===== NAVIGATION ===== */
-    var pageTitles = {
-      home: '\u591A\u529F\u80FD\u5DE5\u5177\u7BB1',
-      profile: '\uD83D\uDC64 \u4E2A\u4EBA\u4E2D\u5FC3',
-      admin: '\uD83D\uDEE0\uFE0F \u6570\u636E\u540E\u53F0',
-      rotation: '\uD83D\uDD04 \u5C0F\u503C\u8F6E\u6362',
-      biztrip: '\u2708\uFE0F \u80FD\u4E0D\u80FD\u4E0D\u51FA\u516C\u5DEE',
-      wheel: '\uD83C\uDFA1 \u5E78\u8FD0\u8F6C\u76D8',
-      draw: '\uD83C\uDFB2 \u62BD\u7B7E',
-      memo: '\uD83D\uDCDD \u5907\u5FD8\u5F55',
-      poll: '\uD83D\uDDF3\uFE0F \u96C6\u4F53\u6295\u7968',
-    };
-
-    function navigate(page) {
+      // Hide all pages
       var ps = document.querySelectorAll('.page');
       for (var i=0;i<ps.length;i++) ps[i].classList.remove('active');
-      document.getElementById('page'+page.charAt(0).toUpperCase()+page.slice(1)).classList.add('active');
-      document.getElementById('headerTitle').textContent = pageTitles[page]||pageTitles.home;
-      document.getElementById('btnBack').classList.toggle('hide', page==='home');
-      if (page==='wheel') drawWheel();
-      if (page==='rotation') renderRotation();
-      if (page==='biztrip') renderBizTrip();
-      if (page==='memo') renderMemos();
-      if (page==='draw') renderDrawTags();
-      if (page==='poll') { renderPollTags(); renderPollResult(); }
-      if (page==='home') renderLeaderboard();
-      if (page==='profile') renderProfile();
-      if (page==='admin') renderAdmin();
-    }
-    function goHome() { navigate('home'); }
-    function toast(msg) { var t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(function(){t.classList.remove('show')},2000); }
 
-    /* ===== PROFILE ===== */
-    var EMOJIS = ['\uD83D\uDC64','\uD83E\uDDD1','\uD83D\uDC69','\uD83D\uDC68','\uD83E\uDDD4','\uD83E\uDDD3','\uD83D\uDC7B','\uD83E\uDD16','\uD83D\uDC7D','\uD83D\uDC7E','\uD83D\uDC36','\uD83D\uDC31','\uD83D\uDC2F','\uD83D\uDC30','\uD83D\uDC39','\uD83E\uDD81','\uD83D\uDC35','\uD83D\uDC12','\uD83E\uDD84','\uD83D\uDC0C','\uD83C\uDF3A','\uD83C\uDF38','\uD83C\uDF3B','\uD83C\uDF34','\uD83C\uDF0D','\uD83C\uDF1E','\u2B50','\u2764\uFE0F','\uD83D\uDC9C','\uD83D\uDC99','\uD83D\uDC9A','\uD83D\uDC9B'];
-    var STATUSES = [
-      {key:'online',label:'\uD83D\uDFE2 \u5728\u7EBF',cls:'sel-online'},
-      {key:'busy',label:'\uD83D\uDFE1 \u5FD9\u788C',cls:'sel-busy'},
-      {key:'away',label:'\uD83D\uDFE0 \u79BB\u5F00',cls:'sel-away'},
-      {key:'offline',label:'\u26AA \u9690\u8EAB',cls:'sel-offline'},
-    ];
-
-    function renderProfile() {
-      var u = getCurrentUserObj();
-      if (!u) return;
-      document.getElementById('profileUsername').textContent = u.username;
-      document.getElementById('profileAvatarBig').textContent = u.avatar||'\uD83D\uDC64';
-
-      // Emoji grid
-      var eg = document.getElementById('emojiGrid');
-      eg.innerHTML = EMOJIS.map(function(e){ return '<div class="emoji-opt'+(e===u.avatar?' sel':'')+'" onclick="setAvatar(\''+e+'\')">'+e+'</div>'; }).join('');
-
-      // Status
-      var ss = document.getElementById('statusSelect');
-      ss.innerHTML = STATUSES.map(function(s){ return '<div class="status-btn'+(u.status===s.key?' '+s.cls:'')+'" onclick="setStatus(\''+s.key+'\')">'+s.label+'</div>'; }).join('');
-
-      // Friends
-      renderFriendList(u);
-    }
-
-    function setAvatar(emoji) {
-      var users = getUsers(); var u = getCurrentUserObj();
-      if (!u) return;
-      for (var i=0;i<users.length;i++) { if (users[i].username===u.username) { users[i].avatar=emoji; break; } }
-      saveUsers(users); renderProfile();
-      document.getElementById('headerAvatar').textContent = emoji;
-      if (document.getElementById('pageHome').classList.contains('active')) renderLeaderboard();
-      toast('\u5934\u50CF\u5DF2\u66F4\u65B0');
-    }
-
-    function setStatus(status) {
-      var users = getUsers(); var u = getCurrentUserObj();
-      if (!u) return;
-      for (var i=0;i<users.length;i++) { if (users[i].username===u.username) { users[i].status=status; break; } }
-      if (status==='offline') stopHeartbeat(); else startHeartbeat(getCurrentUser());
-      saveUsers(users); renderProfile();
-      if (document.getElementById('pageHome').classList.contains('active')) renderLeaderboard();
-      toast('\u72B6\u6001\u5DF2\u66F4\u65B0');
-    }
-
-    function addFriend() {
-      var inp = document.getElementById('friendInput');
-      var name = inp.value.trim();
-      if (!name) { toast('\u8BF7\u8F93\u5165\u7528\u6237\u540D'); return; }
-      var cu = getCurrentUser(); if (name===cu) { toast('\u4E0D\u80FD\u6DFB\u52A0\u81EA\u5DF1'); return; }
-      // Check if user exists
-      var users = getUsers(); var exists = false;
-      for (var i=0;i<users.length;i++) { if (users[i].username===name) { exists=true; break; } }
-      if (!exists) { toast('\u7528\u6237\u4E0D\u5B58\u5728'); return; }
-      // Add friend
-      for (var i=0;i<users.length;i++) {
-        if (users[i].username===cu) {
-          if (!users[i].friends) users[i].friends = [];
-          if (users[i].friends.indexOf(name)>=0) { toast('\u5DF2\u662F\u597D\u53CB'); return; }
-          users[i].friends.push(name);
-          saveUsers(users);
-          inp.value = '';
-          renderFriendList(users[i]);
-          toast('\u5DF2\u6DFB\u52A0\u597D\u53CB: '+name);
-          return;
-        }
+      // Show target or create it
+      var pid = 'page_' + name;
+      var pg = $(pid);
+      if (!pg) {
+        pg = document.createElement('div'); pg.id = pid; pg.className = 'page';
+        if (cfg.html) pg.innerHTML = cfg.html;
+        document.getElementById('appShell').appendChild(pg);
       }
-    }
 
-    function removeFriend(name) {
-      var users = getUsers(); var cu = getCurrentUser();
-      for (var i=0;i<users.length;i++) {
-        if (users[i].username===cu) {
-          users[i].friends = (users[i].friends||[]).filter(function(f){return f!==name;});
-          saveUsers(users);
-          renderFriendList(users[i]);
-          toast('\u5DF2\u5220\u9664\u597D\u53CB');
-          return;
-        }
+      pg.classList.add('active');
+      $('headerTitle').textContent = cfg.title || name;
+      $('btnBack').classList.toggle('hide', name === 'home');
+      Router._history.push(prev);
+      Router._current = name;
+      history.pushState({page:name}, '', '#'+name);
+
+      if (cfg.onEnter) cfg.onEnter();
+      if (name === 'home') Render.leaderboard();
+    },
+    back: function() {
+      var prev = Router._history.pop();
+      if (prev !== undefined && prev !== Router._current) {
+        history.replaceState({page:prev}, '', '#'+prev);
+        Router.go(prev);
+        Router._history.pop(); // undo double-push from go()
+      } else {
+        Router.go('home');
       }
-    }
-
-    function renderFriendList(u) {
-      var fl = document.getElementById('friendList');
-      var friends = u.friends||[];
-      if (friends.length===0) { fl.innerHTML='<div style="color:var(--text-secondary);font-size:13px;text-align:center;padding:10px">\u8FD8\u6CA1\u6709\u597D\u53CB</div>'; return; }
-      var users = getUsers();
-      fl.innerHTML = friends.map(function(fn){
-        var fu = null;
-        for (var i=0;i<users.length;i++) { if (users[i].username===fn) { fu=users[i]; break; } }
-        var statusLabel = fu ? (fu.status==='online'?'\uD83D\uDFE2':fu.status==='busy'?'\uD83D\uDFE1':fu.status==='away'?'\uD83D\uDFE0':'\u26AA') : '';
-        return '<div class="list-item"><div class="content"><span style="font-size:20px;margin-right:8px">'+(fu?fu.avatar:'\uD83D\uDC64')+'</span><span class="title">'+fn+' '+statusLabel+'</span></div><div class="actions"><button class="btn btn-danger btn-xs" onclick="removeFriend(\''+fn+'\')">\u5220\u9664</button></div></div>';
-      }).join('');
-    }
-
-    /* ===== ADMIN DASHBOARD ===== */
-    function renderAdmin() {
-      var users = getUsers();
-      var onlineCount = 0;
-      for (var i=0;i<users.length;i++) { if (users[i].status==='online'||users[i].status==='busy') onlineCount++; }
-
-      document.getElementById('adminStats').innerHTML =
-        '<div class="stat-card"><div><div class="label">\u603B\u7528\u6237</div><div class="value">'+users.length+'</div></div></div>'+
-        '<div class="stat-card"><div><div class="label">\u5728\u7EBF</div><div class="value" style="color:var(--online)">'+onlineCount+'</div></div></div>'+
-        '<div class="stat-card"><div><div class="label">\u79BB\u7EBF</div><div class="value" style="color:var(--offline)">'+(users.length-onlineCount)+'</div></div></div>';
-
-      var ul = document.getElementById('adminUserList');
-      if (users.length===0) { ul.innerHTML='<div class="empty-state"><span class="icon">\uD83D\uDC65</span>\u6CA1\u6709\u7528\u6237</div>'; return; }
-      ul.innerHTML = users.map(function(u,i){
-        var sColor = u.status==='online'?'var(--online)':u.status==='busy'?'var(--busy)':u.status==='away'?'#f97316':'var(--offline)';
-        return '<div class="list-item">'+
-          '<div class="content">'+
-            '<span style="font-size:22px;margin-right:8px">'+(u.avatar||'\uD83D\uDC64')+'</span>'+
-            '<div>'+
-              '<span class="title">'+u.username+'</span>'+
-              '<span style="margin-left:6px;color:'+sColor+';font-size:12px">\u25CF '+(u.status||'offline')+'</span>'+
-              '<div class="sub">\u6CE8\u518C: '+u.createdAt+' | \u6700\u540E\u6D3B\u52A8: '+(u.lastSeen||'-')+'</div>'+
-            '</div>'+
-          '</div>'+
-          '<button class="btn btn-danger btn-xs" onclick="deleteUser(\''+u.username+'\')">\u5220\u9664</button>'+
-        '</div>';
-      }).join('');
-    }
-
-    function deleteUser(username) {
-      if (username===getCurrentUser()) { toast('\u4E0D\u80FD\u5220\u9664\u81EA\u5DF1'); return; }
-      if (!confirm('\u786E\u5B9A\u5220\u9664\u7528\u6237 '+username+'\uFF1F\u8FD9\u4E0D\u53EF\u64A4\u9500\u3002')) return;
-      var users = getUsers();
-      users = users.filter(function(u){ return u.username!==username; });
-      saveUsers(users);
-      renderAdmin();
-      toast('\u5DF2\u5220\u9664: '+username);
-    }
-
-    /* ===== LEADERBOARD ===== */
-    function renderLeaderboard() {
-      var users = getUsers();
-      if (users.length < 1) { document.getElementById('leaderboardSection').innerHTML=''; return; }
-
-      // Sort: online first, then by lastSeen
-      var sorted = users.slice().sort(function(a,b){
-        var order = {online:0,busy:1,away:2,offline:3};
-        return (order[a.status||'offline']||3) - (order[b.status||'offline']||3);
+    },
+    init: function() {
+      window.addEventListener('popstate', function(e) {
+        if (e.state && e.state.page) {
+          Router.go(e.state.page);
+          Router._history.pop(); // undo double-push
+        }
       });
+      // Check initial hash
+      var h = location.hash.replace('#','');
+      if (h && Router._routes[h]) { Router.go(h); history.replaceState({page:h}, '', '#'+h); }
+    },
+  };
 
-      document.getElementById('leaderboardSection').innerHTML =
-        '<h3>\uD83C\uDFC6 \u5728\u7EBF\u6392\u884C\u699C</h3>'+
+  // ---- Auth ----
+  var Auth = {
+    isRegister: false,
+    init: function() {
+      if (sessionStorage.getItem('tb_session')) { App.login(sessionStorage.getItem('tb_session')); return; }
+      $('loginScreen').style.display = 'flex';
+      if (!Store.getRaw('tb_users')) Auth._setRegister();
+    },
+    _setRegister: function() {
+      Auth.isRegister = true;
+      $('loginTitle').textContent = '\uD83D\uDCDD \u6CE8\u518C';
+      $('loginSubtitle').textContent = '\u521B\u5EFA\u65B0\u8D26\u53F7';
+      $('loginBtn').textContent = '\u6CE8\u518C';
+      $('toggleText').textContent = '\u5DF2\u6709\u8D26\u53F7\uFF1F';
+      $('toggleLink').textContent = '\u767B\u5F55';
+      $('loginPwd2').style.display = 'block';
+      $('loginError').textContent = '';
+    },
+    _setLogin: function() {
+      Auth.isRegister = false;
+      $('loginTitle').textContent = '\uD83D\uDD10 \u767B\u5F55';
+      $('loginSubtitle').textContent = '\u8BF7\u8F93\u5165\u8D26\u53F7\u5BC6\u7801';
+      $('loginBtn').textContent = '\u767B\u5F55';
+      $('toggleText').textContent = '\u6CA1\u6709\u8D26\u53F7\uFF1F';
+      $('toggleLink').textContent = '\u6CE8\u518C';
+      $('loginPwd2').style.display = 'none';
+      $('loginError').textContent = '';
+    },
+    toggle: function() { Auth.isRegister ? Auth._setLogin() : Auth._setRegister(); },
+    users: function() { try { return JSON.parse(Store.getRaw('tb_users'))||[]; } catch(e) { return []; } },
+    saveUsers: function(u) { Store.setRaw('tb_users', JSON.stringify(u)); },
+    hash: async function(pwd) {
+      var d = new TextEncoder().encode(pwd + 'tb_salt');
+      var h = await crypto.subtle.digest('SHA-256', d);
+      return Array.from(new Uint8Array(h)).map(function(b){return b.toString(16).padStart(2,'0');}).join('');
+    },
+    login: async function() {
+      var uname = $('loginUser').value.trim();
+      var pwd = $('loginPwd').value, pwd2 = $('loginPwd2').value, err = $('loginError');
+      if (!uname) { err.textContent='\u8BF7\u8F93\u5165\u7528\u6237\u540D'; return; }
+      if (uname.length < 2) { err.textContent='\u7528\u6237\u540D\u81F3\u5C112\u5B57'; return; }
+      if (pwd.length < 4) { err.textContent='\u5BC6\u7801\u81F3\u5C114\u4F4D'; return; }
+      var us = Auth.users();
+
+      if (Auth.isRegister) {
+        if (pwd !== pwd2) { err.textContent='\u4E24\u6B21\u5BC6\u7801\u4E0D\u4E00\u81F4'; return; }
+        for (var i=0;i<us.length;i++) { if (us[i].username===uname) { err.textContent='\u8BE5\u7528\u6237\u540D\u5DF2\u5B58\u5728'; return; } }
+        us.push({id:Date.now(),username:uname,passwordHash:await Auth.hash(pwd),createdAt:new Date().toLocaleString('zh-CN'),avatar:'\uD83D\uDC64',status:'online',friends:[],lastSeen:new Date().toLocaleString('zh-CN')});
+        Auth.saveUsers(us);
+        sessionStorage.setItem('tb_session', uname);
+        App.login(uname);
+        toast('\u6CE8\u518C\u6210\u529F\uFF0C\u6B22\u8FCE '+uname+'!');
+      } else {
+        var found = null;
+        for (var i=0;i<us.length;i++) { if (us[i].username===uname) { found=us[i]; break; } }
+        if (!found) { err.textContent='\u7528\u6237\u4E0D\u5B58\u5728'; return; }
+        if (await Auth.hash(pwd) !== found.passwordHash) { err.textContent='\u5BC6\u7801\u9519\u8BEF'; $('loginPwd').value=''; return; }
+        found.status = 'online'; found.lastSeen = new Date().toLocaleString('zh-CN');
+        Auth.saveUsers(us);
+        sessionStorage.setItem('tb_session', uname);
+        App.login(uname);
+      }
+    },
+    logout: function() {
+      var us = Auth.users(), un = App.user;
+      for (var i=0;i<us.length;i++) { if (us[i].username===un) { us[i].status='offline'; Auth.saveUsers(us); break; } }
+      sessionStorage.removeItem('tb_session'); App.user = null;
+      $('loginScreen').style.display='flex'; $('appShell').classList.remove('show');
+      $('loginUser').value=''; $('loginPwd').value=''; $('loginPwd2').value='';
+      Auth._setLogin();
+    },
+  };
+
+  // ---- App ----
+  var App = {
+    user: null,
+    login: function(uname) {
+      App.user = uname;
+      $('loginScreen').style.display='none';
+      $('appShell').classList.add('show');
+      var u = Auth.users().find(function(x){return x.username===uname;});
+      if (u) $('headerAvatar').textContent = u.avatar||'\uD83D\uDC64';
+      App._buildHome();
+      Router.init();
+      Router.go('home');
+    },
+    _buildHome: function() {
+      var g = $('homeGrid'); g.innerHTML = '';
+      Tools.list.forEach(function(t) {
+        g.innerHTML += '<div class="tool-card" onclick="Router.go(\''+t.id+'\')"><span class="icon">'+t.icon+'</span><span class="label">'+t.name+'</span><span class="desc">'+t.desc+'</span></div>';
+      });
+    },
+  };
+
+  // ---- Tools Registry ----
+  var Tools = {
+    list: [],
+    register: function(cfg) {
+      Tools.list.push(cfg);
+      Router.register(cfg.id, {
+        title: cfg.icon + ' ' + cfg.name,
+        html: cfg.html || '',
+        onEnter: function() { if (cfg.onEnter) cfg.onEnter(); },
+      });
+    },
+  };
+
+  // ---- Render helpers ----
+  var Render = {
+    leaderboard: function() {
+      var us = Auth.users(); var lb = $('leaderboardSection');
+      if (us.length < 2) { lb.innerHTML=''; return; }
+      var order = {online:0,busy:1,away:2,offline:3};
+      var sorted = us.slice().sort(function(a,b){ return (order[a.status]||3)-(order[b.status]||3); });
+      lb.innerHTML = '<h3 style="font-size:15px;font-weight:600;margin-bottom:10px">\uD83C\uDFC6 \u5728\u7EBF\u6392\u884C\u699C</h3>' +
         sorted.map(function(u){
-          var cls = u.status==='online'?'online':u.status==='busy'?'busy':u.status==='away'?'away':'offline';
-          var statusText = u.status==='online'?'\u5728\u7EBF':u.status==='busy'?'\u5FD9\u788C':u.status==='away'?'\u79BB\u5F00':'\u79BB\u7EBF';
-          return '<div class="lb-item">'+
-            '<div class="lb-avatar">'+(u.avatar||'\uD83D\uDC64')+'</div>'+
-            '<div class="lb-info"><div class="lb-name">'+u.username+'</div><div class="lb-stat">'+statusText+' | '+(u.lastSeen||'\u672A\u77E5')+'</div></div>'+
-            '<div class="lb-status '+cls+'"></div>'+
-          '</div>';
+          var st = u.status==='online'?'\u5728\u7EBF':u.status==='busy'?'\u5FD9\u788C':u.status==='away'?'\u79BB\u5F00':'\u79BB\u7EBF';
+          return '<div class="lb-item"><div class="lb-avatar">'+(u.avatar||'\uD83D\uDC64')+'</div><div class="lb-info"><div class="lb-name">'+H(u.username)+'</div><div class="lb-stat">'+st+' | '+(u.lastSeen||'\u672A\u77E5')+'</div></div><div class="lb-dot '+(u.status||'offline')+'"></div></div>';
         }).join('');
-    }
+    },
+  };
+  </script>
 
-    /* ===== ROTATION ===== */
-    var rotDateOffset = 0;
-    function getRotationData() { try{ return JSON.parse(localStorage.getItem(userKey('rotation')))||{people:[],countPerDay:2}; }catch(e){ return {people:[],countPerDay:2}; } }
-    function saveRotationData() { var c=parseInt(document.getElementById('rotCount')?.value||2); var d=getRotationData(); d.countPerDay=Math.max(1,Math.min(20,c||2)); localStorage.setItem(userKey('rotation'),JSON.stringify(d)); renderRotation(); }
-    function addRotationPerson() {
-      var n=document.getElementById('rotName').value.trim(), p=document.getElementById('rotProject').value.trim();
-      if(!n){toast('\u8BF7\u8F93\u5165\u59D3\u540D');return;} if(!p){toast('\u8BF7\u8F93\u5165\u9879\u76EE');return;}
-      var d=getRotationData(); d.people.push({id:Date.now(),name:n,project:p});
-      localStorage.setItem(userKey('rotation'),JSON.stringify(d));
-      document.getElementById('rotName').value=''; document.getElementById('rotProject').value='';
-      renderRotation(); toast('\u5DF2\u6DFB\u52A0: '+n);
-    }
-    function removeRotationPerson(id) { var d=getRotationData(); d.people=d.people.filter(function(p){return p.id!==id}); localStorage.setItem(userKey('rotation'),JSON.stringify(d)); renderRotation(); }
-    function shiftRotDate(delta) { rotDateOffset+=delta; renderRotation(); }
+  <!-- ============================================================
+       TOOL MODULES - each self-contained, registered via Tools.register()
+       ============================================================ -->
+
+  <!-- TOOL: 小值轮换 -->
+  <script>
+  (function() {
+    var D = { people: [], countPerDay: 2, offset: 0 };
+
+    function load() { D = Store.get('rotation', {people:[],countPerDay:2,offset:0}); }
+    function save() { Store.set('rotation', D); }
+
     function getDateStr(off) { var d=new Date(); d.setDate(d.getDate()+off); return d.toLocaleDateString('zh-CN',{year:'numeric',month:'long',day:'numeric',weekday:'long'}); }
-    function getTodayKey(off) { var d=new Date(); d.setHours(0,0,0,0); var e=new Date(2024,0,1); return Math.max(0,Math.floor((d.getTime()-e.getTime())/86400000)+off); }
-    function renderRotation() {
-      var d=getRotationData(), people=d.people, cpd=d.countPerDay;
-      var pl=document.getElementById('rotationPeopleList');
-      if (people.length===0) { pl.innerHTML='<div class="empty-state"><span class="icon">\uD83D\uDC65</span>\u8FD8\u6CA1\u6709\u4EBA\u5458</div>'; }
-      else { pl.innerHTML=people.map(function(p){return '<div class="list-item"><div class="content"><div class="title">'+escapeHtml(p.name)+'</div><div class="sub">\uD83D\uDCCB '+escapeHtml(p.project)+'</div></div><div class="actions"><button class="btn btn-danger btn-sm" onclick="removeRotationPerson('+p.id+')">\u5220\u9664</button></div></div>';}).join(''); }
-      var ce=document.getElementById('rotCount'); if(ce) ce.value=cpd;
-      document.getElementById('rotDateLabel').textContent=getDateStr(rotDateOffset);
-      var board=document.getElementById('rotationDutyBoard');
-      if (people.length===0) { board.innerHTML='<div class="empty-state"><span class="icon">\uD83D\uDCCB</span>\u6DFB\u52A0\u4EBA\u5458\u540E\u663E\u793A</div>'; return; }
-      var total=people.length, dk=getTodayKey(rotDateOffset), si=(dk*cpd)%total;
-      var dp=[]; for(var i=0;i<cpd;i++) dp.push(people[(si+i)%total]);
-      var label=rotDateOffset===0?'\u4ECA\u65E5':(rotDateOffset>0?rotDateOffset+'\u5929\u540E':Math.abs(rotDateOffset)+'\u5929\u524D');
-      board.innerHTML='<p style="font-size:15px;font-weight:600;margin-bottom:10px">\uD83D\uDCC5 '+label+'\u503C\u73ED:</p>'+dp.map(function(p){return '<div class="rotation-duty-card"><div class="person">\uD83D\uDC64 '+escapeHtml(p.name)+'</div><div class="project">'+escapeHtml(p.project)+'</div></div>';}).join('')+'<p style="font-size:12px;color:var(--text-secondary);margin-top:8px;text-align:center">\u5171 '+total+'\u4EBA\uFF0C\u6BCF\u65E5 '+cpd+'\u4EBA\u503C\u73ED</p>';
+
+    Tools.register({
+      id: 'rotation', name: '\u5C0F\u503C\u8F6E\u6362', icon: '\uD83D\uDD04', desc: '\u6BCF\u65E5\u503C\u73ED\u8F6E\u6362\u8868',
+      html:
+        '<p class="section-title">\uD83D\uDD04 \u5C0F\u503C\u8F6E\u6362</p>'+
+        '<p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px">\u6DFB\u52A0\u4EBA\u5458\u53CA\u8D1F\u8D23\u9879\u76EE\uFF0C\u6309\u65E5\u671F\u81EA\u52A8\u8F6E\u6362\u3002</p>'+
+        '<div class="input-group"><input type="text" id="r_name" placeholder="\u59D3\u540D" style="flex:2" /><input type="text" id="r_proj" placeholder="\u8D1F\u8D23\u9879\u76EE" style="flex:3" /><button class="btn btn-primary btn-sm" onclick="T_rotation.add()">+\u6DFB\u52A0</button></div>'+
+        '<div id="r_people" style="margin-bottom:14px"></div>'+
+        '<div class="input-group"><label style="font-size:14px">\u6BCF\u65E5\u503C\u73ED\u4EBA\u6570\uFF1A</label><input type="number" id="r_cnt" value="2" min="1" max="20" style="width:70px;flex:none" onchange="T_rotation.updateCount()" /></div>'+
+        '<div class="rotation-date-nav"><button class="btn btn-outline btn-sm" onclick="T_rotation.shift(-1)">\u25C0 \u524D\u4E00\u5929</button><span class="date-label" id="r_date"></span><button class="btn btn-outline btn-sm" onclick="T_rotation.shift(1)">\u540E\u4E00\u5929 \u25B6</button></div>'+
+        '<div style="text-align:center;margin-bottom:12px"><button class="btn btn-outline btn-sm" onclick="T_rotation.today()">\uD83D\uDCCD \u56DE\u5230\u4ECA\u5929</button></div>'+
+        '<div id="r_board"></div>',
+      onEnter: function() { load(); render(); },
+    });
+
+    window.T_rotation = {
+      add: function() { var n=$('r_name').value.trim(), p=$('r_proj').value.trim(); if(!n||!p){toast('\u8BF7\u586B\u5B8C\u59D3\u540D\u548C\u9879\u76EE');return;} load(); D.people.push({id:Date.now(),name:n,project:p}); save(); $('r_name').value=''; $('r_proj').value=''; render(); },
+      updateCount: function() { load(); D.countPerDay = Math.max(1,Math.min(20,parseInt($('r_cnt').value)||2)); save(); render(); },
+      shift: function(d) { load(); D.offset += d; save(); render(); },
+      today: function() { load(); D.offset = 0; save(); render(); },
+    };
+
+    function render() {
+      $('r_cnt').value = D.countPerDay;
+      $('r_date').textContent = getDateStr(D.offset);
+      var pl = $('r_people');
+      if (D.people.length===0) { pl.innerHTML='<div class="empty-state"><span class="icon">\uD83D\uDC65</span>\u8FD8\u6CA1\u6709\u4EBA\u5458</div>'; }
+      else { pl.innerHTML = D.people.map(function(p){return '<div class="list-item"><div class="content"><div class="title">'+H(p.name)+'</div><div class="sub">\uD83D\uDCCB '+H(p.project)+'</div></div><button class="btn btn-danger btn-sm" onclick="T_rotation.del('+p.id+')">\u5220\u9664</button></div>';}).join(''); }
+
+      var board = $('r_board');
+      if (D.people.length===0) { board.innerHTML=''; return; }
+      var d0 = new Date(); d0.setHours(0,0,0,0);
+      var dk = Math.max(0, Math.floor((d0.getTime() - new Date(2024,0,1).getTime())/86400000) + D.offset);
+      var si = (dk * D.countPerDay) % D.people.length;
+      var dp = []; for (var i=0; i<D.countPerDay; i++) dp.push(D.people[(si+i)%D.people.length]);
+      var label = D.offset===0?'\u4ECA\u65E5':(D.offset>0?D.offset+'\u5929\u540E':Math.abs(D.offset)+'\u5929\u524D');
+      board.innerHTML = '<p style="font-size:15px;font-weight:600;margin-bottom:10px">\uD83D\uDCC5 '+label+'\u503C\u73ED:</p>'+
+        dp.map(function(p){return '<div class="rotation-duty-card"><div class="person">\uD83D\uDC64 '+H(p.name)+'</div><div class="project">'+H(p.project)+'</div></div>';}).join('')+
+        '<p style="font-size:12px;color:var(--text-secondary);margin-top:8px;text-align:center">\u5171 '+D.people.length+'\u4EBA\uFF0C\u6BCF\u65E5 '+D.countPerDay+'\u4EBA\u503C\u73ED</p>';
     }
 
-    /* ===== BIZTRIP ===== */
-    function getBizTripData() { try{return JSON.parse(localStorage.getItem(userKey('biztrip')))||{people:[],currentIndex:0};}catch(e){return{people:[],currentIndex:0};} }
-    function saveBizTripData(d) { localStorage.setItem(userKey('biztrip'),JSON.stringify(d)); }
-    function addBizTripPerson() {
-      var n=document.getElementById('biztripInput').value.trim();
-      if(!n){toast('\u8BF7\u8F93\u5165\u59D3\u540D');return;}
-      var d=getBizTripData();
-      for(var i=0;i<d.people.length;i++){if(d.people[i].name===n){toast('\u8BE5\u4EBA\u5DF2\u5B58\u5728');return;}}
-      d.people.push({id:Date.now(),name:n,count:0,lastTime:null});
-      saveBizTripData(d); document.getElementById('biztripInput').value=''; renderBizTrip(); toast('\u5DF2\u6DFB\u52A0: '+n);
-    }
-    function removeBizTripPerson(id) { var d=getBizTripData(); d.people=d.people.filter(function(p){return p.id!==id}); if(d.currentIndex>=d.people.length) d.currentIndex=0; saveBizTripData(d); renderBizTrip(); }
-    function doBizTrip() {
-      var d=getBizTripData();
-      if(d.people.length<2){toast('\u81F3\u5C11\u9700\u89812\u4EBA');return;}
-      var idx=d.currentIndex%d.people.length;
-      d.people[idx].count=(d.people[idx].count||0)+1;
-      d.people[idx].lastTime=new Date().toLocaleString('zh-CN');
-      d.currentIndex=(idx+1)%d.people.length;
-      saveBizTripData(d); renderBizTrip(); toast(d.people[idx].name+'\u51FA\u516C\u5DEE(\u7B2C'+d.people[idx].count+'\u6B21)');
-    }
-    function undoBizTrip() {
-      var d=getBizTripData(); if(d.people.length===0){toast('\u65E0\u8BB0\u5F55');return;}
-      var pi=(d.currentIndex-1+d.people.length)%d.people.length;
-      if(!d.people[pi].count||d.people[pi].count<=0){toast('\u8BE5\u4EBA\u65E0\u8BB0\u5F55');return;}
-      d.people[pi].count--; if(d.people[pi].count===0) d.people[pi].lastTime=null;
-      d.currentIndex=pi; saveBizTripData(d); renderBizTrip(); toast('\u5DF2\u64A4\u9500 '+d.people[pi].name);
-    }
-    function resetBizTrip() { var d=getBizTripData(); for(var i=0;i<d.people.length;i++){d.people[i].count=0;d.people[i].lastTime=null;} d.currentIndex=0; saveBizTripData(d); renderBizTrip(); toast('\u5DF2\u91CD\u7F6E'); }
-    function moveBizTripUp(id) {
-      var d=getBizTripData(), idx=-1;
-      for(var i=0;i<d.people.length;i++){if(d.people[i].id===id){idx=i;break;}}
-      if(idx<=0) return;
-      if(d.currentIndex===idx) d.currentIndex=idx-1; else if(d.currentIndex===idx-1) d.currentIndex=idx;
-      var t=d.people[idx]; d.people[idx]=d.people[idx-1]; d.people[idx-1]=t; saveBizTripData(d); renderBizTrip();
-    }
-    function moveBizTripDown(id) {
-      var d=getBizTripData(), idx=-1;
-      for(var i=0;i<d.people.length;i++){if(d.people[i].id===id){idx=i;break;}}
-      if(idx<0||idx>=d.people.length-1) return;
-      if(d.currentIndex===idx) d.currentIndex=idx+1; else if(d.currentIndex===idx+1) d.currentIndex=idx;
-      var t=d.people[idx]; d.people[idx]=d.people[idx+1]; d.people[idx+1]=t; saveBizTripData(d); renderBizTrip();
-    }
-    function renderBizTrip() {
-      var d=getBizTripData(), ni=d.currentIndex%Math.max(d.people.length,1);
-      var le=document.getElementById('biztripPeopleList');
-      if(!le) return;
-      if(d.people.length===0){le.innerHTML='<div class="empty-state"><span class="icon">\uD83D\uDC65</span>\u8FD8\u6CA1\u6709\u4EBA\u5458</div>';}
-      else { le.innerHTML=d.people.map(function(p,i){ var ar=i===ni&&d.people.length>1?' <span style="font-size:12px;color:#f59e0b">\u2B05 \u4E0B\u4E00\u4E2A</span>':''; return '<div class="biztrip-record-card"><div class="info"><div class="name-col">'+escapeHtml(p.name)+ar+'</div><div class="stats">\u2708 \u516C\u5DEE '+(p.count||0)+'\u6B21'+(p.lastTime?' | \u6700\u8FD1: '+p.lastTime:' | \u8FD8\u6CA1\u51FA\u8FC7')+'</div></div><div style="display:flex;gap:4px;flex-shrink:0"><button class="btn btn-outline btn-xs" onclick="moveBizTripUp('+p.id+')">\u25B2</button><button class="btn btn-outline btn-xs" onclick="moveBizTripDown('+p.id+')">\u25BC</button><button class="btn btn-danger btn-xs" onclick="removeBizTripPerson('+p.id+')">\u5220</button></div></div>'; }).join(''); }
-      var ne=document.getElementById('biztripNext'); if(!ne) return;
-      if(d.people.length<2){ne.innerHTML='<div style="color:var(--text-secondary);text-align:center">\u81F3\u5C112\u4EBA\u624D\u80FD\u8F6E\u6362</div>'; return;}
-      var np=d.people[ni];
-      ne.innerHTML='<div class="biztrip-next-card"><div class="hint">\uD83D\uDC49 \u4E0B\u4E00\u4E2A\u51FA\u516C\u5DEE:</div><div class="name">'+escapeHtml(np.name)+'</div><div style="font-size:13px;color:#92400e;margin-top:4px">\u5DF2\u51FA\u8FC7 '+(np.count||0)+'\u6B21</div></div><div style="text-align:center;margin-bottom:10px"><button class="btn btn-primary" onclick="doBizTrip()" style="font-size:18px;padding:14px 36px">\u2708\uFE0F \u786E\u8BA4\u51FA\u516C\u5DEE</button></div>';
-    }
+    // delayed binding for del (needs render after)
+    T_rotation.del = function(id) { load(); D.people = D.people.filter(function(p){return p.id!==id;}); save(); render(); };
+  })();
+  </script>
 
-    /* ===== WHEEL ===== */
-    var wheelItems=['\u9009\u9879A','\u9009\u9879B','\u9009\u9879C','\u9009\u9879D'], wheelAngle=0, spinAnimation=null;
-    function addWheelItem() { var i=document.getElementById('wheelInput'),v=i.value.trim(); if(!v) return; if(wheelItems.length>=12){toast('\u6700\u591A12\u4E2A');return;} wheelItems.push(v); i.value=''; renderWheelTags(); drawWheel(); }
-    function renderWheelTags() { document.getElementById('wheelTags').innerHTML=wheelItems.map(function(item,i){return '<span class="tag">'+escapeHtml(item)+' <span class="remove" onclick="removeWheelItem('+i+')">\u00D7</span></span>';}).join(''); }
-    function removeWheelItem(i) { wheelItems.splice(i,1); if(wheelItems.length<2) wheelItems=['\u9009\u9879A','\u9009\u9879B']; renderWheelTags(); drawWheel(); }
-    function clearWheel() { wheelItems=['\u9009\u9879A','\u9009\u9879B','\u9009\u9879C','\u9009\u9879D']; renderWheelTags(); drawWheel(); toast('\u5DF2\u91CD\u7F6E'); }
-    function drawWheel() {
-      var c=document.getElementById('wheelCanvas'); if(!c||!c.parentElement) return;
-      var ctx=c.getContext('2d'), dpr=window.devicePixelRatio||1;
-      var size=Math.min(c.parentElement.clientWidth||300,300);
-      c.width=size*dpr; c.height=size*dpr; ctx.scale(dpr,dpr);
-      var cx=size/2,cy=size/2,r=size/2-10,n=wheelItems.length,arc=2*Math.PI/n;
-      var colors=['#6366f1','#f59e0b','#10b981','#ec4899','#06b6d4','#f97316','#8b5cf6','#14b8a6','#e11d48','#65a30d','#d946ef','#0ea5e9'];
+  <!-- TOOL: 能不能不出公差 -->
+  <script>
+  (function() {
+    var D = { people: [], currentIndex: 0 };
+    function load() { D = Store.get('biztrip', {people:[],currentIndex:0}); }
+    function save() { Store.set('biztrip', D); }
+
+    Tools.register({
+      id: 'biztrip', name: '\u80FD\u4E0D\u80FD\u4E0D\u51FA\u516C\u5DEE', icon: '\u2708\uFE0F', desc: '\u51FA\u5DEE\u8F6E\u6362+\u7EDF\u8BA1',
+      html:
+        '<p class="section-title">\u2708\uFE0F \u80FD\u4E0D\u80FD\u4E0D\u51FA\u516C\u5DEE\uFF1F</p>'+
+        '<p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px">\u6309\u5217\u8868\u987A\u5E8F\u5FAA\u73AF\u8F6E\u6362\uFF0C\u8BB0\u5F55\u6B21\u6570\u548C\u6700\u8FD1\u65F6\u95F4\u3002</p>'+
+        '<div class="input-group"><input type="text" id="b_inp" placeholder="\u8F93\u5165\u59D3\u540D" /><button class="btn btn-primary" onclick="T_biztrip.add()">\u6DFB\u52A0\u4EBA\u5458</button></div>'+
+        '<div id="b_people"></div><div id="b_next"></div>'+
+        '<div style="display:flex;justify-content:center;gap:8px;margin-top:8px"><button class="btn btn-outline btn-sm" onclick="T_biztrip.undo()">\u21A9 \u64A4\u9500</button><button class="btn btn-outline btn-sm" onclick="T_biztrip.reset()">\uD83D\uDD04 \u91CD\u7F6E</button></div>',
+      onEnter: function() { load(); render(); },
+    });
+
+    window.T_biztrip = {
+      add: function() { var n=$('b_inp').value.trim(); if(!n){toast('\u8BF7\u8F93\u5165\u59D3\u540D');return;} load(); if(D.people.some(function(p){return p.name===n;})){toast('\u5DF2\u5B58\u5728');return;} D.people.push({id:Date.now(),name:n,count:0,lastTime:null}); save(); $('b_inp').value=''; render(); },
+      doit: function() { load(); if(D.people.length<2){toast('\u81F3\u5C112\u4EBA');return;} var i=D.currentIndex%D.people.length; D.people[i].count++; D.people[i].lastTime=new Date().toLocaleString('zh-CN'); D.currentIndex=(i+1)%D.people.length; save(); render(); toast(D.people[i].name+'\u51FA\u5DEE(\u7B2C'+D.people[i].count+'\u6B21)'); },
+      undo: function() { load(); if(!D.people.length) return; var i=(D.currentIndex-1+D.people.length)%D.people.length; if(!D.people[i].count){toast('\u65E0\u8BB0\u5F55');return;} D.people[i].count--; if(!D.people[i].count) D.people[i].lastTime=null; D.currentIndex=i; save(); render(); },
+      reset: function() { load(); D.people.forEach(function(p){p.count=0;p.lastTime=null;}); D.currentIndex=0; save(); render(); },
+      del: function(id) { load(); D.people=D.people.filter(function(p){return p.id!==id;}); if(D.currentIndex>=D.people.length)D.currentIndex=0; save(); render(); },
+      up: function(id) { load(); var i=D.people.findIndex(function(p){return p.id===id;}); if(i<=0)return; if(D.currentIndex===i)D.currentIndex--; else if(D.currentIndex===i-1)D.currentIndex++; var t=D.people[i]; D.people[i]=D.people[i-1]; D.people[i-1]=t; save(); render(); },
+      down: function(id) { load(); var i=D.people.findIndex(function(p){return p.id===id;}); if(i<0||i>=D.people.length-1)return; if(D.currentIndex===i)D.currentIndex++; else if(D.currentIndex===i+1)D.currentIndex--; var t=D.people[i]; D.people[i]=D.people[i+1]; D.people[i+1]=t; save(); render(); },
+    };
+
+    function render() {
+      var ni = D.currentIndex % Math.max(D.people.length,1);
+      var pl = $('b_people');
+      if (!D.people.length) { pl.innerHTML='<div class="empty-state"><span class="icon">\uD83D\uDC65</span>\u8FD8\u6CA1\u6709\u4EBA\u5458</div>'; }
+      else { pl.innerHTML = D.people.map(function(p,i){ var ar=i===ni&&D.people.length>1?' <span style="font-size:12px;color:#f59e0b">\u2B05 \u4E0B\u4E00\u4E2A</span>':''; return '<div class="biztrip-record-card"><div class="info"><div class="name-col">'+H(p.name)+ar+'</div><div class="stats">\u2708 \u516C\u5DEE '+(p.count||0)+'\u6B21'+(p.lastTime?' | \u6700\u8FD1: '+p.lastTime:' | \u8FD8\u6CA1\u51FA\u8FC7')+'</div></div><div style="display:flex;gap:4px"><button class="btn btn-outline btn-xs" onclick="T_biztrip.up('+p.id+')">\u25B2</button><button class="btn btn-outline btn-xs" onclick="T_biztrip.down('+p.id+')">\u25BC</button><button class="btn btn-danger btn-xs" onclick="T_biztrip.del('+p.id+')">\u5220</button></div></div>'; }).join(''); }
+
+      var ne = $('b_next');
+      if (D.people.length < 2) { ne.innerHTML='<div style="color:var(--text-secondary);text-align:center">\u81F3\u5C112\u4EBA\u624D\u80FD\u8F6E\u6362</div>'; return; }
+      var np = D.people[ni];
+      ne.innerHTML = '<div class="biztrip-next-card"><div class="hint">\uD83D\uDC49 \u4E0B\u4E00\u4E2A\u51FA\u516C\u5DEE:</div><div class="name">'+H(np.name)+'</div><div style="font-size:13px;color:#92400e;margin-top:4px">\u5DF2\u51FA\u8FC7 '+(np.count||0)+'\u6B21</div></div><div style="text-align:center;margin-bottom:10px"><button class="btn btn-primary" onclick="T_biztrip.doit()" style="font-size:18px;padding:14px 36px">\u2708\uFE0F \u786E\u8BA4\u51FA\u516C\u5DEE</button></div>';
+    }
+  })();
+  </script>
+
+  <!-- TOOL: 幸运转盘 -->
+  <script>
+  (function() {
+    var items = ['\u9009\u9879A','\u9009\u9879B','\u9009\u9879C','\u9009\u9879D'], angle = 0, anim = null;
+
+    Tools.register({
+      id: 'wheel', name: '\u5E78\u8FD0\u8F6C\u76D8', icon: '\uD83C\uDFA1', desc: '\u81EA\u5B9A\u4E49\u9009\u9879\u8F6C\u8F6C\u76D8',
+      html:
+        '<p class="section-title">\uD83C\uDFA1 \u5E78\u8FD0\u8F6C\u76D8</p>'+
+        '<div class="input-group"><input type="text" id="w_inp" placeholder="\u8F93\u5165\u9009\u9879" /><button class="btn btn-primary" onclick="T_wheel.add()">\u6DFB\u52A0</button></div>'+
+        '<div class="tag-list" id="w_tags"></div>'+
+        '<div class="canvas-wrap"><canvas id="w_canvas" width="300" height="300"></canvas></div>'+
+        '<div style="text-align:center;margin-top:8px"><button class="btn btn-primary" onclick="T_wheel.spin()" id="w_btn">\uD83C\uDFAF \u8F6C\u8F6C\u76D8</button><button class="btn btn-outline btn-sm" onclick="T_wheel.reset()" style="margin-left:8px">\u6E05\u7A7A</button></div>',
+      onEnter: function() { draw(); },
+    });
+
+    window.T_wheel = {
+      add: function() { var v=$('w_inp').value.trim(); if(!v)return; if(items.length>=12){toast('\u6700\u591A12\u4E2A');return;} items.push(v); $('w_inp').value=''; renderTags(); draw(); },
+      reset: function() { items=['\u9009\u9879A','\u9009\u9879B','\u9009\u9879C','\u9009\u9879D']; renderTags(); draw(); },
+      spin: function() { if(items.length<2){toast('\u81F3\u5C112\u4E2A');return;} if(anim)return; var btn=$('w_btn'); btn.disabled=true; btn.textContent='\u8F6C\u52A8\u4E2D\u2026'; var spins=5+Math.random()*3, stopAngle=Math.random()*2*Math.PI, target=angle+spins*2*Math.PI+stopAngle, dur=3000+Math.random()*1000, start=angle, st=performance.now(); (function a(now){var pr=Math.min((now-st)/dur,1),eased=1-Math.pow(1-pr,3); angle=start+(target-start)*eased; draw(); if(pr<1){anim=requestAnimationFrame(a);return;} anim=null; btn.disabled=false; btn.textContent='\uD83C\uDFAF \u8F6C\u8F6C\u76D8'; var n=items.length,arc=2*Math.PI/n,top=3*Math.PI/2,nm=(top-angle+2*Math.PI)%(2*Math.PI),idx=Math.floor(nm/arc); if(idx>=n)idx=n-1; var res=items[idx],old=document.querySelector('.wheel-result'); if(old)old.remove(); var el=document.createElement('div'); el.className='wheel-result'; el.style.cssText='text-align:center;margin-top:12px;font-size:20px;font-weight:700;color:var(--primary)'; el.textContent='\uD83C\uDF89 '+res; var cw=document.querySelector('.canvas-wrap'); if(cw)cw.after(el); toast('\u62BD\u5230: '+res);})(performance.now()); },
+    };
+
+    function renderTags() { $('w_tags').innerHTML=items.map(function(it,i){return '<span class="tag">'+H(it)+' <span class="remove" onclick="T_wheel.del('+i+')">\u00D7</span></span>';}).join(''); }
+    T_wheel.del = function(i) { items.splice(i,1); if(items.length<2)items=['\u9009\u9879A','\u9009\u9879B']; renderTags(); draw(); };
+
+    function draw() {
+      var c=$('w_canvas'); if(!c||!c.parentElement)return; var ctx=c.getContext('2d'),dpr=window.devicePixelRatio||1,size=Math.min(c.parentElement.clientWidth||300,300); c.width=size*dpr; c.height=size*dpr; ctx.scale(dpr,dpr);
+      var cx=size/2,cy=size/2,r=size/2-10,n=items.length,arc=2*Math.PI/n,colors=['#6366f1','#f59e0b','#10b981','#ec4899','#06b6d4','#f97316','#8b5cf6','#14b8a6','#e11d48','#65a30d','#d946ef','#0ea5e9'];
       ctx.clearRect(0,0,size,size);
-      for(var i=0;i<n;i++){var st=i*arc+wheelAngle,en=st+arc; ctx.beginPath(); ctx.moveTo(cx,cy); ctx.arc(cx,cy,r,st,en); ctx.closePath(); ctx.fillStyle=colors[i%colors.length]; ctx.fill(); ctx.strokeStyle='#fff'; ctx.lineWidth=2; ctx.stroke(); var mid=st+arc/2; ctx.save(); ctx.translate(cx+Math.cos(mid)*r*.65,cy+Math.sin(mid)*r*.65); ctx.rotate(mid+Math.PI/2); ctx.fillStyle='#fff'; ctx.font='bold 13px sans-serif'; ctx.textAlign='center'; ctx.fillText(wheelItems[i].length>5?wheelItems[i].slice(0,4)+'\u2026':wheelItems[i],0,0); ctx.restore();}
+      for(var i=0;i<n;i++){var st=i*arc+angle,en=st+arc; ctx.beginPath(); ctx.moveTo(cx,cy); ctx.arc(cx,cy,r,st,en); ctx.closePath(); ctx.fillStyle=colors[i%colors.length]; ctx.fill(); ctx.strokeStyle='#fff'; ctx.lineWidth=2; ctx.stroke(); var mid=st+arc/2; ctx.save(); ctx.translate(cx+Math.cos(mid)*r*.65,cy+Math.sin(mid)*r*.65); ctx.rotate(mid+Math.PI/2); ctx.fillStyle='#fff'; ctx.font='bold 13px sans-serif'; ctx.textAlign='center'; ctx.fillText(items[i].length>5?items[i].slice(0,4)+'\u2026':items[i],0,0); ctx.restore();}
       ctx.beginPath(); ctx.arc(cx,cy,16,0,2*Math.PI); ctx.fillStyle='#fff'; ctx.fill(); ctx.strokeStyle='#e2e8f0'; ctx.lineWidth=3; ctx.stroke();
       ctx.beginPath(); ctx.moveTo(cx-12,cy-r+6); ctx.lineTo(cx+12,cy-r+6); ctx.lineTo(cx,cy-r-14); ctx.closePath(); ctx.fillStyle='#ef4444'; ctx.fill(); ctx.strokeStyle='#fff'; ctx.lineWidth=2; ctx.stroke();
     }
-    function spinWheel() {
-      if(wheelItems.length<2){toast('\u81F3\u5C112\u4E2A\u9009\u9879');return;} var btn=document.getElementById('spinBtn'); if(spinAnimation) return;
-      btn.disabled=true; btn.textContent='\u8F6C\u52A8\u4E2D\u2026';
-      var spins=5+Math.random()*3,stopAngle=Math.random()*2*Math.PI,target=wheelAngle+spins*2*Math.PI+stopAngle;
-      var dur=3000+Math.random()*1000,start=wheelAngle,st=performance.now();
-      function anim(now){var pr=Math.min((now-st)/dur,1),eased=1-Math.pow(1-pr,3); wheelAngle=start+(target-start)*eased; drawWheel(); if(pr<1){spinAnimation=requestAnimationFrame(anim);return;} spinAnimation=null; btn.disabled=false; btn.textContent='\uD83C\uDFAF \u8F6C\u8F6C\u76D8'; var n=wheelItems.length,arc=2*Math.PI/n,top=3*Math.PI/2,nm=(top-wheelAngle+2*Math.PI)%(2*Math.PI),idx=Math.floor(nm/arc); if(idx>=n) idx=n-1; var res=wheelItems[idx],old=document.querySelector('.wheel-result'); if(old) old.remove(); var el=document.createElement('div'); el.className='wheel-result'; el.style.cssText='text-align:center;margin-top:12px;font-size:20px;font-weight:700;color:var(--primary);animation:fadeIn .3s'; el.textContent='\uD83C\uDF89 '+res; var cw=document.querySelector('.canvas-wrap'); if(cw) cw.after(el); toast('\u62BD\u5230: '+res);}
-      spinAnimation=requestAnimationFrame(anim);
+  })();
+  </script>
+
+  <!-- TOOL: 抽签 -->
+  <script>
+  (function() {
+    var items = ['\u9009\u98791','\u9009\u98792','\u9009\u98793','\u9009\u98794','\u9009\u98795'];
+    Tools.register({
+      id: 'draw', name: '\u62BD\u7B7E', icon: '\uD83C\uDFB2', desc: '\u968F\u673A\u62BD\u53D6\u4E00\u4E2A\u9009\u9879',
+      html:
+        '<p class="section-title">\uD83C\uDFB2 \u62BD\u7B7E</p>'+
+        '<div class="input-group"><input type="text" id="d_inp" placeholder="\u8F93\u5165\u9009\u9879" /><button class="btn btn-primary" onclick="T_draw.add()">\u6DFB\u52A0</button></div>'+
+        '<div class="tag-list" id="d_tags"></div>'+
+        '<div class="result-box" id="d_res"><span class="result-label">\u70B9\u51FB\u62BD\u7B7E\u8BD5\u8BD5</span></div>'+
+        '<div style="text-align:center"><button class="btn btn-primary" onclick="T_draw.go()">\uD83C\uDFB2 \u62BD\u4E00\u4E2A</button></div>',
+      onEnter: function() { renderTags(); },
+    });
+    window.T_draw = {
+      add: function() { var v=$('d_inp').value.trim(); if(!v)return; items.push(v); $('d_inp').value=''; renderTags(); },
+      del: function(i) { items.splice(i,1); if(items.length<2)items=['\u9009\u98791','\u9009\u98792']; renderTags(); },
+      go: function() { if(items.length<2){toast('\u81F3\u5C112\u4E2A');return;} var box=$('d_res'),c=0,mc=10+Math.floor(Math.random()*6); var iv=setInterval(function(){var r=Math.floor(Math.random()*items.length); box.innerHTML='<span class="result-label">\u62BD\u53D6\u4E2D\u2026</span><span class="result-text" style="font-size:32px">'+H(items[r])+'</span>'; c++; if(c>=mc){clearInterval(iv); var f=items[Math.floor(Math.random()*items.length)]; box.innerHTML='<span class="result-label">\uD83C\uDF89 \u62BD\u4E2D\u4E86</span><span class="result-text">'+H(f)+'</span>'; toast('\u62BD\u4E2D: '+f);}},60); },
+    };
+    function renderTags() { $('d_tags').innerHTML=items.map(function(it,i){return '<span class="tag">'+H(it)+' <span class="remove" onclick="T_draw.del('+i+')">\u00D7</span></span>';}).join(''); }
+  })();
+  </script>
+
+  <!-- TOOL: 备忘录 -->
+  <script>
+  (function() {
+    Tools.register({
+      id: 'memo', name: '\u5907\u5FD8\u5F55', icon: '\uD83D\uDCDD', desc: '\u901F\u8BB0\u70B9\u6EF4\u968F\u65F6\u67E5\u770B',
+      html:
+        '<p class="section-title">\uD83D\uDCDD \u5907\u5FD8\u5F55</p>'+
+        '<div class="input-group"><input type="text" id="m_inp" placeholder="\u5199\u70B9\u4EC0\u4E48\u2026" /><button class="btn btn-primary" onclick="T_memo.add()">\u4FDD\u5B58</button></div>'+
+        '<div id="m_list"></div>',
+      onEnter: function() { render(); },
+    });
+    window.T_memo = {
+      add: function() { var v=$('m_inp').value.trim(); if(!v)return; var memos=Store.get('memos',[]); memos.unshift({id:Date.now(),text:v,time:new Date().toLocaleString('zh-CN')}); Store.set('memos',memos); $('m_inp').value=''; render(); toast('\u5DF2\u4FDD\u5B58'); },
+      del: function(id) { var memos=Store.get('memos',[]); memos=memos.filter(function(m){return m.id!==id;}); Store.set('memos',memos); render(); },
+    };
+    function render() { var memos=Store.get('memos',[]), c=$('m_list'); if(!memos.length){c.innerHTML='<div class="empty-state"><span class="icon">\uD83D\uDCDD</span>\u8FD8\u6CA1\u6709\u5907\u5FD8\u5F55</div>';return;} c.innerHTML=memos.map(function(m){return '<div class="list-item"><div class="content"><div class="title">'+H(m.text)+'</div><div class="sub">'+m.time+'</div></div><button class="btn btn-danger btn-sm" onclick="T_memo.del('+m.id+')">\u5220\u9664</button></div>';}).join(''); }
+  })();
+  </script>
+
+  <!-- TOOL: 集体投票 -->
+  <script>
+  (function() {
+    var opts = [], title = '';
+    Tools.register({
+      id: 'poll', name: '\u96C6\u4F53\u6295\u7968', icon: '\uD83D\uDDF3\uFE0F', desc: '\u521B\u5EFA\u6295\u7968\u7EDF\u8BA1\u7ED3\u679C',
+      html:
+        '<p class="section-title">\uD83D\uDDF3\uFE0F \u96C6\u4F53\u6295\u7968</p>'+
+        '<p style="font-size:13px;color:var(--text-secondary);margin-bottom:10px">\u521B\u5EFA\u6295\u7968\uFF0C\u70B9\u51FB\u9009\u9879\u6295\u7968\uFF0C\u5B9E\u65F6\u7EDF\u8BA1\u3002</p>'+
+        '<div class="input-group"><input type="text" id="p_title" placeholder="\u6295\u7968\u6807\u9898" /></div>'+
+        '<div class="input-group"><input type="text" id="p_inp" placeholder="\u6DFB\u52A0\u9009\u9879" /><button class="btn btn-primary" onclick="T_poll.addOpt()">\u6DFB\u52A0</button></div>'+
+        '<div class="tag-list" id="p_tags"></div>'+
+        '<div style="text-align:center;margin-bottom:14px"><button class="btn btn-primary" onclick="T_poll.create()">\uD83D\uDCCA \u5F00\u59CB\u6295\u7968</button></div>'+
+        '<div id="p_res"></div>',
+      onEnter: function() { renderTags(); renderRes(); },
+    });
+    window.T_poll = {
+      addOpt: function() { var v=$('p_inp').value.trim(); if(!v)return; opts.push({name:v,votes:0}); $('p_inp').value=''; renderTags(); },
+      create: function() { title=$('p_title').value.trim()||'\u672A\u547D\u540D\u6295\u7968'; if(opts.length<2){toast('\u81F3\u5C112\u4E2A');return;} opts.forEach(function(o){o.votes=0;}); renderRes(); toast('\u6295\u7968\u5DF2\u521B\u5EFA'); },
+      vote: function(i) { if(i<0||i>=opts.length)return; opts[i].votes++; renderRes(); },
+      reset: function() { opts.forEach(function(o){o.votes=0;}); renderRes(); },
+    };
+    function renderTags() { $('p_tags').innerHTML=opts.map(function(o,i){return '<span class="tag">'+H(o.name)+' <span class="remove" onclick="T_poll.delOpt('+i+')">\u00D7</span></span>';}).join(''); }
+    T_poll.delOpt = function(i) { opts.splice(i,1); renderTags(); };
+    function renderRes() { var c=$('p_res'); if(opts.length<2){c.innerHTML='<div class="empty-state"><span class="icon">\uD83D\uDDF3\uFE0F</span>\u6DFB\u52A0\u9009\u9879\u540E\u5F00\u59CB</div>';return;} var total=opts.reduce(function(s,o){return s+o.votes;},0), mv=Math.max.apply(null,opts.map(function(o){return o.votes;}).concat([1])); c.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><strong>\uD83D\uDCCA '+H(title)+'</strong><span style="font-size:13px;color:var(--text-secondary)">\u5171 '+total+'\u7968</span></div>'+opts.map(function(o,i){var pct=total===0?0:Math.round(o.votes/total*100),bw=total===0?0:o.votes/mv*100; return '<div class="poll-option" onclick="T_poll.vote('+i+')"><div class="poll-bar" style="width:'+bw+'%"></div><div class="poll-text"><span>'+H(o.name)+'</span><span class="poll-pct">'+o.votes+'\u7968('+pct+'%)</span></div></div>';}).join('')+'<div style="text-align:center;margin-top:8px"><button class="btn btn-outline btn-sm" onclick="T_poll.reset()">\u91CD\u7F6E</button></div>'; }
+  })();
+  </script>
+
+  <!-- TOOL: 个人中心 -->
+  <script>
+  (function() {
+    var EMOJIS = ['\uD83D\uDC64','\uD83E\uDDD1','\uD83D\uDC69','\uD83D\uDC68','\uD83E\uDDD4','\uD83E\uDDD3','\uD83D\uDC7B','\uD83E\uDD16','\uD83D\uDC7D','\uD83D\uDC7E','\uD83D\uDC36','\uD83D\uDC31','\uD83D\uDC2F','\uD83D\uDC30','\uD83D\uDC39','\uD83E\uDD81','\uD83D\uDC35','\uD83D\uDC12','\uD83E\uDD84','\uD83D\uDC0C','\uD83C\uDF3A','\uD83C\uDF38','\uD83C\uDF3B','\uD83C\uDF34','\uD83C\uDF0D','\uD83C\uDF1E','\u2B50','\u2764\uFE0F','\uD83D\uDC9C','\uD83D\uDC99','\uD83D\uDC9A','\uD83D\uDC9B'];
+    var STATUSES = [{k:'online',l:'\uD83D\uDFE2 \u5728\u7EBF',c:'sel-online'},{k:'busy',l:'\uD83D\uDFE1 \u5FD9\u788C',c:'sel-busy'},{k:'away',l:'\uD83D\uDFE0 \u79BB\u5F00',c:'sel-away'},{k:'offline',l:'\u26AA \u9690\u8EAB',c:'sel-offline'}];
+
+    Tools.register({
+      id: 'profile', name: '\u4E2A\u4EBA\u4E2D\u5FC3', icon: '\uD83D\uDC64', desc: '',
+      html:
+        '<p class="section-title">\uD83D\uDC64 \u4E2A\u4EBA\u4E2D\u5FC3</p>'+
+        '<div style="text-align:center;margin-bottom:16px"><div style="font-size:64px;cursor:pointer" id="pr_av">\uD83D\uDC64</div><p style="font-weight:600;font-size:18px;margin-top:4px" id="pr_un"></p></div>'+
+        '<p style="font-size:14px;font-weight:600;margin-bottom:6px">\u9009\u62E9\u5934\u50CF</p><div class="emoji-grid" id="pr_em"></div>'+
+        '<p style="font-size:14px;font-weight:600;margin:12px 0 6px">\u5728\u7EBF\u72B6\u6001</p><div class="input-group" id="pr_st" style="flex-wrap:nowrap"></div>'+
+        '<p style="font-size:14px;font-weight:600;margin:16px 0 6px">\uD83D\uDC65 \u597D\u53CB\u5217\u8868</p>'+
+        '<div class="input-group"><input type="text" id="pr_fi" placeholder="\u8F93\u5165\u597D\u53CB\u7528\u6237\u540D" /><button class="btn btn-primary btn-sm" onclick="T_profile.addFriend()">\u6DFB\u52A0\u597D\u53CB</button></div>'+
+        '<div id="pr_fl"></div>',
+      onEnter: function() { render(); },
+    });
+
+    window.T_profile = {
+      setAvatar: function(emoji) { var us=Auth.users(); for(var i=0;i<us.length;i++){if(us[i].username===App.user){us[i].avatar=emoji;break;}} Auth.saveUsers(us); $('headerAvatar').textContent=emoji; render(); toast('\u5934\u50CF\u5DF2\u66F4\u65B0'); },
+      setStatus: function(st) { var us=Auth.users(); for(var i=0;i<us.length;i++){if(us[i].username===App.user){us[i].status=st;break;}} Auth.saveUsers(us); render(); toast('\u72B6\u6001\u5DF2\u66F4\u65B0'); },
+      addFriend: function() { var n=$('pr_fi').value.trim(); if(!n){toast('\u8BF7\u8F93\u5165\u7528\u6237\u540D');return;} if(n===App.user){toast('\u4E0D\u80FD\u6DFB\u52A0\u81EA\u5DF1');return;} var us=Auth.users(); if(!us.some(function(u){return u.username===n;})){toast('\u7528\u6237\u4E0D\u5B58\u5728');return;} for(var i=0;i<us.length;i++){if(us[i].username===App.user){if(!us[i].friends)us[i].friends=[]; if(us[i].friends.indexOf(n)>=0){toast('\u5DF2\u662F\u597D\u53CB');return;} us[i].friends.push(n); Auth.saveUsers(us); $('pr_fi').value=''; render(); toast('\u5DF2\u6DFB\u52A0: '+n); return;}} },
+      delFriend: function(name) { var us=Auth.users(); for(var i=0;i<us.length;i++){if(us[i].username===App.user){us[i].friends=(us[i].friends||[]).filter(function(f){return f!==name;}); Auth.saveUsers(us); render(); return;}} },
+    };
+
+    function render() {
+      var u = Auth.users().find(function(x){return x.username===App.user;});
+      if (!u) return;
+      $('pr_un').textContent = u.username; $('pr_av').textContent = u.avatar||'\uD83D\uDC64';
+      $('pr_em').innerHTML = EMOJIS.map(function(e){return '<div class="emoji-opt'+(e===u.avatar?' sel':'')+'" onclick="T_profile.setAvatar(\''+e+'\')">'+e+'</div>';}).join('');
+      $('pr_st').innerHTML = STATUSES.map(function(s){return '<div class="status-btn status-btn'+(u.status===s.k?' '+s.c:'')+'" onclick="T_profile.setStatus(\''+s.k+'\')">'+s.l+'</div>';}).join('');
+      var friends = u.friends||[], us = Auth.users();
+      $('pr_fl').innerHTML = friends.length===0?'<div style="color:var(--text-secondary);font-size:13px;text-align:center;padding:10px">\u8FD8\u6CA1\u6709\u597D\u53CB</div>':
+        friends.map(function(fn){ var fu=us.find(function(x){return x.username===fn;}); var st=fu?(fu.status==='online'?'\uD83D\uDFE2':fu.status==='busy'?'\uD83D\uDFE1':fu.status==='away'?'\uD83D\uDFE0':'\u26AA'):''; return '<div class="list-item"><div class="content"><span style="font-size:20px;margin-right:8px">'+(fu?fu.avatar:'\uD83D\uDC64')+'</span><span class="title">'+fn+' '+st+'</span></div><button class="btn btn-danger btn-xs" onclick="T_profile.delFriend(\''+fn+'\')">\u5220\u9664</button></div>'; }).join('');
+    }
+  })();
+  </script>
+
+  <!-- TOOL: 数据后台 -->
+  <script>
+  (function() {
+    Tools.register({
+      id: 'admin', name: '\u6570\u636E\u540E\u53F0', icon: '\uD83D\uDEE0\uFE0F', desc: '\u7528\u6237\u7BA1\u7406',
+      html:
+        '<p class="section-title">\uD83D\uDEE0\uFE0F \u6570\u636E\u540E\u53F0</p>'+
+        '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:16px" id="ad_stats"></div>'+
+        '<p style="font-size:15px;font-weight:600;margin-bottom:8px">\uD83D\uDC65 \u7528\u6237\u7BA1\u7406</p>'+
+        '<div id="ad_list"></div>',
+      onEnter: function() { render(); },
+    });
+
+    function render() {
+      var us = Auth.users();
+      var online = us.filter(function(u){return u.status==='online'||u.status==='busy';}).length;
+      $('ad_stats').innerHTML =
+        '<div class="stat-card"><div><div class="label">\u603B\u7528\u6237</div><div class="value">'+us.length+'</div></div></div>'+
+        '<div class="stat-card"><div><div class="label">\u5728\u7EBF</div><div class="value" style="color:var(--online)">'+online+'</div></div></div>'+
+        '<div class="stat-card"><div><div class="label">\u79BB\u7EBF</div><div class="value" style="color:var(--offline)">'+(us.length-online)+'</div></div></div>';
+      $('ad_list').innerHTML = us.length===0?'<div class="empty-state"><span class="icon">\uD83D\uDC65</span>\u6CA1\u6709\u7528\u6237</div>':
+        us.map(function(u){ var sc=u.status==='online'?'var(--online)':u.status==='busy'?'var(--busy)':u.status==='away'?'#f97316':'var(--offline)'; return '<div class="list-item"><div class="content"><span style="font-size:22px;margin-right:8px">'+(u.avatar||'\uD83D\uDC64')+'</span><div><span class="title">'+H(u.username)+'</span><span style="margin-left:6px;color:'+sc+';font-size:12px">\u25CF '+(u.status||'offline')+'</span><div class="sub">\u6CE8\u518C: '+u.createdAt+' | \u6700\u540E: '+(u.lastSeen||'-')+'</div></div></div><button class="btn btn-danger btn-xs" onclick="T_admin.delUser(\''+u.username+'\')">\u5220\u9664</button></div>'; }).join('');
     }
 
-    /* ===== DRAW ===== */
-    var drawItems=['\u9009\u98791','\u9009\u98792','\u9009\u98793','\u9009\u98794','\u9009\u98795'];
-    function addDrawItem() { var i=document.getElementById('drawInput'),v=i.value.trim(); if(!v) return; drawItems.push(v); i.value=''; renderDrawTags(); }
-    function renderDrawTags() { var c=document.getElementById('drawTags'); if(!c) return; c.innerHTML=drawItems.map(function(item,i){return '<span class="tag">'+escapeHtml(item)+' <span class="remove" onclick="removeDrawItem('+i+')">\u00D7</span></span>';}).join(''); }
-    function removeDrawItem(i) { drawItems.splice(i,1); if(drawItems.length<2) drawItems=['\u9009\u98791','\u9009\u98792']; renderDrawTags(); }
-    function doDraw() {
-      if(drawItems.length<2){toast('\u81F3\u5C112\u4E2A\u9009\u9879');return;}
-      var box=document.getElementById('drawResult'),count=0,mc=10+Math.floor(Math.random()*6);
-      var iv=setInterval(function(){var r=Math.floor(Math.random()*drawItems.length); box.innerHTML='<span class="result-label">\u62BD\u53D6\u4E2D\u2026</span><span class="result-text" style="font-size:32px">'+escapeHtml(drawItems[r])+'</span>'; count++; if(count>=mc){clearInterval(iv); var f=drawItems[Math.floor(Math.random()*drawItems.length)]; box.innerHTML='<span class="result-label">\uD83C\uDF89 \u62BD\u4E2D\u4E86</span><span class="result-text">'+escapeHtml(f)+'</span>'; toast('\u62BD\u4E2D: '+f);}},60);
-    }
+    window.T_admin = {
+      delUser: function(uname) {
+        if (uname===App.user) { toast('\u4E0D\u80FD\u5220\u9664\u81EA\u5DF1'); return; }
+        if (!confirm('\u786E\u5B9A\u5220\u9664 '+uname+'\uFF1F')) return;
+        var us = Auth.users().filter(function(u){return u.username!==uname;});
+        Auth.saveUsers(us); render(); toast('\u5DF2\u5220\u9664');
+      },
+    };
+  })();
+  </script>
 
-    /* ===== MEMO ===== */
-    function getMemos() { try{return JSON.parse(localStorage.getItem(userKey('memos')))||[];} catch(e){return[];} }
-    function saveMemos(m){localStorage.setItem(userKey('memos'),JSON.stringify(m));}
-    function addMemo() { var i=document.getElementById('memoInput'),v=i.value.trim(); if(!v) return; var m=getMemos(); m.unshift({id:Date.now(),text:v,time:new Date().toLocaleString('zh-CN')}); saveMemos(m); i.value=''; renderMemos(); toast('\u5DF2\u4FDD\u5B58'); }
-    function deleteMemo(id) { var m=getMemos(); m=m.filter(function(x){return x.id!==id}); saveMemos(m); renderMemos(); }
-    function renderMemos() { var c=document.getElementById('memoList'); if(!c) return; var m=getMemos(); if(m.length===0){c.innerHTML='<div class="empty-state"><span class="icon">\uD83D\uDCDD</span>\u8FD8\u6CA1\u6709\u5907\u5FD8\u5F55</div>';return;} c.innerHTML=m.map(function(x){return '<div class="list-item"><div class="content"><div class="title">'+escapeHtml(x.text)+'</div><div class="sub">'+x.time+'</div></div><div class="actions"><button class="btn btn-danger btn-sm" onclick="deleteMemo('+x.id+')">\u5220\u9664</button></div></div>';}).join(''); }
+  <!-- ============================================================
+       BOOT
+       ============================================================ -->
+  <script>
+  // Start app
+  Auth.init();
 
-    /* ===== POLL ===== */
-    var pollOptions=[], pollTitle='';
-    function addPollOption() { var i=document.getElementById('pollOptionInput'),v=i.value.trim(); if(!v) return; pollOptions.push({name:v,votes:0}); i.value=''; renderPollTags(); }
-    function renderPollTags() { var c=document.getElementById('pollTags'); if(!c) return; c.innerHTML=pollOptions.map(function(item,i){return '<span class="tag">'+escapeHtml(item.name)+' <span class="remove" onclick="removePollOption('+i+')">\u00D7</span></span>';}).join(''); }
-    function removePollOption(i){pollOptions.splice(i,1);renderPollTags();}
-    function createPoll(){var t=document.getElementById('pollTitle'); pollTitle=t.value.trim()||'\u672A\u547D\u540D\u6295\u7968'; if(pollOptions.length<2){toast('\u81F3\u5C112\u4E2A\u9009\u9879');return;} pollOptions.forEach(function(o){o.votes=0;}); renderPollResult(); toast('\u6295\u7968\u5DF2\u521B\u5EFA\uFF0C\u70B9\u51FB\u9009\u9879\u6295\u7968');}
-    function vote(i){if(i<0||i>=pollOptions.length)return; pollOptions[i].votes++; renderPollResult();}
-    function resetPoll(){pollOptions.forEach(function(o){o.votes=0;}); renderPollResult(); toast('\u5DF2\u91CD\u7F6E');}
-    function renderPollResult(){
-      var c=document.getElementById('pollResult'); if(!c) return;
-      if(pollOptions.length<2){c.innerHTML='<div class="empty-state"><span class="icon">\uD83D\uDDF3\uFE0F</span>\u6DFB\u52A0\u9009\u9879\u540E\u5F00\u59CB</div>';return;}
-      var total=pollOptions.reduce(function(s,o){return s+o.votes;},0), mv=Math.max.apply(null,pollOptions.map(function(o){return o.votes;}).concat([1]));
-      c.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><strong>\uD83D\uDCCA '+escapeHtml(pollTitle)+'</strong><span style="font-size:13px;color:var(--text-secondary)">\u5171 '+total+'\u7968</span></div>'+pollOptions.map(function(o,i){var pct=total===0?0:Math.round(o.votes/total*100),bw=total===0?0:o.votes/mv*100; return '<div class="poll-option" onclick="vote('+i+')"><div class="poll-bar" style="width:'+bw+'%"></div><div class="poll-text"><span>'+escapeHtml(o.name)+'</span><span class="poll-pct">'+o.votes+'\u7968('+pct+'%)</span></div></div>';}).join('')+'<div style="text-align:center;margin-top:8px"><button class="btn btn-outline btn-sm" onclick="resetPoll()">\u91CD\u7F6E\u6295\u7968</button></div>';
-    }
-
-    function escapeHtml(s){var d=document.createElement('div'); d.textContent=s; return d.innerHTML;}
-
-    /* ===== INIT ===== */
-    function initApp() {
-      var u = getCurrentUserObj();
-      if (u) { document.getElementById('headerAvatar').textContent = u.avatar||'\uD83D\uDC64'; }
-      renderWheelTags(); drawWheel(); renderDrawTags(); renderMemos(); renderPollResult(); renderLeaderboard();
-      window.addEventListener('resize',function(){if(document.getElementById('pageWheel').classList.contains('active')) drawWheel();});
-    }
+  // Resize handler for wheel canvas
+  window.addEventListener('resize', function() {
+    if (Router._current === 'wheel') { var c=$('w_canvas'); if(c) { var ctx=c.getContext('2d'); ctx.clearRect(0,0,c.width,c.height); /* redraw via Tools.onEnter */ } }
+  });
   </script>
 </body>
 </html>
