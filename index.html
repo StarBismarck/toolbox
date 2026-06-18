@@ -292,113 +292,29 @@
     cloudPull: async function() {
       if (!App.user) return;
       try {
-        // First pull users
-        var userResp = await fetch(SUPABASE_URL + '/rest/v1/toolbar_data?username=eq._system&data_type=eq._users', {headers: {'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY}});
-        if (userResp.ok) {
-          var userRows = await userResp.json();
-          if (userRows.length > 0 && userRows[0].data_json) {
-            try {
-              var cloudUsers = JSON.parse(userRows[0].data_json);
-              var localUsers = Auth.users();
-              // Merge: cloud users that don't exist locally
-              for (var i = 0; i < cloudUsers.length; i++) {
-                var exists = false;
-                for (var j = 0; j < localUsers.length; j++) {
-                  if (localUsers[j].username === cloudUsers[i].username) { exists = true; break; }
-                }
-                if (!exists) localUsers.push(cloudUsers[i]);
-              }
-              Auth.saveUsers(localUsers);
-            } catch(e) {}
-          }
-        }
-        // Then pull user data
         var resp = await fetch(SUPABASE_URL + '/rest/v1/toolbar_data?username=eq.' + encodeURIComponent(App.user), {headers: {'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY}});
-        if (!resp.ok) return;
+        if (!resp.ok) { toast('拉取失败 HTTP' + resp.status); return; }
         var rows = await resp.json();
+        if (rows.length === 0) { toast('云端暂无数据'); return; }
         var had = false;
         for (var i=0;i<rows.length;i++) {
           if (rows[i].data_type && rows[i].data_type !== '_users' && rows[i].data_json) {
-            try {
-              localStorage.setItem(Store._key(rows[i].data_type), rows[i].data_json);
-              had = true;
-            } catch(e) {}
+            localStorage.setItem(Store._key(rows[i].data_type), rows[i].data_json);
+            had = true;
           }
         }
         if (had) {
+          toast('已同步 ' + rows.length + ' 条');
           var cur = Router._current, cfg = Router._routes[cur];
           if (cfg && cfg.onEnter) cfg.onEnter();
           if (cur === 'home') Render.leaderboard();
-          toast('\u2601\uFE0F \u4E91\u7AEF\u540C\u6B65\u5B8C\u6210');
+        } else {
+          toast('云端无有效数据');
         }
-      } catch(e) { console.log('Sync err:', e); }
+      } catch(e) { toast('网络错误'); }
     },
 
-    // Cloud sync
-    _pushTimer: null,
-    _schedulePush: function() {
-      if (Store._pushTimer) clearTimeout(Store._pushTimer);
-      Store._pushTimer = setTimeout(function() { Store.cloudPush(); }, 2000);
-    },
-    cloudInit: async function() {
-      if (Store._blobId) return;
-      // Try localStorage first
-      var cached = Store.getRaw('tb_blob_id');
-      if (cached) { Store._blobId = cached; return; }
-      // Fetch from GitHub
-      try {
-        var resp = await fetch('https://raw.githubusercontent.com/StarBismarck/toolbox/main/data.json');
-        var d = await resp.json();
-        if (d.blobId) { Store._blobId = d.blobId; Store.setRaw('tb_blob_id', d.blobId); }
-      } catch(e) { console.log('Cloud init failed, using local only'); }
-    },
-    cloudPull: async function() {
-      await Store.cloudInit();
-      if (!Store._blobId) return;
-      try {
-        var resp = await fetch('https://jsonblob.com/api/jsonBlob/' + Store._blobId);
-        if (!resp.ok) return;
-        var cloud = await resp.json();
-        // Cloud is authoritative for cross-device sync
-        if (cloud.users && cloud.users.length > 0) {
-          Store.setRaw('tb_users', JSON.stringify(cloud.users));
-        }
-        if (cloud.data && cloud.data[App.user]) {
-          var ud = cloud.data[App.user];
-          if (ud.rotation !== undefined) Store._rawSet('rotation', ud.rotation);
-          if (ud.biztrip !== undefined) Store._rawSet('biztrip', ud.biztrip);
-          if (ud.memos !== undefined) Store._rawSet('memos', ud.memos);
-        }
-      } catch(e) { console.log('Pull err', e); }
-    },
-    _rawSet: function(k, v) { localStorage.setItem(Store._key(k), JSON.stringify(v)); },
-    cloudPush: async function() {
-      await Store.cloudInit();
-      if (!Store._blobId) return;
-      try {
-        // Fetch current cloud state first
-        var resp = await fetch('https://jsonblob.com/api/jsonBlob/' + Store._blobId);
-        var cloud = resp.ok ? await resp.json() : {users:[], data:{}};
-        // Merge user table
-        cloud.users = JSON.parse(Store.getRaw('tb_users')||'[]');
-        // Merge this user's data
-        if (!cloud.data) cloud.data = {};
-        cloud.data[App.user] = {
-          rotation: JSON.parse(localStorage.getItem(Store._key('rotation'))||'null'),
-          biztrip: JSON.parse(localStorage.getItem(Store._key('biztrip'))||'null'),
-          memos: JSON.parse(localStorage.getItem(Store._key('memos'))||'null'),
-        };
-        await fetch('https://jsonblob.com/api/jsonBlob/' + Store._blobId, {
-          method: 'PUT',
-          headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify(cloud),
-        });
-        console.log('Cloud pushed OK');
-      } catch(e) { console.log('Push err', e); }
-    },
-  };
-
-  // ---- Router ----
+    // ---- Router ----
   var Router = {
     _routes: {},
     _history: [],
