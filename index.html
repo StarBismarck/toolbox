@@ -250,13 +250,11 @@
     get: function(k, fallback) { try { var v=localStorage.getItem(Store._key(k)); return v!==null?JSON.parse(v):(fallback!==undefined?fallback:null); } catch(e) { return fallback!==undefined?fallback:null; } },
     set: function(k, v) { localStorage.setItem(Store._key(k), JSON.stringify(v)); Store._syncNow(k, v); },
     _syncNow: function(key, value) {
-      toast('\u23F3 \u6B63\u5728\u540C\u6B65...');
-      if (!App.user) { toast('\u274C \u65E0\u7528\u6237'); return; }
+      if (!App.user) return;
       var user = App.user, k = key, body = JSON.stringify({username: user, data_type: k, data_json: JSON.stringify(value), updated_at: new Date().toISOString()});
       fetch(SUPABASE_URL + '/rest/v1/toolbar_data?username=eq.' + encodeURIComponent(user) + '&data_type=eq.' + k, {method: 'DELETE', headers: {'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY}})
-      .then(function(r) { toast('\u2705 DEL ' + r.status); return fetch(SUPABASE_URL + '/rest/v1/toolbar_data', {method: 'POST', headers: Object.assign({'Prefer': 'return=minimal'}, SB), body: body}); })
-      .then(function(r) { toast('\u2601\uFE0F \u5DF2\u540C\u6B65 POST=' + r.status); })
-      .catch(function(e) { toast('\u274C \u5931\u8D25: ' + (e.message||'').substring(0,50)); });
+      .then(function() { return fetch(SUPABASE_URL + '/rest/v1/toolbar_data', {method: 'POST', headers: Object.assign({'Prefer': 'return=minimal'}, SB), body: body}); })
+      .catch(function(){});
     },
     getRaw: function(k) { return localStorage.getItem(k); },
     setRaw: function(k, v) { localStorage.setItem(k, v); },
@@ -295,7 +293,7 @@
       if (!App.user) return;
       try {
         // First pull users
-        var userResp = await fetch(SUPABASE_URL + '/rest/v1/toolbar_data?username=eq._system&data_type=eq._users', {headers: SB});
+        var userResp = await fetch(SUPABASE_URL + '/rest/v1/toolbar_data?username=eq._system&data_type=eq._users', {headers: {'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY}});
         if (userResp.ok) {
           var userRows = await userResp.json();
           if (userRows.length > 0 && userRows[0].data_json) {
@@ -315,7 +313,7 @@
           }
         }
         // Then pull user data
-        var resp = await fetch(SUPABASE_URL + '/rest/v1/toolbar_data?username=eq.' + encodeURIComponent(App.user), {headers: SB});
+        var resp = await fetch(SUPABASE_URL + '/rest/v1/toolbar_data?username=eq.' + encodeURIComponent(App.user), {headers: {'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY}});
         if (!resp.ok) return;
         var rows = await resp.json();
         var had = false;
@@ -507,7 +505,7 @@
     saveUsers: function(u) { Store.setRaw('tb_users', JSON.stringify(u)); Store._syncUsers(); },
     _pullUsersFromCloud: async function() {
       try {
-        var resp = await fetch(SUPABASE_URL + '/rest/v1/toolbar_data?username=eq._system&data_type=eq._users', {headers: SB});
+        var resp = await fetch(SUPABASE_URL + '/rest/v1/toolbar_data?username=eq._system&data_type=eq._users', {headers: {'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY}});
         if (!resp.ok) return;
         var rows = await resp.json();
         if (rows.length > 0 && rows[0].data_json) {
