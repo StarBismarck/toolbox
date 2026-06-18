@@ -251,44 +251,33 @@
     _history: [],
     _current: 'home',
     register: function(name, cfg) { Router._routes[name] = cfg; },
-    go: function(name) {
-      var prev = Router._current;
-      if (prev === name && name !== 'home') return;
-      var cfg = Router._routes[name];
-      if (!cfg) return;
+    go: function(name, skipHistory) {
+      var prev = Router._current; if (prev === name && name !== 'home') return;
+      var cfg = Router._routes[name]; if (!cfg) return;
+      if (!skipHistory) Router._history.push(prev);
 
-      // Hide all pages
       var ps = document.querySelectorAll('.page');
       for (var i=0;i<ps.length;i++) ps[i].classList.remove('active');
 
-      // Show target or create it
-      var pid = 'page_' + name;
+      var pid = 'page' + name.charAt(0).toUpperCase() + name.slice(1);
       var pg = $(pid);
       if (!pg) {
         pg = document.createElement('div'); pg.id = pid; pg.className = 'page';
         if (cfg.html) pg.innerHTML = cfg.html;
         document.getElementById('appShell').appendChild(pg);
       }
-
       pg.classList.add('active');
       $('headerTitle').textContent = cfg.title || name;
       $('btnBack').classList.toggle('hide', name === 'home');
-      Router._history.push(prev);
       Router._current = name;
-      history.pushState({page:name}, '', '#'+name);
-
+      if (!skipHistory) history.pushState({page:name}, '', '#'+name);
       if (cfg.onEnter) cfg.onEnter();
       if (name === 'home') Render.leaderboard();
     },
     back: function() {
       var prev = Router._history.pop();
-      if (prev !== undefined && prev !== Router._current) {
-        history.replaceState({page:prev}, '', '#'+prev);
-        Router.go(prev);
-        Router._history.pop(); // undo double-push from go()
-      } else {
-        Router.go('home');
-      }
+      if (prev === undefined) prev = 'home';
+      Router.go(prev, true);
     },
     init: function() {
       window.addEventListener('popstate', function(e) {
