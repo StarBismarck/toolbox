@@ -277,30 +277,26 @@
       if (Store._timers[key]) clearTimeout(Store._timers[key]);
       Store._timers[key] = setTimeout(function() {
         var body = JSON.stringify({username: App.user, data_type: key, data_json: JSON.stringify(value), updated_at: new Date().toISOString()});
+        // DELETE existing, then POST (reliable upsert)
         fetch(SUPABASE_URL + '/rest/v1/toolbar_data?username=eq.' + encodeURIComponent(App.user) + '&data_type=eq.' + key, {
-          method: 'PATCH', headers: Object.assign({'Prefer': 'return=minimal'}, SB), body: body,
-        }).then(function(r) {
-          if (!r.ok) {
-            fetch(SUPABASE_URL + '/rest/v1/toolbar_data', {
-              method: 'POST', headers: Object.assign({'Prefer': 'return=minimal'}, SB), body: body,
-            }).catch(function(){});
-          }
+          method: 'DELETE', headers: SB,
+        }).then(function() {
+          return fetch(SUPABASE_URL + '/rest/v1/toolbar_data', {
+            method: 'POST', headers: Object.assign({'Prefer': 'return=minimal'}, SB), body: body,
+          });
         }).catch(function(){});
       }, 1500);
     },
     // Sync users to cloud too
     _syncUsers: function() {
       var users = Auth.users();
+      var body = JSON.stringify({username: '_system', data_type: '_users', data_json: JSON.stringify(users), updated_at: new Date().toISOString()});
       fetch(SUPABASE_URL + '/rest/v1/toolbar_data?username=eq._system&data_type=eq._users', {
-        method: 'PATCH', headers: Object.assign({'Prefer': 'return=minimal'}, SB),
-        body: JSON.stringify({username: '_system', data_type: '_users', data_json: JSON.stringify(users), updated_at: new Date().toISOString()}),
-      }).then(function(r) {
-        if (!r.ok) {
-          fetch(SUPABASE_URL + '/rest/v1/toolbar_data', {
-            method: 'POST', headers: Object.assign({'Prefer': 'return=minimal'}, SB),
-            body: JSON.stringify({username: '_system', data_type: '_users', data_json: JSON.stringify(users), updated_at: new Date().toISOString()}),
-          }).catch(function(){});
-        }
+        method: 'DELETE', headers: SB,
+      }).then(function() {
+        return fetch(SUPABASE_URL + '/rest/v1/toolbar_data', {
+          method: 'POST', headers: Object.assign({'Prefer': 'return=minimal'}, SB), body: body,
+        });
       }).catch(function(){});
     },
     cloudPull: async function() {
