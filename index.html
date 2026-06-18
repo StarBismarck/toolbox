@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>多功能工具箱</title>
+  <style>
+    /* ===== CSS Variables ===== */
+    :root {
+      --bg: #f0f2f5;
+      --card-bg: #ffffff;
+      --primary: #6366f1;
+      --primary-light: #818cf8;
+      --text: #1e293b;
+      --text-secondary: #64748b;
+      --border: #e2e8f0;
+      --shadow: 0 2px 12px rgba(0,0,0,0.08);
+      --radius: 16px;
+      --radius-sm: 10px;
+      --transition: 0.3s cubic-bezier(.4,0,.2,1);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ===== App Shell ===== */
+    .app-header {
+      background: var(--primary);
+      color: #fff;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 8px rgba(99,102,241,0.3);
+    }
+    .app-header h1 { font-size: 20px; font-weight: 600; flex: 1; }
+    .btn-back {
+      background: none; border: none; color: #fff; font-size: 24px;
+      cursor: pointer; padding: 4px 8px; border-radius: 8px;
+      display: none; align-items: center; justify-content: center;
+      transition: var(--transition);
+    }
+    .btn-back:hover { background: rgba(255,255,255,0.15); }
+    .btn-back.show { display: flex; }
+
+    /* ===== Page Container ===== */
+    .page { display: none; padding: 20px; max-width: 600px; margin: 0 auto; }
+    .page.active { display: block; animation: fadeIn 0.25s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* ===== Home ===== */
+    .home-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 8px; }
+    .tool-card {
+      background: var(--card-bg); border-radius: var(--radius); padding: 24px 16px;
+      box-shadow: var(--shadow); cursor: pointer; text-align: center;
+      transition: var(--transition); border: 2px solid transparent;
+      user-select: none; -webkit-tap-highlight-color: transparent;
+    }
+    .tool-card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,0.12); }
+    .tool-card:active { transform: scale(0.96); }
+    .tool-card .icon { font-size: 40px; display: block; margin-bottom: 10px; }
+    .tool-card .label { font-size: 16px; font-weight: 600; }
+    .tool-card .desc { font-size: 12px; color: var(--text-secondary); margin-top: 4px; }
+
+    /* ===== Shared UI ===== */
+    .section-title { font-size: 18px; font-weight: 600; margin-bottom: 12px; }
+    .input-group { display: flex; gap: 8px; margin-bottom: 12px; }
+    .input-group input, .input-group select {
+      flex: 1; padding: 10px 14px; border: 2px solid var(--border); border-radius: var(--radius-sm);
+      font-size: 15px; outline: none; transition: var(--transition);
+    }
+    .input-group input:focus { border-color: var(--primary); }
+    .btn {
+      padding: 10px 20px; border: none; border-radius: var(--radius-sm); font-size: 15px;
+      font-weight: 500; cursor: pointer; transition: var(--transition);
+      display: inline-flex; align-items: center; gap: 6px; white-space: nowrap;
+    }
+    .btn:active { transform: scale(0.96); }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-primary:hover { background: var(--primary-light); }
+    .btn-danger { background: #ef4444; color: #fff; }
+    .btn-danger:hover { background: #f87171; }
+    .btn-outline { background: transparent; border: 2px solid var(--border); color: var(--text); }
+    .btn-outline:hover { border-color: var(--primary); color: var(--primary); }
+    .btn-sm { padding: 6px 14px; font-size: 13px; }
+
+    .tag-list { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+    .tag {
+      background: #eef2ff; color: var(--primary); padding: 6px 14px; border-radius: 20px;
+      font-size: 14px; display: flex; align-items: center; gap: 6px;
+    }
+    .tag .remove {
+      cursor: pointer; font-weight: bold; opacity: 0.6; font-size: 16px;
+    }
+    .tag .remove:hover { opacity: 1; }
+
+    .result-box {
+      background: linear-gradient(135deg, #eef2ff, #f5f3ff);
+      border-radius: var(--radius); padding: 32px 20px; text-align: center;
+      margin: 16px 0; min-height: 80px; display: flex; align-items: center;
+      justify-content: center; flex-direction: column; gap: 4px;
+    }
+    .result-box .result-text { font-size: 28px; font-weight: 700; color: var(--primary); }
+    .result-box .result-label { font-size: 13px; color: var(--text-secondary); }
+
+    .empty-state { text-align: center; padding: 40px 20px; color: var(--text-secondary); }
+    .empty-state .icon { font-size: 48px; margin-bottom: 12px; display: block; }
+
+    /* ===== Canvas ===== */
+    .canvas-wrap {
+      display: flex; justify-content: center; margin: 12px 0;
+      position: relative;
+    }
+    .canvas-wrap canvas {
+      width: 100%; height: auto; max-width: 320px;
+      border-radius: var(--radius); box-shadow: var(--shadow);
+    }
+
+    /* ===== List Items ===== */
+    .list-item {
+      background: var(--card-bg); border-radius: var(--radius-sm); padding: 14px 16px;
+      margin-bottom: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+      display: flex; align-items: center; justify-content: space-between; gap: 8px;
+    }
+    .list-item .content { flex: 1; }
+    .list-item .title { font-weight: 500; font-size: 15px; }
+    .list-item .sub { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+    .list-item .actions { display: flex; gap: 6px; flex-shrink: 0; }
+
+    /* ===== Poll ===== */
+    .poll-option {
+      background: var(--card-bg); border-radius: var(--radius-sm); padding: 12px 16px;
+      margin-bottom: 8px; border: 2px solid var(--border); cursor: pointer;
+      transition: var(--transition); position: relative; overflow: hidden;
+    }
+    .poll-option:hover { border-color: var(--primary-light); }
+    .poll-option .poll-bar {
+      position: absolute; left: 0; top: 0; bottom: 0;
+      background: rgba(99,102,241,0.1); transition: width 0.5s ease; border-radius: var(--radius-sm);
+    }
+    .poll-option .poll-text { position: relative; z-index: 1; display: flex; justify-content: space-between; }
+    .poll-option .poll-pct { font-weight: 600; color: var(--primary); }
+
+    /* ===== Toast ===== */
+    .toast {
+      position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(80px);
+      background: #1e293b; color: #fff; padding: 12px 24px; border-radius: var(--radius-sm);
+      font-size: 14px; opacity: 0; transition: var(--transition); z-index: 999;
+      pointer-events: none; box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  </style>
+</head>
+<body>
+
+  <!-- ===== Header ===== -->
+  <header class="app-header">
+    <button class="btn-back" id="btnBack" onclick="goHome()">‹</button>
+    <h1 id="headerTitle">多功能工具箱</h1>
+  </header>
+
+  <!-- ===== Toast ===== -->
+  <div class="toast" id="toast"></div>
+
+  <!-- ===== Page: Home ===== -->
+  <div class="page active" id="pageHome">
+    <div class="home-grid">
+      <div class="tool-card" onclick="navigate('wheel')">
+        <span class="icon">🎡</span>
+        <span class="label">幸运转盘</span>
+        <span class="desc">自定义选项，转转盘决定</span>
+      </div>
+      <div class="tool-card" onclick="navigate('draw')">
+        <span class="icon">🎲</span>
+        <span class="label">抽签</span>
+        <span class="desc">随机抽取一个选项</span>
+      </div>
+      <div class="tool-card" onclick="navigate('memo')">
+        <span class="icon">📝</span>
+        <span class="label">备忘录</span>
+        <span class="desc">速记点滴，随时查看</span>
+      </div>
+      <div class="tool-card" onclick="navigate('poll')">
+        <span class="icon">🗳️</span>
+        <span class="label">集体投票</span>
+        <span class="desc">创建投票，统计结果</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Page: Wheel ===== -->
+  <div class="page" id="pageWheel">
+    <p class="section-title">🎡 幸运转盘</p>
+    <div class="input-group">
+      <input type="text" id="wheelInput" placeholder="输入选项，回车添加" onkeydown="if(event.key==='Enter') addWheelItem()" />
+      <button class="btn btn-primary" onclick="addWheelItem()">添加</button>
+    </div>
+    <div class="tag-list" id="wheelTags"></div>
+    <div class="canvas-wrap">
+      <canvas id="wheelCanvas" width="320" height="320"></canvas>
+    </div>
+    <div style="text-align:center;margin-top:8px">
+      <button class="btn btn-primary" onclick="spinWheel()" id="spinBtn">🎯 转转盘</button>
+      <button class="btn btn-outline btn-sm" onclick="clearWheel()" style="margin-left:8px">清空</button>
+    </div>
+  </div>
+
+  <!-- ===== Page: Draw ===== -->
+  <div class="page" id="pageDraw">
+    <p class="section-title">🎲 抽签</p>
+    <div class="input-group">
+      <input type="text" id="drawInput" placeholder="输入选项，回车添加" onkeydown="if(event.key==='Enter') addDrawItem()" />
+      <button class="btn btn-primary" onclick="addDrawItem()">添加</button>
+    </div>
+    <div class="tag-list" id="drawTags"></div>
+    <div class="result-box" id="drawResult">
+      <span class="result-label">点击抽签试试</span>
+    </div>
+    <div style="text-align:center">
+      <button class="btn btn-primary" onclick="doDraw()">🎲 抽一个</button>
+    </div>
+  </div>
+
+  <!-- ===== Page: Memo ===== -->
+  <div class="page" id="pageMemo">
+    <p class="section-title">📝 备忘录</p>
+    <div class="input-group">
+      <input type="text" id="memoInput" placeholder="写点什么…" onkeydown="if(event.key==='Enter') addMemo()" />
+      <button class="btn btn-primary" onclick="addMemo()">保存</button>
+    </div>
+    <div id="memoList"></div>
+  </div>
+
+  <!-- ===== Page: Poll ===== -->
+  <div class="page" id="pagePoll">
+    <p class="section-title">🗳️ 集体投票</p>
+    <p style="font-size:14px;color:var(--text-secondary);margin-bottom:12px">创建投票，点击选项投票，实时统计结果。</p>
+    <div class="input-group">
+      <input type="text" id="pollTitle" placeholder="投票标题，如：今晚吃什么" />
+    </div>
+    <div class="input-group">
+      <input type="text" id="pollOptionInput" placeholder="添加选项，回车" onkeydown="if(event.key==='Enter') addPollOption()" />
+      <button class="btn btn-primary" onclick="addPollOption()">添加</button>
+    </div>
+    <div class="tag-list" id="pollTags"></div>
+    <div style="text-align:center;margin-bottom:16px">
+      <button class="btn btn-primary" onclick="createPoll()">📊 开始投票</button>
+    </div>
+    <div id="pollResult"></div>
+  </div>
+
+  <script>
+    /* =============================================
+       Navigation
+    ============================================= */
+    const pageTitles = {
+      home: '多功能工具箱',
+      wheel: '🎡 幸运转盘',
+      draw: '🎲 抽签',
+      memo: '📝 备忘录',
+      poll: '🗳️ 集体投票',
+    };
+
+    function navigate(page) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById('page' + page.charAt(0).toUpperCase() + page.slice(1)).classList.add('active');
+      document.getElementById('headerTitle').textContent = pageTitles[page] || pageTitles.home;
+      document.getElementById('btnBack').classList.toggle('show', page !== 'home');
+      if (page === 'wheel') drawWheel();
+    }
+
+    function goHome() { navigate('home'); }
+
+    function toast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg; t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2000);
+    }
+
+    /* =============================================
+       Wheel - 幸运转盘
+    ============================================= */
+    let wheelItems = ['选项A', '选项B', '选项C', '选项D'];
+    let wheelAngle = 0;
+    let spinAnimation = null;
+
+    function addWheelItem() {
+      const input = document.getElementById('wheelInput');
+      const val = input.value.trim();
+      if (!val) return;
+      if (wheelItems.length >= 12) { toast('最多12个选项'); return; }
+      wheelItems.push(val);
+      input.value = '';
+      renderWheelTags();
+      drawWheel();
+    }
+
+    function renderWheelTags() {
+      const container = document.getElementById('wheelTags');
+      container.innerHTML = wheelItems.map((item, i) =>
+        `<span class="tag">${item} <span class="remove" onclick="removeWheelItem(${i})">×</span></span>`
+      ).join('');
+    }
+
+    function removeWheelItem(i) {
+      wheelItems.splice(i, 1);
+      if (wheelItems.length < 2) wheelItems = ['选项A', '选项B'];
+      renderWheelTags();
+      drawWheel();
+    }
+
+    function clearWheel() {
+      wheelItems = ['选项A', '选项B', '选项C', '选项D'];
+      renderWheelTags();
+      drawWheel();
+      toast('已重置');
+    }
+
+    function drawWheel() {
+      const canvas = document.getElementById('wheelCanvas');
+      const ctx = canvas.getContext('2d');
+      const dpr = window.devicePixelRatio || 1;
+      const container = canvas.parentElement;
+      const size = Math.min(container.clientWidth || 320, 320);
+      canvas.width = size * dpr;
+      canvas.height = size * dpr;
+      ctx.scale(dpr, dpr);
+
+      const cx = size / 2, cy = size / 2, r = size / 2 - 10;
+      const n = wheelItems.length;
+      const arc = (2 * Math.PI) / n;
+      const colors = ['#6366f1','#f59e0b','#10b981','#ec4899','#06b6d4','#f97316','#8b5cf6','#14b8a6','#e11d48','#65a30d','#d946ef','#0ea5e9'];
+
+      ctx.clearRect(0, 0, size, size);
+
+      // Draw slices
+      for (let i = 0; i < n; i++) {
+        const start = i * arc + wheelAngle;
+        const end = start + arc;
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.arc(cx, cy, r, start, end);
+        ctx.closePath();
+        ctx.fillStyle = colors[i % colors.length];
+        ctx.fill();
+        ctx.strokeStyle = '#fff';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        // Text
+        const mid = start + arc / 2;
+        ctx.save();
+        ctx.translate(cx + Math.cos(mid) * r * 0.65, cy + Math.sin(mid) * r * 0.65);
+        ctx.rotate(mid + Math.PI / 2);
+        ctx.fillStyle = '#fff';
+        ctx.font = 'bold 14px -apple-system, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(wheelItems[i].length > 6 ? wheelItems[i].slice(0,5)+'…' : wheelItems[i], 0, 0);
+        ctx.restore();
+      }
+
+      // Center circle
+      ctx.beginPath();
+      ctx.arc(cx, cy, 18, 0, 2 * Math.PI);
+      ctx.fillStyle = '#fff';
+      ctx.fill();
+      ctx.strokeStyle = '#e2e8f0';
+      ctx.lineWidth = 3;
+      ctx.stroke();
+
+      // Pointer triangle (top)
+      ctx.beginPath();
+      ctx.moveTo(cx - 12, cy - r + 6);
+      ctx.lineTo(cx + 12, cy - r + 6);
+      ctx.lineTo(cx, cy - r - 14);
+      ctx.closePath();
+      ctx.fillStyle = '#ef4444';
+      ctx.fill();
+      ctx.strokeStyle = '#fff';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+    }
+
+    function spinWheel() {
+      if (wheelItems.length < 2) { toast('至少需要2个选项'); return; }
+      const btn = document.getElementById('spinBtn');
+      if (spinAnimation) return; // already spinning
+
+      btn.disabled = true;
+      btn.textContent = '⏳ 转动中…';
+
+      const spins = 5 + Math.random() * 3; // 5-8 full rotations
+      const stopAngle = (Math.random() * 2 * Math.PI);
+      const targetAngle = wheelAngle + spins * 2 * Math.PI + stopAngle;
+      const duration = 3000 + Math.random() * 1000;
+      const startAngle = wheelAngle;
+      const startTime = performance.now();
+
+      function animate(now) {
+        const elapsed = now - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        // Ease-out cubic
+        const eased = 1 - Math.pow(1 - progress, 3);
+        wheelAngle = startAngle + (targetAngle - startAngle) * eased;
+        drawWheel();
+
+        if (progress < 1) {
+          spinAnimation = requestAnimationFrame(animate);
+        } else {
+          spinAnimation = null;
+          btn.disabled = false;
+          btn.textContent = '🎯 转转盘';
+
+          // Determine result
+          const n = wheelItems.length;
+          const arc = (2 * Math.PI) / n;
+          // Normalize angle so pointer (top = -PI/2) maps to a slice
+          let pointerAngle = (2 * Math.PI - (wheelAngle % (2 * Math.PI)) + Math.PI / 2 + Math.PI / 2) % (2 * Math.PI);
+          // Actually, let me think about this more carefully.
+          // The pointer is at the top (angle = -PI/2 or 3*PI/2 from center).
+          // Each slice i spans from i*arc + wheelAngle to (i+1)*arc + wheelAngle
+          // We want to find which slice contains the angle at the top (3*PI/2).
+          const topAngle = 3 * Math.PI / 2;
+          let normalized = (topAngle - wheelAngle + 2 * Math.PI) % (2 * Math.PI);
+          let idx = Math.floor(normalized / arc);
+          if (idx >= n) idx = n - 1;
+
+          const result = wheelItems[idx];
+          const resultDiv = document.createElement('div');
+          resultDiv.style.cssText = 'text-align:center;margin-top:12px;font-size:20px;font-weight:700;color:var(--primary);animation:fadeIn 0.3s ease';
+          resultDiv.textContent = '🎉 ' + result;
+          const existing = document.querySelector('.wheel-result');
+          if (existing) existing.remove();
+          resultDiv.className = 'wheel-result';
+          document.querySelector('.canvas-wrap').after(resultDiv);
+          toast('抽到：' + result);
+        }
+      }
+      spinAnimation = requestAnimationFrame(animate);
+    }
+
+    /* =============================================
+       Draw - 抽签
+    ============================================= */
+    let drawItems = ['选项1', '选项2', '选项3', '选项4', '选项5'];
+
+    function addDrawItem() {
+      const input = document.getElementById('drawInput');
+      const val = input.value.trim();
+      if (!val) return;
+      drawItems.push(val);
+      input.value = '';
+      renderDrawTags();
+    }
+
+    function renderDrawTags() {
+      const container = document.getElementById('drawTags');
+      container.innerHTML = drawItems.map((item, i) =>
+        `<span class="tag">${item} <span class="remove" onclick="removeDrawItem(${i})">×</span></span>`
+      ).join('');
+    }
+
+    function removeDrawItem(i) {
+      drawItems.splice(i, 1);
+      if (drawItems.length < 2) drawItems = ['选项1', '选项2'];
+      renderDrawTags();
+    }
+
+    function doDraw() {
+      if (drawItems.length < 2) { toast('至少需要2个选项'); return; }
+      const box = document.getElementById('drawResult');
+
+      // Rolling animation
+      let count = 0;
+      const maxCount = 10 + Math.floor(Math.random() * 6);
+      const interval = setInterval(() => {
+        const rand = Math.floor(Math.random() * drawItems.length);
+        box.innerHTML = `<span class="result-label">抽取中…</span><span class="result-text" style="font-size:36px">${drawItems[rand]}</span>`;
+        count++;
+        if (count >= maxCount) {
+          clearInterval(interval);
+          const final = drawItems[Math.floor(Math.random() * drawItems.length)];
+          box.innerHTML = `<span class="result-label">🎉 抽中了</span><span class="result-text">${final}</span>`;
+          toast('抽中：' + final);
+        }
+      }, 60);
+    }
+
+    /* =============================================
+       Memo - 备忘录
+    ============================================= */
+    function getMemos() {
+      try { return JSON.parse(localStorage.getItem('toolbox_memos')) || []; }
+      catch { return []; }
+    }
+
+    function saveMemos(memos) {
+      localStorage.setItem('toolbox_memos', JSON.stringify(memos));
+    }
+
+    function addMemo() {
+      const input = document.getElementById('memoInput');
+      const val = input.value.trim();
+      if (!val) return;
+      const memos = getMemos();
+      memos.unshift({ id: Date.now(), text: val, time: new Date().toLocaleString('zh-CN') });
+      saveMemos(memos);
+      input.value = '';
+      renderMemos();
+      toast('已保存');
+    }
+
+    function deleteMemo(id) {
+      let memos = getMemos();
+      memos = memos.filter(m => m.id !== id);
+      saveMemos(memos);
+      renderMemos();
+    }
+
+    function renderMemos() {
+      const container = document.getElementById('memoList');
+      const memos = getMemos();
+      if (memos.length === 0) {
+        container.innerHTML = '<div class="empty-state"><span class="icon">📝</span>还没有备忘录，写一条吧</div>';
+        return;
+      }
+      container.innerHTML = memos.map(m =>
+        `<div class="list-item">
+          <div class="content">
+            <div class="title">${escapeHtml(m.text)}</div>
+            <div class="sub">${m.time}</div>
+          </div>
+          <div class="actions">
+            <button class="btn btn-danger btn-sm" onclick="deleteMemo(${m.id})">删除</button>
+          </div>
+        </div>`
+      ).join('');
+    }
+
+    /* =============================================
+       Poll - 集体投票
+    ============================================= */
+    let pollOptions = [];
+    let pollTitle = '';
+
+    function addPollOption() {
+      const input = document.getElementById('pollOptionInput');
+      const val = input.value.trim();
+      if (!val) return;
+      pollOptions.push({ name: val, votes: 0 });
+      input.value = '';
+      renderPollTags();
+    }
+
+    function renderPollTags() {
+      const container = document.getElementById('pollTags');
+      container.innerHTML = pollOptions.map((item, i) =>
+        `<span class="tag">${item.name} <span class="remove" onclick="removePollOption(${i})">×</span></span>`
+      ).join('');
+    }
+
+    function removePollOption(i) {
+      pollOptions.splice(i, 1);
+      renderPollTags();
+    }
+
+    function createPoll() {
+      const titleInput = document.getElementById('pollTitle');
+      pollTitle = titleInput.value.trim() || '未命名投票';
+
+      if (pollOptions.length < 2) { toast('至少需要2个选项'); return; }
+
+      // Reset votes
+      pollOptions.forEach(o => o.votes = 0);
+      renderPollResult();
+      toast('投票已创建，点击选项投票');
+    }
+
+    function vote(index) {
+      if (index < 0 || index >= pollOptions.length) return;
+      pollOptions[index].votes++;
+      renderPollResult();
+    }
+
+    function resetPoll() {
+      pollOptions.forEach(o => o.votes = 0);
+      renderPollResult();
+      toast('已重置');
+    }
+
+    function renderPollResult() {
+      const container = document.getElementById('pollResult');
+      if (pollOptions.length < 2) {
+        container.innerHTML = '<div class="empty-state"><span class="icon">🗳️</span>添加选项后开始投票</div>';
+        return;
+      }
+      const total = pollOptions.reduce((sum, o) => sum + o.votes, 0);
+      const maxVotes = Math.max(...pollOptions.map(o => o.votes), 1);
+
+      container.innerHTML = `
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <strong>📊 ${escapeHtml(pollTitle)}</strong>
+          <span style="font-size:13px;color:var(--text-secondary)">共 ${total} 票</span>
+        </div>
+        ${pollOptions.map((opt, i) => {
+          const pct = total === 0 ? 0 : Math.round((opt.votes / total) * 100);
+          const barWidth = total === 0 ? 0 : (opt.votes / maxVotes) * 100;
+          return `<div class="poll-option" onclick="vote(${i})">
+            <div class="poll-bar" style="width:${barWidth}%"></div>
+            <div class="poll-text">
+              <span>${escapeHtml(opt.name)}</span>
+              <span class="poll-pct">${opt.votes} 票 (${pct}%)</span>
+            </div>
+          </div>`;
+        }).join('')}
+        <div style="text-align:center;margin-top:8px">
+          <button class="btn btn-outline btn-sm" onclick="resetPoll()">重置投票</button>
+        </div>
+      `;
+    }
+
+    /* =============================================
+       Utilities
+    ============================================= */
+    function escapeHtml(str) {
+      const div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
+    }
+
+    /* =============================================
+       Init
+    ============================================= */
+    renderWheelTags();
+    drawWheel();
+    renderDrawTags();
+    renderMemos();
+    renderPollResult();
+
+    // Handle resize for canvas
+    window.addEventListener('resize', () => {
+      if (document.getElementById('pageWheel').classList.contains('active')) drawWheel();
+    });
+  </script>
+</body>
+</html>
