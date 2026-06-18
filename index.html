@@ -202,6 +202,9 @@
         <span id="toggleText">没有账号？</span>
         <a href="javascript:void(0)" onclick="Auth.toggle()" id="toggleLink" style="color:var(--primary);text-decoration:none;font-weight:500">注册</a>
       </p>
+      <p style="margin-top:16px;font-size:12px;color:var(--text-secondary)">
+        <a href="javascript:void(0)" onclick="if(confirm('确定清除所有数据？这将删除所有账号和数据，不可恢复。')){localStorage.clear();sessionStorage.clear();location.reload();}" style="color:#ef4444;text-decoration:none">⚠ 忘记密码？重置全部数据</a>
+      </p>
     </div>
   </div>
 
@@ -211,6 +214,7 @@
       <button class="btn-icon hide" id="btnBack" onclick="Router.back()">&#x2039;</button>
       <h1 id="headerTitle">多功能工具箱</h1>
       <button class="btn-icon" id="headerAvatar" onclick="Router.go('profile')">&#x1F464;</button>
+      <button class="btn-icon" onclick="Router.go('admin')" title="数据后台">&#x2699;&#xFE0F;</button>
       <button class="btn-icon" onclick="Auth.logout()">&#x1F6AA;</button>
     </header>
     <div class="toast" id="toast"></div>
@@ -387,7 +391,11 @@
     },
     _buildHome: function() {
       var g = $('homeGrid'); g.innerHTML = '';
+      // Admin always first
+      var adminCard = Tools.list.find(function(t){return t.id==='admin';});
+      if (adminCard) g.innerHTML += '<div class="tool-card" onclick="Router.go(\'admin\')" style="border-color:var(--danger)"><span class="icon">'+adminCard.icon+'</span><span class="label">'+adminCard.name+'</span><span class="desc">'+adminCard.desc+'</span></div>';
       Tools.list.forEach(function(t) {
+        if (t.id === 'admin') return; // already added
         g.innerHTML += '<div class="tool-card" onclick="Router.go(\''+t.id+'\')"><span class="icon">'+t.icon+'</span><span class="label">'+t.name+'</span><span class="desc">'+t.desc+'</span></div>';
       });
     },
