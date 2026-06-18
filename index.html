@@ -276,15 +276,17 @@
       if (!App.user) return;
       if (Store._timers[key]) clearTimeout(Store._timers[key]);
       Store._timers[key] = setTimeout(function() {
-        var body = JSON.stringify({username: App.user, data_type: key, data_json: JSON.stringify(value), updated_at: new Date().toISOString()});
-        // DELETE existing, then POST (reliable upsert)
-        fetch(SUPABASE_URL + '/rest/v1/toolbar_data?username=eq.' + encodeURIComponent(App.user) + '&data_type=eq.' + key, {
+        var user = App.user, k = key, v = value;
+        var body = JSON.stringify({username: user, data_type: k, data_json: JSON.stringify(v), updated_at: new Date().toISOString()});
+        fetch(SUPABASE_URL + '/rest/v1/toolbar_data?username=eq.' + encodeURIComponent(user) + '&data_type=eq.' + k, {
           method: 'DELETE', headers: SB,
         }).then(function() {
           return fetch(SUPABASE_URL + '/rest/v1/toolbar_data', {
             method: 'POST', headers: Object.assign({'Prefer': 'return=minimal'}, SB), body: body,
           });
-        }).catch(function(){});
+        }).then(function(r) {
+          if (r && r.ok) toast('\u2601\uFE0F \u5DF2\u540C\u6B65');
+        }).catch(function(e) { console.log('Sync err:', e); });
       }, 500);
     },
     // Sync users to cloud too
