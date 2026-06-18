@@ -278,15 +278,16 @@
       Store._timers[key] = setTimeout(function() {
         var user = App.user, k = key, v = value;
         var body = JSON.stringify({username: user, data_type: k, data_json: JSON.stringify(v), updated_at: new Date().toISOString()});
-        fetch(SUPABASE_URL + '/rest/v1/toolbar_data?username=eq.' + encodeURIComponent(user) + '&data_type=eq.' + k, {
-          method: 'DELETE', headers: SB,
-        }).then(function() {
+        // Delete then insert (reliable upsert)
+        var delUrl = SUPABASE_URL + '/rest/v1/toolbar_data?username=eq.' + encodeURIComponent(user) + '&data_type=eq.' + k;
+        fetch(delUrl, {method: 'DELETE', headers: {'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY}})
+        .then(function() {
           return fetch(SUPABASE_URL + '/rest/v1/toolbar_data', {
             method: 'POST', headers: Object.assign({'Prefer': 'return=minimal'}, SB), body: body,
           });
-        }).then(function(r) {
-          if (r && r.ok) toast('\u2601\uFE0F \u5DF2\u540C\u6B65');
-        }).catch(function(e) { console.log('Sync err:', e); });
+        })
+        .then(function(r) { if (r && r.ok) toast('\u2601\uFE0F \u5DF2\u540C\u6B65'); })
+        .catch(function(e) { toast('\u274C \u540C\u6B65\u5931\u8D25'); console.log(e); });
       }, 500);
     },
     // Sync users to cloud too
