@@ -285,7 +285,7 @@
             method: 'POST', headers: Object.assign({'Prefer': 'return=minimal'}, SB), body: body,
           });
         }).catch(function(){});
-      }, 1500);
+      }, 500);
     },
     // Sync users to cloud too
     _syncUsers: function() {
