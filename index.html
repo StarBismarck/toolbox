@@ -223,6 +223,10 @@
     <div class="page active" id="pageHome">
       <div class="home-grid" id="homeGrid"></div>
       <div id="leaderboardSection" style="margin-top:20px"></div>
+      <div style="text-align:center;margin-top:12px;padding-bottom:20px">
+        <button class="btn btn-outline btn-xs" onclick="Sync.exportData()">&#x1F4E4; 导出备份</button>
+        <button class="btn btn-outline btn-xs" onclick="Sync.importData()" style="margin-left:6px">&#x1F4E5; 导入恢复</button>
+      </div>
     </div>
 
     <!-- Other pages injected by tool modules -->
@@ -242,9 +246,27 @@
     _blobId: null,
     _blobUrl: null,
     get: function(k, fallback) { try { var v=localStorage.getItem(Store._key(k)); return v!==null?JSON.parse(v):(fallback!==undefined?fallback:null); } catch(e) { return fallback!==undefined?fallback:null; } },
-    set: function(k, v) { localStorage.setItem(Store._key(k), JSON.stringify(v)); if (App.user) Store._schedulePush(); },
+    set: function(k, v) { localStorage.setItem(Store._key(k), JSON.stringify(v)); },
     getRaw: function(k) { return localStorage.getItem(k); },
-    setRaw: function(k, v) { localStorage.setItem(k, v); if (App.user) Store._schedulePush(); },
+    setRaw: function(k, v) { localStorage.setItem(k, v); },
+    exportAll: function() {
+      var data = {}, keys = Object.keys(localStorage);
+      for (var i=0;i<keys.length;i++) {
+        if (keys[i].indexOf('tb_')===0) {
+          try { data[keys[i]] = JSON.parse(localStorage.getItem(keys[i])); } catch(e) {}
+        }
+      }
+      return JSON.stringify(data, null, 2);
+    },
+    importAll: function(jsonStr) {
+      try {
+        var data = JSON.parse(jsonStr), keys = Object.keys(data), count = 0;
+        for (var i=0;i<keys.length;i++) {
+          localStorage.setItem(keys[i], JSON.stringify(data[keys[i]])); count++;
+        }
+        return count;
+      } catch(e) { return 0; }
+    },
 
     // Cloud sync
     _pushTimer: null,
@@ -472,14 +494,6 @@
       Router.register('home', {title:'\u591A\u529F\u80FD\u5DE5\u5177\u7BB1', onEnter:function(){Render.leaderboard();}});
       Router.init();
       Router.go('home');
-      // Pull cloud data (async, non-blocking)
-      Store.cloudPull().then(function() {
-        // Refresh current page after cloud sync
-        var cur = Router._current;
-        var cfg = Router._routes[cur];
-        if (cfg && cfg.onEnter) cfg.onEnter();
-        if (cur === 'home') Render.leaderboard();
-      });
     },
     _buildHome: function() {
       var g = $('homeGrid'); g.innerHTML = '';
@@ -500,6 +514,39 @@
         html: cfg.html || '',
         onEnter: function() { if (cfg.onEnter) cfg.onEnter(); },
       });
+    },
+  };
+
+  // ---- Sync (import/export) ----
+  var Sync = {
+    exportData: function() {
+      var json = Store.exportAll();
+      var blob = new Blob([json], {type:'application/json'});
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url; a.download = 'toolbox_backup_' + new Date().toISOString().slice(0,10) + '.json';
+      a.click(); URL.revokeObjectURL(url);
+      toast('\u5DF2\u4E0B\u8F7D\u5907\u4EFD\u6587\u4EF6');
+    },
+    importData: function() {
+      var inp = document.createElement('input');
+      inp.type = 'file'; inp.accept = '.json';
+      inp.onchange = function(e) {
+        var file = e.target.files[0];
+        if (!file) return;
+        var reader = new FileReader();
+        reader.onload = function(ev) {
+          var count = Store.importAll(ev.target.result);
+          if (count > 0) {
+            toast('\u5DF2\u5BFC\u5165 ' + count + ' \u6761\u6570\u636E\uFF0C\u8BF7\u91CD\u65B0\u767B\u5F55');
+            setTimeout(function() { Auth.logout(); }, 1500);
+          } else {
+            toast('\u5BFC\u5165\u5931\u8D25\uFF0C\u8BF7\u68C0\u67E5\u6587\u4EF6\u683C\u5F0F');
+          }
+        };
+        reader.readAsText(file);
+      };
+      inp.click();
     },
   };
 
@@ -772,6 +819,10 @@
       id: 'admin', name: '\u6570\u636E\u540E\u53F0', icon: '\uD83D\uDEE0\uFE0F', desc: '\u7528\u6237\u7BA1\u7406',
       html:
         '<p class="section-title">\uD83D\uDEE0\uFE0F \u6570\u636E\u540E\u53F0</p>'+
+        '<div style="display:flex;gap:8px;margin-bottom:12px">'+
+          '<button class="btn btn-outline btn-sm" onclick="Sync.exportData()">\uD83D\uDCE4 \u5BFC\u51FA\u6570\u636E</button>'+
+          '<button class="btn btn-outline btn-sm" onclick="Sync.importData()">\uD83D\uDCE5 \u5BFC\u5165\u6570\u636E</button>'+
+        '</div>'+
         '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:16px" id="ad_stats"></div>'+
         '<p style="font-size:15px;font-weight:600;margin-bottom:8px">\uD83D\uDC65 \u7528\u6237\u7BA1\u7406</p>'+
         '<div id="ad_list"></div>',
