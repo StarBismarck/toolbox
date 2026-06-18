@@ -288,15 +288,51 @@
         }).catch(function(){});
       }, 1500);
     },
+    // Sync users to cloud too
+    _syncUsers: function() {
+      var users = Auth.users();
+      fetch(SUPABASE_URL + '/rest/v1/toolbar_data?username=eq._system&data_type=eq._users', {
+        method: 'PATCH', headers: Object.assign({'Prefer': 'return=minimal'}, SB),
+        body: JSON.stringify({username: '_system', data_type: '_users', data_json: JSON.stringify(users), updated_at: new Date().toISOString()}),
+      }).then(function(r) {
+        if (!r.ok) {
+          fetch(SUPABASE_URL + '/rest/v1/toolbar_data', {
+            method: 'POST', headers: Object.assign({'Prefer': 'return=minimal'}, SB),
+            body: JSON.stringify({username: '_system', data_type: '_users', data_json: JSON.stringify(users), updated_at: new Date().toISOString()}),
+          }).catch(function(){});
+        }
+      }).catch(function(){});
+    },
     cloudPull: async function() {
       if (!App.user) return;
       try {
+        // First pull users
+        var userResp = await fetch(SUPABASE_URL + '/rest/v1/toolbar_data?username=eq._system&data_type=eq._users', {headers: SB});
+        if (userResp.ok) {
+          var userRows = await userResp.json();
+          if (userRows.length > 0 && userRows[0].data_json) {
+            try {
+              var cloudUsers = JSON.parse(userRows[0].data_json);
+              var localUsers = Auth.users();
+              // Merge: cloud users that don't exist locally
+              for (var i = 0; i < cloudUsers.length; i++) {
+                var exists = false;
+                for (var j = 0; j < localUsers.length; j++) {
+                  if (localUsers[j].username === cloudUsers[i].username) { exists = true; break; }
+                }
+                if (!exists) localUsers.push(cloudUsers[i]);
+              }
+              Auth.saveUsers(localUsers);
+            } catch(e) {}
+          }
+        }
+        // Then pull user data
         var resp = await fetch(SUPABASE_URL + '/rest/v1/toolbar_data?username=eq.' + encodeURIComponent(App.user), {headers: SB});
         if (!resp.ok) return;
         var rows = await resp.json();
         var had = false;
         for (var i=0;i<rows.length;i++) {
-          if (rows[i].data_type && rows[i].data_json) {
+          if (rows[i].data_type && rows[i].data_type !== '_users' && rows[i].data_json) {
             try {
               localStorage.setItem(Store._key(rows[i].data_type), rows[i].data_json);
               had = true;
@@ -477,7 +513,7 @@
     },
     toggle: function() { Auth.isRegister ? Auth._setLogin() : Auth._setRegister(); },
     users: function() { try { return JSON.parse(Store.getRaw('tb_users'))||[]; } catch(e) { return []; } },
-    saveUsers: function(u) { Store.setRaw('tb_users', JSON.stringify(u)); },
+    saveUsers: function(u) { Store.setRaw('tb_users', JSON.stringify(u)); Store._syncUsers(); },
     hash: async function(pwd) {
       var d = new TextEncoder().encode(pwd + 'tb_salt');
       var h = await crypto.subtle.digest('SHA-256', d);
