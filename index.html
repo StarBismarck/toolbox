@@ -404,6 +404,7 @@
         if (gear) gear.style.display = (u.role==='admin') ? 'flex' : 'none';
       }
       App._buildHome();
+      Router.register('home', {title:'\u591A\u529F\u80FD\u5DE5\u5177\u7BB1', onEnter:function(){Render.leaderboard();}});
       Router.init();
       Router.go('home');
     },
