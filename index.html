@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
   <title>多功能工具箱</title>
   <style>
     :root {
@@ -504,6 +505,15 @@
       initApp();
     }
 
+    function getCurrentUser() {
+      return sessionStorage.getItem(SESSION_KEY) || '';
+    }
+
+    function userKey(key) {
+      var u = getCurrentUser();
+      return u ? 'toolbox_' + u + '_' + key : 'toolbox_' + key;
+    }
+
     function doLogout() {
       sessionStorage.removeItem(SESSION_KEY);
       document.getElementById('loginScreen').style.display = 'flex';
@@ -558,7 +568,7 @@
 
     function getRotationData() {
       try {
-        var d = JSON.parse(localStorage.getItem('toolbox_rotation'));
+        var d = JSON.parse(localStorage.getItem(userKey('rotation')));
         return d || { people: [], countPerDay: 2 };
       } catch(e) { return { people: [], countPerDay: 2 }; }
     }
@@ -568,7 +578,7 @@
       var count = countEl ? parseInt(countEl.value) : 2;
       var data = getRotationData();
       data.countPerDay = Math.max(1, Math.min(20, count || 2));
-      localStorage.setItem('toolbox_rotation', JSON.stringify(data));
+      localStorage.setItem(userKey('rotation'), JSON.stringify(data));
       renderRotation();
     }
 
@@ -582,7 +592,7 @@
 
       var data = getRotationData();
       data.people.push({ id: Date.now(), name: name, project: project });
-      localStorage.setItem('toolbox_rotation', JSON.stringify(data));
+      localStorage.setItem(userKey('rotation'), JSON.stringify(data));
       nameEl.value = ''; projEl.value = '';
       renderRotation();
       toast('\u5DF2\u6DFB\u52A0\uFF1A' + name);
@@ -591,7 +601,7 @@
     function removeRotationPerson(id) {
       var data = getRotationData();
       data.people = data.people.filter(function(p) { return p.id !== id; });
-      localStorage.setItem('toolbox_rotation', JSON.stringify(data));
+      localStorage.setItem(userKey('rotation'), JSON.stringify(data));
       renderRotation();
     }
 
@@ -662,13 +672,13 @@
     ============================================= */
     function getBizTripData() {
       try {
-        var d = JSON.parse(localStorage.getItem('toolbox_biztrip'));
+        var d = JSON.parse(localStorage.getItem(userKey('biztrip')));
         return d || { people: [], currentIndex: 0 };
       } catch(e) { return { people: [], currentIndex: 0 }; }
     }
 
     function saveBizTripData(data) {
-      localStorage.setItem('toolbox_biztrip', JSON.stringify(data));
+      localStorage.setItem(userKey('biztrip'), JSON.stringify(data));
     }
 
     function addBizTripPerson() {
@@ -984,11 +994,11 @@
        MEMO
     ============================================= */
     function getMemos() {
-      try { return JSON.parse(localStorage.getItem('toolbox_memos')) || []; }
+      try { return JSON.parse(localStorage.getItem(userKey('memos'))) || []; }
       catch(e) { return []; }
     }
 
-    function saveMemos(memos) { localStorage.setItem('toolbox_memos', JSON.stringify(memos)); }
+    function saveMemos(memos) { localStorage.setItem(userKey('memos'), JSON.stringify(memos)); }
 
     function addMemo() {
       var input = document.getElementById('memoInput'); var val = input.value.trim();
