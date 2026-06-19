@@ -6,7 +6,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"PingFang SC
 .login-logo{position:relative;z-index:1;background:rgba(255,255,255,0.95);border-radius:var(--r);padding:16px 32px;margin-bottom:16px;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.2);border:2px solid var(--p)}
 .login-logo h2{font-size:24px;color:var(--p);margin:0;font-weight:700}
 .login-logo .ver{font-size:12px;color:var(--ts);margin-top:4px}
-.login-box{position:relative;z-index:1}background:#fff;border-radius:var(--r);padding:36px 28px;max-width:360px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.15);text-align:center}
+.login-box{position:relative;z-index:1;background:#fff;border-radius:var(--r);padding:36px 28px;max-width:360px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.15);text-align:center}
 .login-box h2{margin-bottom:8px;font-size:22px}.login-box .sub{font-size:14px;color:var(--ts);margin-bottom:24px}
 .login-box input{width:100%;padding:12px 16px;border:2px solid var(--b);border-radius:var(--rs);font-size:15px;outline:none;margin-bottom:12px}
 .login-box input:focus{border-color:var(--p)}.login-box .btn{width:100%;padding:12px;font-size:16px}
