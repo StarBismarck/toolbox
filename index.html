@@ -175,7 +175,7 @@ var Store={_k:function(k){return'tb_'+(App.user||'')+'_'+k;},
 
 var Router={_routes:{},_history:[],_current:'home',
   register:function(n,c){Router._routes[n]=c;},
-  go:function(n){Router._history=[];var p=Router._current;if(p===n&&n!=='home')return;var c=Router._routes[n];if(!c)return;var ps=document.querySelectorAll('.page');for(var i=0;i<ps.length;i++)ps[i].classList.remove('active');var pid='page'+n.charAt(0).toUpperCase()+n.slice(1),pg=$(pid);if(!pg){pg=document.createElement('div');pg.id=pid;pg.className='page';if(c.html)pg.innerHTML=c.html;$('mainArea').appendChild(pg);}pg.classList.add('active');$('ht').textContent=c.title||n;Router._current=n;history.replaceState({page:n},'','#'+n);if(c.onEnter)c.onEnter();$('menuOverlay').classList.remove('show');if(n==='home'){Render.lb();App.renderSidebar();}},
+  go:function(n){Router._history=[];var p=Router._current;if(p===n&&n!=='home')return;var c=Router._routes[n];if(!c)return;var ps=document.querySelectorAll('.page');for(var i=0;i<ps.length;i++)ps[i].classList.remove('active');var pid='page'+n.charAt(0).toUpperCase()+n.slice(1),pg=$(pid);if(!pg){pg=document.createElement('div');pg.id=pid;pg.className='page';if(c.html)pg.innerHTML=c.html;$('mainArea').appendChild(pg);}pg.classList.add('active');$('ht').textContent=c.title||n;$('bb').classList.toggle('hide',n==='home');Router._current=n;history.replaceState({page:n},'','#'+n);if(c.onEnter)c.onEnter();$('menuOverlay').classList.remove('show');if(n==='home'){Render.lb();App.renderSidebar();}},
   back:function(){Router.go('home');},
   init:function(){var s=this;window.addEventListener('popstate',function(e){Router.go('home');});var h=location.hash.replace('#','');if(h&&Router._routes[h]){Router.go(h);}}
 };
