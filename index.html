@@ -15,7 +15,9 @@
 <h2 id="lt">&#x1F510; 登录</h2><p class="sub" id="lst">请输入账号密码</p>
 <input type="text" id="lu" placeholder="用户名"/><input type="password" id="lp" placeholder="密码"/>
 <input type="password" id="lp2" placeholder="确认密码（仅注册时需要）" style="display:none"/>
-<button class="btn btn-p" onclick="Auth.login()" id="lb">登录</button><p class="err" id="le"></p>
+<button class="btn btn-p" onclick="Auth.login()" id="lb">登录</button>
+<button class="btn btn-o btn-sm" onclick="Auth.wechatLogin()" style="width:100%;margin-top:8px;border-color:#07c160;color:#07c160">&#x1F4F1; 微信一键登录</button>
+<p class="err" id="le"></p>
 <p style="margin-top:12px;font-size:13px;color:var(--ts)"><span id="ltg">没有账号？</span><a href="javascript:void(0)" onclick="Auth.toggle()" id="ltl" style="color:var(--p);text-decoration:none;font-weight:500">注册</a></p>
 <p style="margin-top:16px;font-size:12px;color:var(--ts)"><a href="javascript:void(0)" onclick="if(confirm('确定清除所有数据？')){localStorage.clear();sessionStorage.clear();location.reload();}" style="color:var(--err);text-decoration:none">⚠ 忘记密码？重置全部数据</a></p>
 </div></div>
