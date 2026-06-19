@@ -4,7 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
 <meta http-equiv="Cache-Control" content="no-cache,no-store,must-revalidate"/>
-<title>三对百宝箱</title>
+<title>三队百宝箱</title>
 <style>
 :root{--bg:#f0f2f5;--card:#fff;--p:#6366f1;--pl:#818cf8;--t:#1e293b;--ts:#64748b;--b:#e2e8f0;--on:#10b981;--busy:#f59e0b;--off:#94a3b8;--err:#ef4444;--sh:0 2px 12px rgba(0,0,0,.08);--r:16px;--rs:10px}
 *{margin:0;padding:0;box-sizing:border-box}
@@ -117,7 +117,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"PingFang SC
 <header class="topbar">
   <button class="btn-icon" id="menuBtn" onclick="App.toggleMenu()">&#x2630;</button>
   <button class="btn-icon hide" id="bb" onclick="Router.back()">&#x2039;</button>
-  <h1 id="ht">三对百宝箱</h1>
+  <h1 id="ht">三队百宝箱</h1>
   <button class="btn-icon" onclick="Router.go('inbox')" title="收件箱"><span class="badge" id="inboxBadge">0</span>&#x1F4E8;</button>
   <button class="btn-icon" id="av" onclick="Router.go('profile')">&#x1F464;</button>
   <button class="btn-icon" onclick="Router.go('admin')" title="数据后台" id="adBtn" style="display:none">&#x2699;&#xFE0F;</button>
@@ -194,7 +194,7 @@ var Auth={
 
 var App={
   user:null,heartbeatId:null,
-  login:function(un){App.user=un;$('ls').style.display='none';$('app').classList.add('show');var u=Auth.users().find(function(x){return x.username===un});if(u){$('av').textContent=u.avatar||'👤';$('adBtn').style.display=(u.role==='admin'?'flex':'none');}App.startHeartbeat();App._buildHome();Router.register('home',{title:'三对百宝箱',onEnter:function(){Render.lb();App.renderSidebar();}});Router.init();Router.go('home');Store.pull();App.renderSidebar();Render.lb();App.updateInboxBadge();},
+  login:function(un){App.user=un;$('ls').style.display='none';$('app').classList.add('show');var u=Auth.users().find(function(x){return x.username===un});if(u){$('av').textContent=u.avatar||'👤';$('adBtn').style.display=(u.role==='admin'?'flex':'none');}App.startHeartbeat();App._buildHome();Router.register('home',{title:'三队百宝箱',onEnter:function(){Render.lb();App.renderSidebar();}});Router.init();Router.go('home');Store.pull();App.renderSidebar();Render.lb();App.updateInboxBadge();},
   _buildHome:function(){var g=$('homeGrid');g.innerHTML='';Tools.list.forEach(function(t){if(t.id==='admin')return;g.innerHTML+='<div class="tool-card" onclick="Router.go(\''+t.id+'\')"><span class="icon">'+t.icon+'</span><span class="label">'+t.name+'</span><span class="desc">'+t.desc+'</span></div>';});},
   toggleMenu:function(){$('menuOverlay').classList.toggle('show');},
   quickStatus:function(st){TPR.setS(st);},
