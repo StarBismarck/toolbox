@@ -4,8 +4,10 @@ var H=function(s){var d=document.createElement('div');d.textContent=s;return d.i
 var toast=function(m){var t=$('toast');t.textContent=m;t.classList.add('show');setTimeout(function(){t.classList.remove('show')},2000)};
 
 // Version & Changelog
-var VERSION='v2.0';
+var VERSION='v2.1';
+var WECHAT_OAUTH_URL='https://pswiejbqdsvdajzzisgj.supabase.co/functions/v1/wechat-auth';
 var CHANGELOG=[
+  {v:'v2.1',date:'2026-06-19',items:['微信OAuth登录（待公众号注册完成后启用）','模块化拆分：15个独立文件','头像上传压缩优化','更新公告系统']},
   {v:'v2.0',date:'2026-06-18',items:['全新UI：蓝顶栏+三栏布局','收件箱系统：反馈+好友申请','好友申请需对方同意','头像上传：自动压缩至60x60','30秒心跳保持在线状态','☰快捷菜单','返回键简化：一键回首页','移动端适配']},
   {v:'v1.0',date:'2026-06-18',items:['三队百宝箱上线','多用户注册/登录','云端自动同步(Supabase)','小值轮换·多重项目配置','公差轮换·次数统计','幸运转盘·抽签','备忘录·集体投票','个人中心·好友系统']}
 ];
@@ -35,7 +37,7 @@ var Router={_routes:{},_history:[],_current:'home',
 };
 
 var Auth={
-  isReg:false,init:function(){Auth._ensureAdmin();Store.pullUsers().then(function(){if(sessionStorage.getItem('tb_s')){App.login(sessionStorage.getItem('tb_s'));return;}$('ls').style.display='flex';if(!Store.getRaw('tb_users'))Auth._setReg();});},
+  isReg:false,init:function(){Auth._ensureAdmin();Store.pullUsers().then(function(){if(sessionStorage.getItem('tb_s')){App.login(sessionStorage.getItem('tb_s'));return;}var p=new URLSearchParams(location.search);var wt=p.get('wx_token');if(wt){Auth._handleWechatToken(wt);return;}$('ls').style.display='flex';if(!Store.getRaw('tb_users'))Auth._setReg();});},
   _ensureAdmin:function(){if(!Store.getRaw('tb_users')){crypto.subtle.digest('SHA-256',new TextEncoder().encode('12345'+'tb_salt')).then(function(h){var hash=Array.from(new Uint8Array(h)).map(function(b){return b.toString(16).padStart(2,'0')}).join('');Store.setRaw('tb_users',JSON.stringify([{id:0,username:'admin',passwordHash:hash,createdAt:'',avatar:'👑',status:'offline',role:'admin',friends:[],lastSeen:null}]));});}},
   _setReg:function(){Auth.isReg=true;$('lt').textContent='📝 注册';$('lst').textContent='创建新账号';$('lb').textContent='注册';$('ltg').textContent='已有账号？';$('ltl').textContent='登录';$('lp2').style.display='block';$('le').textContent='';},
   _setLogin:function(){Auth.isReg=false;$('lt').textContent='🔐 登录';$('lst').textContent='请输入账号密码';$('lb').textContent='登录';$('ltg').textContent='没有账号？';$('ltl').textContent='注册';$('lp2').style.display='none';$('le').textContent='';},
@@ -45,7 +47,9 @@ var Auth={
   _saveNoSync:function(u){Store.setRaw('tb_users',JSON.stringify(u));},
   hash:async function(p){var d=new TextEncoder().encode(p+'tb_salt');var h=await crypto.subtle.digest('SHA-256',d);return Array.from(new Uint8Array(h)).map(function(b){return b.toString(16).padStart(2,'0')}).join('');},
   login:async function(){var un=$('lu').value.trim(),pw=$('lp').value,pw2=$('lp2').value,er=$('le');if(!un){er.textContent='请输入用户名';return}if(un.length<2){er.textContent='用户名至少2字';return}if(pw.length<4){er.textContent='密码至少4位';return}var us=Auth.users();if(Auth.isReg){if(pw!==pw2){er.textContent='两次密码不一致';return}if(us.some(function(u){return u.username===un})){er.textContent='该用户名已存在';return}us.push({id:Date.now(),username:un,passwordHash:await Auth.hash(pw),createdAt:new Date().toLocaleString('zh-CN'),avatar:'',status:'online',role:'user',friends:[],lastSeen:new Date().toLocaleString('zh-CN')});Auth.saveUsers(us);sessionStorage.setItem('tb_s',un);App.login(un);toast('注册成功，欢迎 '+un+'!');}else{var f=us.find(function(u){return u.username===un});if(!f){er.textContent='用户不存在';return}if(await Auth.hash(pw)!==f.passwordHash){er.textContent='密码错误';$('lp').value='';return}f.status='online';f.lastSeen=new Date().toLocaleString('zh-CN');Auth.saveUsers(us);sessionStorage.setItem('tb_s',un);App.login(un);}},
-  logout:function(){App.stopHeartbeat();var us=Auth.users(),un=App.user;var f=us.find(function(u){return u.username===un});if(f){f.status='offline';Auth.saveUsers(us);}sessionStorage.removeItem('tb_s');App.user=null;$('ls').style.display='flex';$('app').classList.remove('show');$('lu').value='';$('lp').value='';$('lp2').value='';Auth._setLogin();}
+  logout:function(){App.stopHeartbeat();var us=Auth.users(),un=App.user;var f=us.find(function(u){return u.username===un});if(f){f.status='offline';Auth.saveUsers(us);}sessionStorage.removeItem('tb_s');App.user=null;$('ls').style.display='flex';$('app').classList.remove('show');$('lu').value='';$('lp').value='';$('lp2').value='';Auth._setLogin();},
+  wechatLogin:function(){location.href=WECHAT_OAUTH_URL;},
+  _handleWechatToken:async function(token){try{var parts=atob(token).split(':');var username=parts[0];if(!username){$('ls').style.display='flex';return}var us=Auth.users();var f=us.find(function(u){return u.username===username});if(!f){toast('微信用户未同步');$('ls').style.display='flex';return}sessionStorage.setItem('tb_s',username);App.login(username);history.replaceState({},'','/toolbox');}catch(e){$('ls').style.display='flex';}}
 };
 
 var App={
