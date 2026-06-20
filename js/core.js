@@ -4,10 +4,10 @@ var H=function(s){var d=document.createElement('div');d.textContent=s;return d.i
 var toast=function(m){var t=$('toast');t.textContent=m;t.classList.add('show');setTimeout(function(){t.classList.remove('show')},2000)};
 
 // Version & Changelog
-var VERSION='v2.1';
+var VERSION='v2.2';
 var WECHAT_OAUTH_URL='https://pswiejbqdsvdajzzisgj.supabase.co/functions/v1/wechat-auth';
 var CHANGELOG=[
-  {v:'v2.1',date:'2026-06-19',items:['微信OAuth登录（待公众号注册完成后启用）','模块化拆分：15个独立文件','头像上传压缩优化','更新公告系统']},
+  {v:'v2.2',date:'2026-06-19',items:['头像上传修复：圆形裁剪+正确显示','登录页照片背景+暗色遮罩','重置功能移至后台(仅admin)','好友聊天功能上线','小值轮换：起始偏移+轮换方向']},
   {v:'v2.0',date:'2026-06-18',items:['全新UI：蓝顶栏+三栏布局','收件箱系统：反馈+好友申请','好友申请需对方同意','头像上传：自动压缩至60x60','30秒心跳保持在线状态','☰快捷菜单','返回键简化：一键回首页','移动端适配']},
   {v:'v1.0',date:'2026-06-18',items:['三队百宝箱上线','多用户注册/登录','云端自动同步(Supabase)','小值轮换·多重项目配置','公差轮换·次数统计','幸运转盘·抽签','备忘录·集体投票','个人中心·好友系统']}
 ];
@@ -58,7 +58,7 @@ var App={
   _buildHome:function(){var g=$('homeGrid');g.innerHTML='';Tools.list.forEach(function(t){if(t.id==='admin')return;g.innerHTML+='<div class="tool-card" onclick="Router.go(\''+t.id+'\')"><span class="icon">'+t.icon+'</span><span class="label">'+t.name+'</span><span class="desc">'+t.desc+'</span></div>';});},
   toggleMenu:function(){$('menuOverlay').classList.toggle('show');},
   quickStatus:function(st){TPR.setS(st);},
-  renderSidebar:function(){var u=Auth.users().find(function(x){return x.username===App.user});if(!u)return;var fs=u.friends||[],us=Auth.users();var sf=$('sidebarFriends');if(!fs.length){sf.innerHTML='<div style="color:var(--ts);font-size:12px;text-align:center;padding:10px">暂无好友<br>去个人中心添加</div>';return;}var online=[],offline=[];fs.forEach(function(fn){var fu=us.find(function(x){return x.username===fn});if(fu&&(fu.status==='online'||fu.status==='busy'||fu.status==='away'))online.push(fu);else offline.push(fn||{username:fn,avatar:'👤'});});var ri=function(u,st){return'<div class="f-item"><div class="fav">'+(u.avatar||'👤')+'</div><div class="fn">'+H(u.username)+'</div><div class="f-dot '+st+'"></div></div>';};sf.innerHTML='<div style="font-size:11px;color:var(--ts);margin-bottom:4px">在线 ('+online.length+')</div>'+online.map(function(fu){return ri(fu,fu.status==='busy'?'busy':fu.status==='away'?'busy':'on');}).join('')+'<div style="font-size:11px;color:var(--ts);margin:8px 0 4px">离线 ('+offline.length+')</div>'+offline.map(function(fu){return ri(fu,'off');}).join('');},
+  renderSidebar:function(){var u=Auth.users().find(function(x){return x.username===App.user});if(!u)return;var fs=u.friends||[],us=Auth.users();var sf=$('sidebarFriends');if(!fs.length){sf.innerHTML='<div style="color:var(--ts);font-size:12px;text-align:center;padding:10px">暂无好友<br>去个人中心添加</div>';return;}var online=[],offline=[];fs.forEach(function(fn){var fu=us.find(function(x){return x.username===fn});if(fu&&(fu.status==='online'||fu.status==='busy'||fu.status==='away'))online.push(fu);else offline.push(fn||{username:fn,avatar:'👤'});});var ri=function(u,st){return'<div class="f-item" onclick="Chat.open(\''+u.username+'\')"><div class="fav">'+(u.avatar||'👤')+'</div><div class="fn">'+H(u.username)+'</div><div class="f-dot '+st+'"></div></div>';};sf.innerHTML='<div style="font-size:11px;color:var(--ts);margin-bottom:4px">在线 ('+online.length+')</div>'+online.map(function(fu){return ri(fu,fu.status==='busy'?'busy':fu.status==='away'?'busy':'on');}).join('')+'<div style="font-size:11px;color:var(--ts);margin:8px 0 4px">离线 ('+offline.length+')</div>'+offline.map(function(fu){return ri(fu,'off');}).join('');},
   startHeartbeat:function(){App.stopHeartbeat();App._beat();App.heartbeatId=setInterval(function(){App._beat();},30000);},
   _beat:function(){if(!App.user)return;var us=Auth.users();var f=us.find(function(u){return u.username===App.user});if(f&&f.status!=='offline'){sessionStorage.setItem('tb_hb',Date.now().toString());}},
   stopHeartbeat:function(){if(App.heartbeatId){clearInterval(App.heartbeatId);App.heartbeatId=null;}},
