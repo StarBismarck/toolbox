@@ -65,7 +65,8 @@ var App={
   updateInboxBadge:function(){var ib=Store.get('_inbox',[]);var unread=ib.filter(function(m){return !m.read}).length;var b=$('inboxBadge');if(unread>0){b.textContent=unread;b.classList.add('show');}else{b.classList.remove('show');}},
   checkVersion:function(){var lv=localStorage.getItem('tb_version');if(lv!==VERSION){toast('欢迎使用 '+VERSION+'！查看☰菜单→更新公告');localStorage.setItem('tb_version',VERSION);}},
   toggleDark:function(){var t=document.documentElement.getAttribute('data-theme')==='dark'?null:'dark';document.documentElement.setAttribute('data-theme',t);localStorage.setItem('theme',t||'light');},
-  initDark:function(){var t=localStorage.getItem('theme');if(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)t='dark';if(t==='dark')document.documentElement.setAttribute('data-theme','dark');}
+  initDark:function(){var t=localStorage.getItem('theme');if(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)t='dark';if(t==='dark')document.documentElement.setAttribute('data-theme','dark');},
+  backupData:function(){var d={};var ks=Object.keys(localStorage);for(var i=0;i<ks.length;i++){if(ks[i].indexOf('tb_')===0||ks[i]==='tb_users'){d[ks[i]]=localStorage.getItem(ks[i]);}}var b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='toolbox_backup_'+new Date().toISOString().slice(0,10)+'.json';a.click();toast('备份已下载');}
 };
 
 var Inbox={
