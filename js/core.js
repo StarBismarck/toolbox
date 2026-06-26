@@ -20,7 +20,7 @@ var API={URL:'https://pswiejbqdsvdajzzisgj.supabase.co',KEY:'sb_publishable_OcLs
   upsert:async function(t,q,b){try{await API.del(t,q)}catch(e){};await API.post(t,b);},
   check:async function(){var r=[];try{await API.get('toolbar_data','limit=1');r.push({name:'数据库连接',ok:true});}catch(e){r.push({name:'数据库连接',ok:false,err:e.message});}try{localStorage.setItem('_dt','1');localStorage.removeItem('_dt');r.push({name:'本地存储',ok:true});}catch(e){r.push({name:'本地存储',ok:false,err:e.message});}r.push({name:'用户数',ok:true,info:Auth.users().length});return r;}};
 
-var Store={_k:function(k){return'tb_'+(App.user||'')+'_'+k;},
+window.addEventListener("online",function(){toast("🟢 网络已恢复")});window.addEventListener("offline",function(){toast("🔴 网络已断开，数据将保存到本地")});var Store={_k:function(k){return'tb_'+(App.user||'')+'_'+k;},
   get:function(k,fb){try{var v=localStorage.getItem(Store._k(k));return v!=null?JSON.parse(v):(fb!==undefined?fb:null);}catch(e){return fb!==undefined?fb:null;}},
   set:function(k,v){localStorage.setItem(Store._k(k),JSON.stringify(v));Store._sync(k,v);},
   getRaw:function(k){return localStorage.getItem(k);},setRaw:function(k,v){localStorage.setItem(k,v);},
@@ -54,7 +54,7 @@ var Auth={
 
 var App={
   user:null,heartbeatId:null,
-  login:function(un){App.user=un;$('ls').style.display='none';$('app').classList.add('show');var u=Auth.users().find(function(x){return x.username===un});if(u){$('av').textContent=u.avatar||'👤';$('adBtn').style.display=(u.role==='admin'?'flex':'none');}App.startHeartbeat();App._buildHome();Router.register('home',{title:'三队百宝箱',onEnter:function(){Render.lb();App.renderSidebar();}});Router.init();Router.go('home');Store.pull();App.renderSidebar();Render.lb();App.updateInboxBadge();App.checkVersion();App.initDark();},
+  login:function(un){App.user=un;toast('登录中...');$('ls').style.display='none';$('app').classList.add('show');var u=Auth.users().find(function(x){return x.username===un});if(u){$('av').textContent=u.avatar||'👤';$('adBtn').style.display=(u.role==='admin'?'flex':'none');}App.startHeartbeat();App._buildHome();Router.register('home',{title:'三队百宝箱',onEnter:function(){Render.lb();App.renderSidebar();}});Router.init();Router.go('home');Store.pull().then(function(){toast('');});App.renderSidebar();Render.lb();App.updateInboxBadge();App.checkVersion();App.initDark();},
   _buildHome:function(){var g=$('homeGrid');g.innerHTML='';Tools.list.forEach(function(t){if(t.id==='admin')return;g.innerHTML+='<div class="tool-card" onclick="Router.go(\''+t.id+'\')"><span class="icon">'+t.icon+'</span><span class="label">'+t.name+'</span><span class="desc">'+t.desc+'</span></div>';});},
   toggleMenu:function(){$('menuOverlay').classList.toggle('show');},
   quickStatus:function(st){TPR.setS(st);},
