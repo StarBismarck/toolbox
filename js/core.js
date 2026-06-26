@@ -4,10 +4,10 @@ var H=function(s){var d=document.createElement('div');d.textContent=s;return d.i
 var toast=function(m){var t=$('toast');t.textContent=m;t.classList.add('show');setTimeout(function(){t.classList.remove('show')},2000)};
 
 // Version & Changelog
-var VERSION='v2.2';
+var VERSION='v2.3';
 var WECHAT_OAUTH_URL='https://pswiejbqdsvdajzzisgj.supabase.co/functions/v1/wechat-auth';
 var CHANGELOG=[
-  {v:'v2.2',date:'2026-06-19',items:['头像上传修复：圆形裁剪+正确显示','登录页照片背景+暗色遮罩','重置功能移至后台(仅admin)','好友聊天功能上线','小值轮换：起始偏移+轮换方向']},
+  {v:'v2.3',date:'2026-06-19',items:['PWA支持：可安装到手机桌面','暗黑模式：自动检测/手动切换','Service Worker离线缓存']},
   {v:'v2.0',date:'2026-06-18',items:['全新UI：蓝顶栏+三栏布局','收件箱系统：反馈+好友申请','好友申请需对方同意','头像上传：自动压缩至60x60','30秒心跳保持在线状态','☰快捷菜单','返回键简化：一键回首页','移动端适配']},
   {v:'v1.0',date:'2026-06-18',items:['三队百宝箱上线','多用户注册/登录','云端自动同步(Supabase)','小值轮换·多重项目配置','公差轮换·次数统计','幸运转盘·抽签','备忘录·集体投票','个人中心·好友系统']}
 ];
