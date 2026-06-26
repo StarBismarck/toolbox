@@ -54,7 +54,7 @@ var Auth={
 
 var App={
   user:null,heartbeatId:null,
-  login:function(un){App.user=un;$('ls').style.display='none';$('app').classList.add('show');var u=Auth.users().find(function(x){return x.username===un});if(u){$('av').textContent=u.avatar||'👤';$('adBtn').style.display=(u.role==='admin'?'flex':'none');}App.startHeartbeat();App._buildHome();Router.register('home',{title:'三队百宝箱',onEnter:function(){Render.lb();App.renderSidebar();}});Router.init();Router.go('home');Store.pull();App.renderSidebar();Render.lb();App.updateInboxBadge();App.checkVersion();},
+  login:function(un){App.user=un;$('ls').style.display='none';$('app').classList.add('show');var u=Auth.users().find(function(x){return x.username===un});if(u){$('av').textContent=u.avatar||'👤';$('adBtn').style.display=(u.role==='admin'?'flex':'none');}App.startHeartbeat();App._buildHome();Router.register('home',{title:'三队百宝箱',onEnter:function(){Render.lb();App.renderSidebar();}});Router.init();Router.go('home');Store.pull();App.renderSidebar();Render.lb();App.updateInboxBadge();App.checkVersion();App.initDark();},
   _buildHome:function(){var g=$('homeGrid');g.innerHTML='';Tools.list.forEach(function(t){if(t.id==='admin')return;g.innerHTML+='<div class="tool-card" onclick="Router.go(\''+t.id+'\')"><span class="icon">'+t.icon+'</span><span class="label">'+t.name+'</span><span class="desc">'+t.desc+'</span></div>';});},
   toggleMenu:function(){$('menuOverlay').classList.toggle('show');},
   quickStatus:function(st){TPR.setS(st);},
@@ -63,7 +63,9 @@ var App={
   _beat:function(){if(!App.user)return;var us=Auth.users();var f=us.find(function(u){return u.username===App.user});if(f&&f.status!=='offline'){sessionStorage.setItem('tb_hb',Date.now().toString());}},
   stopHeartbeat:function(){if(App.heartbeatId){clearInterval(App.heartbeatId);App.heartbeatId=null;}},
   updateInboxBadge:function(){var ib=Store.get('_inbox',[]);var unread=ib.filter(function(m){return !m.read}).length;var b=$('inboxBadge');if(unread>0){b.textContent=unread;b.classList.add('show');}else{b.classList.remove('show');}},
-  checkVersion:function(){var lv=localStorage.getItem('tb_version');if(lv!==VERSION){toast('欢迎使用 '+VERSION+'！查看☰菜单→更新公告');localStorage.setItem('tb_version',VERSION);}}
+  checkVersion:function(){var lv=localStorage.getItem('tb_version');if(lv!==VERSION){toast('欢迎使用 '+VERSION+'！查看☰菜单→更新公告');localStorage.setItem('tb_version',VERSION);}},
+  toggleDark:function(){var t=document.documentElement.getAttribute('data-theme')==='dark'?null:'dark';document.documentElement.setAttribute('data-theme',t);localStorage.setItem('theme',t||'light');},
+  initDark:function(){var t=localStorage.getItem('theme');if(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)t='dark';if(t==='dark')document.documentElement.setAttribute('data-theme','dark');}
 };
 
 var Inbox={
