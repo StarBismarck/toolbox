@@ -1,8 +1,9 @@
 {
-  "name": "三队百宝箱",
-  "short_name": "百宝箱",
+  "name": "六队工具箱",
+  "short_name": "六队",
   "description": "团队协作工具箱 - 小值轮换、公差管理、备忘录、投票",
-  "start_url": "/",
+  "start_url": "index.html",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#6366f1",
   "theme_color": "#6366f1",

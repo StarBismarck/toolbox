@@ -6,7 +6,7 @@
 <meta http-equiv="Cache-Control" content="no-cache,no-store,must-revalidate"/>
 <meta http-equiv="Pragma" content="no-cache"/>
 <meta http-equiv="Expires" content="0"/>
-<title>三队百宝箱</title>
+<title>六队工具箱</title>
 <link rel="manifest" href="manifest.json"/>
 <link rel="icon" href="icon-192.png"/>
 <link rel="apple-touch-icon" href="icon-192.png"/>
@@ -18,7 +18,7 @@
 <div class="login-screen" id="ls">
   <div class="login-overlay"></div>
   <div class="login-box">
-<div class="login-logo"><div class="logo-title">三队百宝箱</div><div class="logo-ver">v2.1</div></div>
+<div class="login-logo"><div class="logo-title">六队工具箱</div><div class="logo-ver">v2.4</div></div>
     <h2 id="lt">&#x1F510; 登录</h2>
     <p class="sub" id="lst">请输入账号密码</p>
     <input type="text" id="lu" placeholder="用户名"/>
@@ -32,11 +32,15 @@
   </div>
 </div>
 
+<div class="search-modal" id="searchModal"><div class="search-box"><input type="text" id="searchInput" placeholder="搜索备忘录 / 人员…" oninput="Search.do(this.value)"/><div id="searchResults"></div></div></div>
+
 <div class="app-shell" id="app">
 <header class="topbar">
   <button class="btn-icon" id="menuBtn" onclick="App.toggleMenu()">&#x2630;</button>
   <button class="btn-icon hide" id="bb" onclick="Router.back()">&#x2039;</button>
-  <h1 id="ht">三队百宝箱</h1>
+  <h1 id="ht">六队工具箱</h1>
+  <span id="syncState" class="sync-state ok" title="已同步">&#x2601;&#xFE0F;</span>
+  <button class="btn-icon" onclick="Search.open()" title="搜索">&#x1F50D;</button>
   <button class="btn-icon" onclick="Router.go('inbox')" title="收件箱"><span class="badge" id="inboxBadge">0</span>&#x1F4E8;</button>
   <button class="btn-icon" id="av" onclick="Router.go('profile')">&#x1F464;</button>
   <button class="btn-icon" onclick="Router.go('admin')" title="数据后台" id="adBtn" style="display:none">&#x2699;&#xFE0F;</button>
@@ -49,6 +53,7 @@
   <div onclick="App.toggleMenu();Router.go('profile')">&#x1F464; 个人中心</div>
   <div onclick="App.toggleMenu();Router.go('changelog')">&#x1F4CB; 更新公告</div>
   <div onclick="App.toggleMenu();App.backupData()">&#x1F4BE; 导出备份</div>
+  <div onclick="App.toggleMenu();App.restoreBackup()">&#x267B;&#xFE0F; 恢复备份</div>
   <div onclick="App.toggleMenu();App.quickStatus('online')">&#x1F7E2; 设为在线</div>
   <div onclick="App.toggleMenu();App.quickStatus('busy')">&#x1F7E1; 设为忙碌</div>
   <div onclick="App.toggleMenu();App.quickStatus('offline')">&#x26AA; 设为隐身</div>
@@ -75,11 +80,13 @@
 <script src="js/biztrip.js"></script>
 <script src="js/wheel.js"></script>
 <script src="js/draw.js"></script>
+<script src="js/outing.js"></script>
 <script src="js/memo.js"></script>
 <script src="js/poll.js"></script>
 <script src="js/inbox.js"></script>
 <script src="js/feedback.js"></script>
 <script src="js/profile.js"></script>
+<script src="js/dashboard.js"></script>
 <script src="js/admin.js"></script>
 <script src="js/changelog.js"></script>
 <script src="js/chat.js"></script>
